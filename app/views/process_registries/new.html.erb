@@ -1,0 +1,35 @@
+<h1>New process_registry</h1>
+
+<% form_for(@process_registry) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :event %><br />
+    <%= f.text_field :event %>
+  </p>
+  <p>
+    <%= f.label :value_name %><br />
+    <%= f.text_field :value_name %>
+  </p>
+  <p>
+    <%= f.label :value_type %><br />
+    <%= f.text_field :value_type %>
+  </p>
+  <p>
+    <%= f.label :value %><br />
+    <%= f.text_field :value %>
+  </p>
+  <p>
+    <%= f.label :time_at %><br />
+    <%= f.text_field :time_at %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', process_registries_path %>

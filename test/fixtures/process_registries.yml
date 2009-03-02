@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+1:
+  id: 1
+  name: HKLM\SYSTEM\ControlSet001\Control\SecurityProviders
+  event: SetValueKey
+  value_name: SecurityProviders
+  value_type: REG_SZ
+  value: msapsspc.dll, schannel.dll, digest.dll, msnsspc.dll, digeste.dll
+  time_at: <%= Time.parse("2009-02-28 20:02:09.982").to_f %>
+  os_process_id: 2
+
+2:
+  id: 2
+  name: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+  event: SetValueKey
+  value_name: Cache
+  value_type: REG_SZ
+  value: C:\Documents and Settings\Administrator\Local Settings\Temporary Internet Files
+  time_at: <%= Time.parse("2009-02-07 13:36:39.564").to_f %>
+  os_process_id: 2

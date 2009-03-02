@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+1:
+  id: 1
+  protocol: smtp
+  address: noreply@foo.com
+  job_id: 1
+
+2:
+  id: 2
+  protocol: smtp
+  address: noreply@bar.com
+  job_id: 2

@@ -1,0 +1,28 @@
+<h1>Editing file_content</h1>
+
+<% form_for(@file_content) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :md5 %><br />
+    <%= f.text_field :md5 %>
+  </p>
+  <p>
+    <%= f.label :sha1 %><br />
+    <%= f.text_field :sha1 %>
+  </p>
+  <p>
+    <%= f.label :size %><br />
+    <%= f.text_field :size %>
+  </p>
+  <p>
+    <%= f.label :mime_type %><br />
+    <%= f.text_field :mime_type %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @file_content %> |
+<%= link_to 'Back', file_contents_path %>

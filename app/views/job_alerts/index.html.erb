@@ -1,0 +1,22 @@
+<h1>Listing job_alerts</h1>
+
+<table>
+  <tr>
+    <th>Protocol</th>
+    <th>Address</th>
+  </tr>
+
+<% for job_alert in @job_alerts %>
+  <tr>
+    <td><%=h job_alert.protocol %></td>
+    <td><%=h job_alert.address %></td>
+    <td><%= link_to 'Show', job_alert %></td>
+    <td><%= link_to 'Edit', edit_job_alert_path(job_alert) %></td>
+    <td><%= link_to 'Destroy', job_alert, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New job_alert', new_job_alert_path %>

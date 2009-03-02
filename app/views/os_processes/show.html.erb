@@ -1,0 +1,33 @@
+<p>
+  <b>Name:</b>
+  <%=h @os_process.name %>
+</p>
+
+<p>
+  <b>Pid:</b>
+  <%=h @os_process.pid %>
+</p>
+
+<p>
+  <b>Parent name:</b>
+  <%=h @os_process.parent_name %>
+</p>
+
+<p>
+  <b>Parent pid:</b>
+  <%=h @os_process.parent_pid %>
+</p>
+
+<p>
+  <b>Process file count:</b>
+  <%=h @os_process.process_file_count %>
+</p>
+
+<p>
+  <b>Process registry count:</b>
+  <%=h @os_process.process_registry_count %>
+</p>
+
+
+<%= link_to 'Edit', edit_os_process_path(@os_process) %> |
+<%= link_to 'Back', os_processes_path %>

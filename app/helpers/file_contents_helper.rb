@@ -1,0 +1,2 @@
+module FileContentsHelper
+end

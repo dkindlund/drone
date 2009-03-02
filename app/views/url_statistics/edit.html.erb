@@ -1,0 +1,16 @@
+<h1>Editing url_statistic</h1>
+
+<% form_for(@url_statistic) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :count %><br />
+    <%= f.text_field :count %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @url_statistic %> |
+<%= link_to 'Back', url_statistics_path %>

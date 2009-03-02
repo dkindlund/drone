@@ -1,4 +1,54 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :os
+
+  map.resources :url_statistics
+
+  map.resources :job_alerts
+
+  map.resources :job_sources
+
+  map.resources :jobs
+
+  map.resources :configurations
+
+  map.resources :urls
+
+  map.resources :applications
+
+  map.resources :os
+
+  map.resources :process_registries
+
+  map.resources :file_contents
+
+  map.resources :url_statuses
+
+  map.resources :hosts
+
+  map.resources :client_statuses
+
+  map.resources :process_files
+
+  map.resources :os_processes
+
+  map.resources :os_processes
+
+  map.resources :fingerprints
+
+  map.resources :fingerprints
+
+  map.resources :clients
+
+  map.resources :hosts
+
+  map.resources :clients
+
+  map.resources :clients
+
+  map.resources :clients
+
+  map.resources :clients
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
@@ -31,7 +81,7 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
+  map.root :controller => "dashboard"
 
   # See how all your routes lay out with "rake routes"
 

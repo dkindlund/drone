@@ -1,0 +1,23 @@
+<p>
+  <b>Md5:</b>
+  <%=h @file_content.md5 %>
+</p>
+
+<p>
+  <b>Sha1:</b>
+  <%=h @file_content.sha1 %>
+</p>
+
+<p>
+  <b>Size:</b>
+  <%=h @file_content.size %>
+</p>
+
+<p>
+  <b>Mime type:</b>
+  <%=h @file_content.mime_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_file_content_path(@file_content) %> |
+<%= link_to 'Back', file_contents_path %>

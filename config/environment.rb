@@ -39,3 +39,10 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+
+# Specify what address the notifications will be sent from.
+ExceptionNotifier.sender_address = %("Exception Notifier" <noreply@drone.honeyclient.org>)
+ExceptionNotifier.email_prefix = "[drone] "
+
+# Specify who will receive email notifications when exceptions occur.
+ExceptionNotifier.exception_recipients = %w(darien@kindlund.com)

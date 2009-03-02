@@ -1,0 +1,20 @@
+<h1>Listing client_statuses</h1>
+
+<table>
+  <tr>
+    <th>Status</th>
+  </tr>
+
+<% for client_status in @client_statuses %>
+  <tr>
+    <td><%=h client_status.status %></td>
+    <td><%= link_to 'Show', client_status %></td>
+    <td><%= link_to 'Edit', edit_client_status_path(client_status) %></td>
+    <td><%= link_to 'Destroy', client_status, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New client_status', new_client_status_path %>

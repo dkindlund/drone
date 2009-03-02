@@ -1,0 +1,2 @@
+module UrlStatisticsHelper
+end

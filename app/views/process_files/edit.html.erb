@@ -1,0 +1,24 @@
+<h1>Editing process_file</h1>
+
+<% form_for(@process_file) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :event %><br />
+    <%= f.text_field :event %>
+  </p>
+  <p>
+    <%= f.label :time_at %><br />
+    <%= f.text_field :time_at %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @process_file %> |
+<%= link_to 'Back', process_files_path %>

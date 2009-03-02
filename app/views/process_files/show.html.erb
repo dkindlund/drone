@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @process_file.name %>
+</p>
+
+<p>
+  <b>Event:</b>
+  <%=h @process_file.event %>
+</p>
+
+<p>
+  <b>Time at:</b>
+  <%=h @process_file.time_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_process_file_path(@process_file) %> |
+<%= link_to 'Back', process_files_path %>

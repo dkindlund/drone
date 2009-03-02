@@ -1,0 +1,1 @@
+Allow activerecord to handle indexes on TEXT column as described at http://dev.rubyonrails.org/ticket/5630

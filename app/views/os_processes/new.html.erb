@@ -1,0 +1,35 @@
+<h1>New os_process</h1>
+
+<% form_for(@os_process) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :pid %><br />
+    <%= f.text_field :pid %>
+  </p>
+  <p>
+    <%= f.label :parent_name %><br />
+    <%= f.text_field :parent_name %>
+  </p>
+  <p>
+    <%= f.label :parent_pid %><br />
+    <%= f.text_field :parent_pid %>
+  </p>
+  <p>
+    <%= f.label :process_file_count %><br />
+    <%= f.text_field :process_file_count %>
+  </p>
+  <p>
+    <%= f.label :process_registry_count %><br />
+    <%= f.text_field :process_registry_count %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', os_processes_path %>
