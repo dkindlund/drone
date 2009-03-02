@@ -1,0 +1,8 @@
+// Honeyclient  messages from database
+<% for m in @msgs %>
+message <%= m.message_name %>{
+<%for f in m.fields %>
+  <%= f %>;
+<% end %>
+}
+<% end %>

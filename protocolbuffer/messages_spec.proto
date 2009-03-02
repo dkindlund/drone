@@ -1,0 +1,96 @@
+// Honeyclient  messages from database
+
+message Url{
+
+  optional double time_at = 1 ;
+
+  required string url = 2 [default = ];
+
+  required uint64 priority = 3 [default = 1];
+
+  required string created_at = 4 ;
+
+  required string updated_at = 5 ;
+
+}
+
+message JobSource{
+
+  required string name = 1 [default = ];
+
+  required string protocol = 2 [default = ];
+
+}
+
+message Client{
+
+  required string quick_clone_name = 1 [default = ];
+
+  required string snapshot_name = 2 [default = ];
+
+  optional string suspended_at = 3 ;
+
+  required string created_at = 4 ;
+
+  required string updated_at = 5 ;
+
+  repeated Url urls = 6;
+
+}
+
+message Fingerprint{
+
+  required uint64 os_process_count = 1 [default = 0];
+
+  required string checksum = 2 [default = ];
+
+  repeated OsProcess os_processes = 3;
+
+}
+
+message FileContent{
+
+  required string md5 = 1 [default = ];
+
+  required string sha1 = 2 [default = ];
+
+  required uint64 size = 3 [default = 0];
+
+  required string mime_type = 4 [default = ];
+
+}
+
+message ProcessRegistry{
+
+  required string name = 1 [default = ];
+
+  required string event = 2 [default = ];
+
+  optional string value_name = 3 ;
+
+  optional string value_type = 4 ;
+
+  optional  value = 5 ;
+
+  required double time_at = 6 ;
+
+}
+
+message OsProcess{
+
+  required string name = 1 [default = ];
+
+  required uint64 pid = 2 ;
+
+  optional string parent_name = 3 ;
+
+  optional uint64 parent_pid = 4 ;
+
+  required uint64 process_file_count = 5 [default = 0];
+
+  required uint64 process_registry_count = 6 [default = 0];
+
+  repeated ProcessRegistry process_registries = 7;
+
+}
+
