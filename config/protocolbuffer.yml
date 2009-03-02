@@ -1,0 +1,17 @@
+
+# The name of the generated spec file
+output_file: "messages_spec.proto"
+
+# The list of models you'd like to
+# generate a spec for. Note: use the 
+# 'filename' of the model NOT the class name.
+models:
+- url
+- job_source
+- client
+- fingerprint
+- file_content
+- process_registry
+- os_process
+
+
