@@ -22,6 +22,7 @@
   id: 3
   quick_clone_name: 9dc1fe11ed6fdc3c819ce65483
   snapshot_name: 1080193e6d16a78faf39d8882d
+  suspended_at: <%= 1.hours.ago %>
   client_status_id: 3
   host_id: 2
   application_id: 2

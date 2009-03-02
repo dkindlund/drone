@@ -4,7 +4,7 @@ class CreateUrls < ActiveRecord::Migration
       t.decimal    :time_at,     :precision => 30, :scale => 6
       t.text       :url,         :limit => 8192,   :null => false
       t.integer    :priority,    :default => 1,    :null => false
-      t.references :client,      :null => false
+      t.references :client
       t.references :url_status,  :null => false
       t.references :fingerprint
       t.references :job,         :null => false

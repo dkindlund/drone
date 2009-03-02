@@ -7,6 +7,9 @@ class CreateUrlStatuses < ActiveRecord::Migration
       t.text :description, :null => false
     end
 
+    add_index :url_statuses, :status
+    add_index :url_statuses, [:status], :unique => true, :name => "by_unique_status"
+
     dir = File.join(File.dirname(__FILE__),"initial_data")
     Fixtures.create_fixtures(dir,"url_statuses")
   end

@@ -4,8 +4,8 @@ class CreateClients < ActiveRecord::Migration
       t.string :quick_clone_name,  :null => false
       t.string :snapshot_name,     :null => false
       t.datetime :suspended_at
-      t.references :host
-      t.references :client_status
+      t.references :host,          :null => false
+      t.references :client_status, :null => false
       t.references :os
       t.references :application
 
