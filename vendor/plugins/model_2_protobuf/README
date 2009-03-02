@@ -1,0 +1,19 @@
+model_2_protobuf
+
+Creates a protocolbuffer definition file for a given set of models.  Any models
+you'd like to include should be set in "config/protocolbuffer.yml" using the 
+file name of the model.  Only relationships to models in the configuration list
+will be included in the definition file. For example if the configured list of
+models is:
+
+- A
+- B
+
+and A contains a (has_many) relationship to C, the relationship will be ignored since
+C is not included in the list.
+
+How to use:
+
+rake protobuf:create
+
+
