@@ -1,0 +1,34 @@
+queued:
+  id: 1
+  status: queued
+  description: URL is queued for processing.
+
+visited:
+  id: 2
+  status: visited
+  description: URL was visited and contains no malicious activity.
+
+suspicious:
+  id: 3
+  status: suspicious
+  description: URL was visisted and appears to contain malicious activity.
+
+compromised:
+  id: 4
+  status: compromised
+  description: URL was visited and contains malicious activity.
+
+timed_out:
+  id: 5
+  status: timed_out
+  description: URL was not able to be visited, as the connection timed out.
+
+error:
+  id: 6
+  status: error
+  description: URL was visited, but generated an unexpected error.
+
+ignored:
+  id: 7
+  status: ignored
+  description: URL was ignored.

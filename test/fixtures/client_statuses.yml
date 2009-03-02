@@ -1,0 +1,44 @@
+created:
+  id: 1
+  status: created
+  description: VM was created, but not yet running.
+
+running:
+  id: 2
+  status: running
+  description: VM is running.
+
+suspicious:
+  id: 3
+  status: suspicious
+  description: VM is suspended and contains suspicious activity.
+
+compromised:
+  id: 4
+  status: compromised
+  description: VM is suspended and contains malicious activity.
+
+deleted:
+  id: 5
+  status: deleted
+  description: VM has been deleted.
+
+suspended:
+  id: 6
+  status: suspended
+  description: VM is suspended.
+
+false_positive:
+  id: 7
+  status: false_positive
+  description: VM is suspended and contains activity marked as a false positive.
+
+error:
+  id: 8
+  status: error
+  description: VM is suspended and contains an error.
+
+unknown:
+  id: 9
+  status: unknown
+  description: VM is suspended and contains unknown activity.
