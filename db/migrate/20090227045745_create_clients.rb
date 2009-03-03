@@ -8,6 +8,7 @@ class CreateClients < ActiveRecord::Migration
       t.references :client_status, :null => false
       t.references :os
       t.references :application
+      t.integer :url_count, :default => 0, :null => false
 
       t.timestamps :null => false
     end

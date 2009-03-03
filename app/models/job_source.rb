@@ -7,4 +7,7 @@ class JobSource < ActiveRecord::Base
   validates_length_of :protocol, :maximum => 255
   validates_uniqueness_of :name, :scope => [:protocol]
 
+  def to_label
+    "#{name}"
+  end
 end

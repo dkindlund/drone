@@ -6,4 +6,7 @@ class Configuration < ActiveRecord::Base
   validates_length_of :namespace, :maximum => 255
   validates_uniqueness_of :name, :scope => [:value, :namespace]
 
+  def to_label
+    "#{namespace}_#{name}"
+  end
 end

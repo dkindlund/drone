@@ -7,4 +7,7 @@ class ClientStatus < ActiveRecord::Base
   validates_length_of :description, :maximum => 255
   validates_uniqueness_of :status, :scope => [:status]
 
+  def to_label
+    "#{status}"
+  end
 end

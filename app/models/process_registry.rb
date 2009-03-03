@@ -9,4 +9,7 @@ class ProcessRegistry < ActiveRecord::Base
   validates_length_of :value_type, :allow_nil => true, :allow_blank => true, :maximum => 255
   validates_numericality_of :time_at, :greater_than_or_equal_to => 0
 
+  def to_label
+    "#{name}"
+  end
 end

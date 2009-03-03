@@ -50,3 +50,4 @@ ExceptionNotifier.email_prefix = "[drone] "
 
 # Specify who will receive email notifications when exceptions occur.
 ExceptionNotifier.exception_recipients = %w(darien@kindlund.com)
+

@@ -6,4 +6,7 @@ class UrlStatistic < ActiveRecord::Base
   validates_numericality_of :count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :url_status_id, :scope => [:created_at, :updated_at]
 
+  def to_label
+    "#{created_at} (#{count})"
+  end
 end

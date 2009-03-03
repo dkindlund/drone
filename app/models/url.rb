@@ -1,6 +1,6 @@
 class Url < ActiveRecord::Base
 
-  belongs_to :client
+  belongs_to :client, :counter_cache => :url_count
   belongs_to :url_status
   belongs_to :fingerprint
   belongs_to :job, :counter_cache => :url_count
@@ -10,4 +10,7 @@ class Url < ActiveRecord::Base
   validates_length_of :url, :maximum => 8192
   validates_numericality_of :priority, :greater_than_or_equal_to => 1
 
+  def to_label
+    "#{url}"
+  end
 end

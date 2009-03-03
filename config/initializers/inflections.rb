@@ -8,3 +8,8 @@
 #   inflect.irregular 'person', 'people'
 #   inflect.uncountable %w( fish sheep )
 # end
+
+# We need to make sure 'Os' is always both singular and plural.
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.irregular 'os', 'os'
+end

@@ -8,4 +8,7 @@ class Fingerprint < ActiveRecord::Base
   validates_length_of :checksum, :maximum => 255
   validates_numericality_of :os_process_count, :greater_than_or_equal_to => 0
 
+  def to_label
+    "#{checksum}"
+  end
 end

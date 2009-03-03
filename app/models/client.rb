@@ -11,6 +11,10 @@ class Client < ActiveRecord::Base
   validates_length_of :quick_clone_name, :maximum => 255
   validates_length_of :snapshot_name, :maximum => 255
   validates_length_of :snapshot_name, :maximum => 255
+  validates_numericality_of :url_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :quick_clone_name, :scope => [:snapshot_name]
 
+  def to_label
+    "#{id}"
+  end
 end

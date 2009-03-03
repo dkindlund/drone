@@ -13,4 +13,7 @@ class OsProcess < ActiveRecord::Base
   validates_numericality_of :process_file_count, :greater_than_or_equal_to => 0
   validates_numericality_of :process_registry_count, :greater_than_or_equal_to => 0
 
+  def to_label
+    "#{name}"
+  end
 end

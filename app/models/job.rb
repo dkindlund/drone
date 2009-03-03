@@ -10,4 +10,7 @@ class Job < ActiveRecord::Base
   validates_numericality_of :url_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :uuid, :scope => [:uuid]
 
+  def to_label
+    "#{uuid}"
+  end
 end

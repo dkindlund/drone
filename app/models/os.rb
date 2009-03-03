@@ -8,4 +8,7 @@ class Os < ActiveRecord::Base
   validates_length_of :short_name, :maximum => 255
   validates_uniqueness_of :short_name, :scope => [:name, :version]
 
+  def to_label
+    "#{name} #{version}"
+  end
 end
