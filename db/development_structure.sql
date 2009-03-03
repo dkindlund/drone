@@ -42,14 +42,14 @@ CREATE TABLE `configurations` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
-  `namespace` varchar(255) NOT NULL,
+  `namespace` varchar(255) default NULL,
   `description` text,
   `default_value` varchar(255) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_configurations_on_value` (`value`,`name`,`namespace`),
   KEY `index_configurations_on_name` (`name`),
   KEY `index_configurations_on_namespace` (`namespace`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `file_contents` (
   `id` int(11) NOT NULL auto_increment,

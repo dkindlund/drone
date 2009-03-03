@@ -3,7 +3,7 @@ class CreateConfigurations < ActiveRecord::Migration
     create_table :configurations do |t|
       t.string :name, :null => false
       t.string :value, :null => false
-      t.string :namespace, :null => false
+      t.string :namespace
       t.text :description
       t.string :default_value
     end
