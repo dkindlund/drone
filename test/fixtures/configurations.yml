@@ -1,17 +1,1 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-1:
-  id: 1
-  name: foo1
-  value: bar1
-  namespace: baz1
-  description: Test entry.
-  default_value: bar1
-
-2:
-  id: 2
-  name: foo2
-  value: bar2
-  namespace: baz2
-  description: Test entry.
-  default_value: bar2
+../../db/migrate/initial_data/configurations.yml

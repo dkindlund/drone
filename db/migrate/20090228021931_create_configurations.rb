@@ -11,6 +11,9 @@ class CreateConfigurations < ActiveRecord::Migration
     add_index :configurations, :name
     add_index :configurations, :namespace
     add_index :configurations, [:value, :name, :namespace], :unique => true
+
+    dir = File.join(File.dirname(__FILE__),"initial_data")
+    Fixtures.create_fixtures(dir,"configurations")
   end
 
   def self.down
