@@ -15,8 +15,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :applications
 
-  map.resources :os
-
   map.resources :process_registries
 
   map.resources :file_contents
@@ -31,23 +29,11 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :os_processes
 
-  map.resources :os_processes
-
   map.resources :fingerprints
-
-  map.resources :fingerprints
-
-  map.resources :clients
 
   map.resources :hosts
 
-  map.resources :clients
-
-  map.resources :clients
-
-  map.resources :clients
-
-  map.resources :clients
+  map.resources :clients, :active_scaffold => true
 
   # The priority is based upon order of creation: first created -> highest priority.
 
