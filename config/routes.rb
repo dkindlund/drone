@@ -1,39 +1,22 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :os
 
-  map.resources :url_statistics
-
-  map.resources :job_alerts
-
-  map.resources :job_sources
-
-  map.resources :jobs
-
-  map.resources :configurations
-
-  map.resources :urls
-
-  map.resources :applications
-
-  map.resources :process_registries
-
-  map.resources :file_contents
-
-  map.resources :url_statuses
-
-  map.resources :hosts
-
-  map.resources :client_statuses
-
-  map.resources :process_files
-
-  map.resources :os_processes
-
-  map.resources :fingerprints
-
-  map.resources :hosts
-
+  map.resources :applications, :active_scaffold => true
   map.resources :clients, :active_scaffold => true
+  map.resources :client_statuses, :active_scaffold => true
+  map.resources :configurations, :active_scaffold => true
+  map.resources :file_contents, :active_scaffold => true
+  map.resources :fingerprints, :active_scaffold => true
+  map.resources :hosts, :active_scaffold => true
+  map.resources :job_alerts, :active_scaffold => true
+  map.resources :jobs, :active_scaffold => true
+  map.resources :job_sources, :active_scaffold => true
+  map.resources :os, :active_scaffold => true
+  map.resources :os_processes, :active_scaffold => true
+  map.resources :process_files, :active_scaffold => true
+  map.resources :process_registries, :active_scaffold => true
+  map.resources :urls, :active_scaffold => true
+  map.resources :url_statistics, :active_scaffold => true
+  map.resources :url_statuses, :active_scaffold => true
 
   # The priority is based upon order of creation: first created -> highest priority.
 
