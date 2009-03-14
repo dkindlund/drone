@@ -1,12 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+ie6:
   id: 1
   manufacturer: Microsoft Corporation
   version: 6.0.290.2180
   short_name: Internet Explorer
 
-2:
+ie7:
   id: 2
   manufacturer: Microsoft Corporation
   version: 7.0.6000.16608

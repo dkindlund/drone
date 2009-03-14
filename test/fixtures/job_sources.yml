@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+http:
   id: 1
   name: Unique Source 1
   protocol: http
 
-2:
+smtp:
   id: 2
   name: Unique Source 2
   protocol: smtp

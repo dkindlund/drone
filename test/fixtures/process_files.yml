@@ -1,6 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+malware1:
   id: 1
   name: C:\WINDOWS\f52c919cb8a14f8eca774daa48e4d470.exe
   event: Write
@@ -8,7 +8,7 @@
   file_content_id: 1
   os_process_id: 1
 
-2:
+malware2:
   id: 2
   name: C:\WINDOWS\winNOFZCyliz5mmRR.exe
   event: Write

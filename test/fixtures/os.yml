@@ -1,12 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+xpsp2:
   id: 1
   name: Windows XP Service Pack 2
   version: 5.1.2600.2
   short_name: Microsoft Windows
 
-2:
+xpsp0:
   id: 2
   name: Windows XP
   version: 5.1

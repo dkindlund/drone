@@ -1,18 +1,20 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+one:
   id: 1
   uuid: 91408b2d-7b5d-e2eb-e2e7-123cf4070d93
   url_count: 1
   created_at: 2009-02-27 21:42:43
   updated_at: 2009-02-27 21:42:43
   job_source_id: 1
+  client_id: 2
 
-2:
+two:
   id: 2
   uuid: 3c70d4b6-a938-4de8-3f92-db7c7dc7fc9e
-  url_count: 1
+  url_count: 2
   created_at: 2009-02-27 21:42:43
   updated_at: 2009-02-27 21:42:43
   completed_at: 2009-02-27 21:42:43
   job_source_id: 2
+  client_id: 3

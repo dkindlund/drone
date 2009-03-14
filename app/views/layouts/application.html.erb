@@ -12,7 +12,9 @@
 
 <p style="color: green"><%= flash[:notice] %></p>
 
-<%= yield  %>
+  <% tabnav :main do %>
+    <%= yield  %>
+  <% end %>
 
 </body>
 </html>

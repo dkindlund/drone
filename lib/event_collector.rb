@@ -9,14 +9,16 @@ require 'pp'
 
 class EventCollector
 
-  # Class variables.
+  # Instance variables.
   @namespace           = nil
   @connection          = nil
   @channel             = nil
   @events_exchange     = nil
   @commands_exchange   = nil
+  @queue               = nil
 
   # Upon initialization, attempt to connect to the AMQP server.
+  # Note: This must be called inside an EM.run block.
   def _setup
     # Declare the namespace.
     @namespace = "collector"
@@ -49,31 +51,302 @@ class EventCollector
                                   :internal    => false,
                                   :nowait      => false})
   end
+  private :_setup
+
+  # Gets all nested attributes that correspond to foreign keys in this object.
+  def _get_nested_attributes(object)
+    return object.attribute_names.find_all{|name| name =~ /.*_id$/}.map!{|str| str.gsub(/_id$/, '').to_sym} +
+           object.attribute_names.find_all{|name| name =~ /.*_count$/}.map!{|str| str.gsub(/_count$/,'').pluralize.to_sym}
+  end
+  private :_get_nested_attributes
+
+  # Recursively deletes all "_id", "id", "_count", and "updated_at" keys from the specified hash table.
+  # TODO: Need to deal with other "_at" columns.
+  def _normalize(data)
+    if data.kind_of?(Hash)
+      data.delete_if{|key,value| key == "id" || key == "updated_at" || key =~ /.*_id$/ || key =~ /.*_count$/}
+      data.each_value{|value| value = _normalize(value)}
+    elsif data.kind_of?(Array)
+      data.map!{|e| e = _normalize(e)}
+    end 
+    return data
+  end
+  # TODO: Enable this.
+  #private :_normalize
+
+  # Recursively finds or creates the nested object(s), based on the specified params.
+  # Returns the nested object(s).
+  # 
+  # Corresponds to routing_key: object_name.find_or_create.*
+  # 
+  def _find_or_create(klass = nil, params = {}, args = [])
+
+    # If we're given an array, then recurse into each element.
+    #if params.kind_of?(Array)
+    #  # TODO: Fix this.
+    #  params.map!{|p| _find_or_create(klass, p, args)}
+
+    # If we're given a hash, then recurse into each value.
+    #elsif params.kind_of?(Hash)
+    if params.kind_of?(Hash)
+
+      # Recurse into each child and build out the corresponding child objects.
+      params.each do |key,value|
+
+        # Check the value.
+        if value.kind_of?(Hash)
+
+          # If the value is a hash, then the key is a singular class.
+          child_klass = key.to_s.camelize.constantize
+
+          # Update the child with the corresponding object.
+          params[key] = _find_or_create(child_klass, value, args)
+
+        elsif value.kind_of?(Array)
+
+          # If the value is an array, then the key is a plural class.
+          child_klass = key.to_s.camelize.singularize.constantize
+
+          # TODO: Fix this - is this really what we want?
+          # If we're given an array, then recurse into each element.
+          value.map!{|p| _find_or_create(child_klass, p, args)}
+
+        end
+      end
+
+      if not klass.nil?
+        # Construct the parent object.
+
+        # Search for valid attributes in params.
+        attrs = {}
+        klass.column_names.each do |attrib|
+          # Skip unknown columns, and the id field.
+          next if params[attrib].nil? || attrib == "id" 
+          attrs[attrib] = params[attrib]
+        end
+
+        params = eval(klass.to_s + ".find_or_create_by_#{attrs.keys.join('_and_')}(params)")
+
+        # If the object is still new or has changed, then force a save to generate an exception.
+        if (params.new_record? || params.changed?)
+          params.save!
+        end
+
+      end
+
+    end
+    # TODO: May want to output some sort of error message for non Hash types.
+
+    # For all other data types, just return what was given.
+    return params
+  end
+  # TODO: Enable this.
+  #private :_find_or_create
+
+  # Finds the corresponding object and updates the object, based upon the specified array of args.
+  # 
+  # Corresponds to routing_key: object_name.find_and_update.arg[0].arg[1]...
+  # 
+  def _find_and_update(klass = nil, params = {}, args = [])
+
+    # Only operate on hashes that have a single key.
+    if (params.kind_of?(Hash) && (params.keys.size == 1))
+      object_name = params.keys.first.to_s
+      klass = object_name.camelize.constantize
+     
+      # Search for valid attributes in params. 
+      attrs = {}
+      klass.column_names.each do |attrib|
+        # Skip unknown and update columns, and the id field.
+        next if params[object_name][attrib].nil? || attrib == "id" || !args.rindex(attrib.gsub('/_id$/','')).nil?
+        attrs[attrib] = params[object_name][attrib]
+      end
+
+      # XXX: We assume Hash.keys and Hash.values return the same relative data, in order.
+      object = eval(klass.to_s + ".find_by_#{attrs.keys.join('_and_')}(\"#{attrs.values.join('","')}\")")
+
+      # Sanity check: Make sure we have an object at this point.
+      if not object.kind_of?(klass)
+        # TODO: May want to output some sort of error message.
+        return params
+      end
+
+      # TODO: Delete this, eventually
+      #pp object
+
+      args.each do |update_attrib|
+        # Figure out what type of updated attribute this is.
+        if (params[object_name][update_attrib].kind_of?(Hash))
+          # If it's a hash, then we need to resolve the attribute to a corresponding object. 
+          eval("object.#{update_attrib} = _find_or_create(update_attrib.camelize.constantize, params[object_name][update_attrib], [])")
+
+        # TODO: Need to support this type - will be useful for URL updates.
+        #elsif (params[object_name][update_attrib].kind_of?(Array))
+        else
+          # For all other types, assume it's just a primitive.
+          eval("object.#{update_attrib} = params[object_name][update_attrib]")
+        end
+      end
+
+      # Update the object.
+      object.save!
+
+      # TODO: Delete this, eventually
+      #pp object
+
+      params[object_name] = object
+    end
+
+    # For all other data types, just return what was given.
+    return params
+  end
+  # TODO: Enable this.
+  #private :_find_and_update
+
+  # Creates the corresponding object and tries to reuse as many predeclared sub-objects as possible.
+  # Only attributes specified in args will be (potentially) duplicated; all other attributes will be
+  # reused.
+  # 
+  # Corresponds to routing_key: object_name.create.arg[0].arg[1]...
+  # 
+  def _create(klass = nil, params = {}, args = [])
+
+    # If we're given an array, then recurse into each element.
+    #if params.kind_of?(Array)
+    #  # TODO: Fix this.
+    #  params.map!{|p| _create(klass, p, args)}
+
+    # If we're given a hash, then recurse into each value.
+    #elsif params.kind_of?(Hash)
+    if params.kind_of?(Hash)
+
+      # Recurse into each child and build out the corresponding child objects.
+      params.each do |key,value|
+
+        # Check the value.
+        if value.kind_of?(Hash)
+
+          # If the value is a hash, then the key is a singular class.
+          child_klass = key.to_s.camelize.constantize
+
+          # Update the child with the corresponding object.
+          params[key] = _create(child_klass, value, args)
+
+        elsif value.kind_of?(Array)
+
+          # If the value is an array, then the key is a plural class.
+          child_klass = key.to_s.singularize.camelize.constantize
+
+          # TODO: Fix this - is this really what we want?
+          # If we're given an array, then recurse into each element.
+          value.map!{|p| _create(child_klass, p, args)}
+
+        end
+      end
+
+      if not klass.nil?
+        # Construct the parent object.
+
+        # Figure out if we create from scratch or if we try and reuse an identical object.
+        if (!args.rindex(klass.to_s.tableize).nil? ||
+            !args.rindex(klass.to_s.tableize.singularize).nil?)
+
+          # Create the specified params from scratch.
+          params = klass.create(params)
+
+        else
+          # Search for valid attributes in params.
+          attrs = {}
+          klass.column_names.each do |attrib|
+            # Skip unknown columns, and the id field.
+            next if params[attrib].nil? || attrib == "id" 
+            attrs[attrib] = params[attrib]
+          end
+
+          params = eval(klass.to_s + ".find_or_create_by_#{attrs.keys.join('_and_')}(params)")
+
+        end
+
+        # If the object is still new or has changed, then force a save to generate an exception.
+        if (params.new_record? || params.changed?)
+          params.save!
+        end
+      end
+    end
+    # TODO: May want to output some sort of error message for non Hash types.
+
+    # For all other data types, just return what was given.
+    return params
+
+  end
+  # TODO: Enable this.
+  #private :_create
+
+  # TODO: Process the specified event.
+  def _process_event(header, msg)
+    hash = ActiveSupport::JSON.decode(msg)
+
+    # TODO: Make sure we not removing too much information.
+    hash = _normalize(hash)
+
+    # TODO: Delete this, eventually.
+    pp hash
+
+    # Decode the key.
+    array = header.properties[:routing_key].split('.')
+    object_name = array[0]
+    action = array[1]
+    args = array.values_at(2..-1) 
+
+    pp eval("_" + action.to_s + "(nil, hash, args)")
+
+
+    #if msg.kind_of?(Array)
+    #else
+    #end
+    return hash
+  end
+  private :_process_event
+
+  # Process the specified command.
+  def _process_command(header, msg)
+    return ActiveSupport::JSON.decode(msg)
+  end
+  private :_process_command
 
   # Starts the daemon.
   def start
     EM.run do
       _setup()
 
+      RAILS_DEFAULT_LOGGER.info "Starting Event Collector Daemon [PID: " + Process.pid.to_s + "]"
+
       # Declare the queue on the channel.
-      queue = MQ::Queue.new(@channel, Configuration.get(:name => 'queue_name', :namespace => @namespace), 
-                            {:passive     => false,
-                             :durable     => true,
-                             :exclusive   => false,
-                             :auto_delete => false,
-                             :nowait      => false})
+      @queue = MQ::Queue.new(@channel, Configuration.get(:name => 'queue_name', :namespace => @namespace), 
+                             {:passive     => false,
+                              :durable     => true,
+                              :exclusive   => false,
+                              :auto_delete => false,
+                              :nowait      => false})
 
     
       # Bind the queue to the exchanges.
-      queue.bind(@events_exchange, :key => Configuration.get(:name => 'events_routing_key', :namespace => @namespace))
-      queue.bind(@commands_exchange, :key => Configuration.get(:name => 'commands_routing_key', :namespace => @namespace))
+      @queue.bind(@events_exchange, :key => Configuration.get(:name => 'events_routing_key', :namespace => @namespace))
+      @queue.bind(@commands_exchange, :key => Configuration.get(:name => 'commands_routing_key', :namespace => @namespace))
       
       # Subscribe to the messages in the queue.
-      queue.subscribe(:ack => true, :nowait => false) do |header, msg|
+      @queue.subscribe(:ack => true, :nowait => false) do |header, msg|
   
         # Process message.
+        # TODO: Delete this, eventually.
         pp [:got, header, msg]
-        pp ActiveSupport::JSON.decode(msg)
+
+        begin 
+          msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
+        rescue
+          RAILS_DEFAULT_LOGGER.warn $!.to_s
+          puts $!.to_s
+        end
  
         # ACK receipt of message.
         header.ack()
@@ -82,6 +355,8 @@ class EventCollector
         if ((header.properties[:exchange] == "commands") &&
             (header.properties[:routing_key] == "drone." + @namespace.to_s) &&
             (msg == "shutdown"))
+
+          RAILS_DEFAULT_LOGGER.info "Stopping Event Collector Daemon [PID: " + Process.pid.to_s + "]"
 
           # Close the connection.
           @connection.close{ EM.stop_event_loop }
@@ -107,14 +382,21 @@ class EventCollector
     end
   end
 
-  # Generates test messages.
-  def test
+  # Send events to the collector, in the form of one or more objects.
+  def send(routing_key, object)
     EM.run do
       _setup()
 
-      # Publish a message to the exchange.
-      string = Client.find(:first).to_json
-      @events_exchange.publish(string, {:routing_key => 'foo', :persistent => true})
+      # Publish the object(s) to the exchange.
+      if object.kind_of?(Hash)
+        @events_exchange.publish(object.to_json(), {:routing_key => routing_key.to_s, :persistent => true})
+      elsif object.kind_of?(Array)
+        object.each do |o|
+          @events_exchange.publish(o.to_json(:include => _get_nested_attributes(o)), {:routing_key => routing_key.to_s, :persistent => true})
+        end
+      else
+        @events_exchange.publish(object.to_json(:include => _get_nested_attributes(object)), {:routing_key => routing_key.to_s, :persistent => true})
+      end
 
       # Close the connection.
       @connection.close{ EM.stop_event_loop }

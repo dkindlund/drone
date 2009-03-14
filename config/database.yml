@@ -6,6 +6,7 @@ development:
   database: drone_test
   username: drone_user
   password: drone_pass
+  reconnect: true
   pool: 5
   host: 172.16.164.2
 
@@ -18,6 +19,7 @@ test:
   database: drone_test
   username: drone_user
   password: drone_pass
+  reconnect: true
   pool: 5
   host: 172.16.164.2
 
@@ -27,5 +29,6 @@ production:
   database: drone_test
   username: drone_user
   password: drone_pass
+  reconnect: true
   pool: 5
   host: 172.16.164.2

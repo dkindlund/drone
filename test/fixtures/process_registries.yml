@@ -1,6 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+malware2_1:
   id: 1
   name: HKLM\SYSTEM\ControlSet001\Control\SecurityProviders
   event: SetValueKey
@@ -10,7 +10,7 @@
   time_at: <%= Time.parse("2009-02-28 20:02:09.982").to_f %>
   os_process_id: 2
 
-2:
+malware2_2:
   id: 2
   name: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
   event: SetValueKey

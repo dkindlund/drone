@@ -1,6 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+parent:
   id: 1
   name: C:\Program Files\Internet Explorer\iexplore.exe
   pid: 4680
@@ -8,7 +8,7 @@
   process_registry_count: 0
   fingerprint_id: 1
 
-2:
+child:
   id: 2
   name: C:\WINDOWS\f52c919cb8a14f8eca774daa48e4d470.exe
   pid: 6972

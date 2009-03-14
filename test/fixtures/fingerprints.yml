@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+full:
   id: 1
   os_process_count: 1
   checksum: 4faaceeba15e72a8443a1ddeab2c70d8
 
-2:
+empty:
   id: 2
   os_process_count: 1
   checksum: c560b211a77d25139092e1373771a0b4

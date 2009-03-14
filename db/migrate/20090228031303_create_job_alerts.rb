@@ -3,7 +3,7 @@ class CreateJobAlerts < ActiveRecord::Migration
     create_table :job_alerts do |t|
       t.string :protocol, :null => false
       t.string :address, :null => false
-      t.references :job, :null => false
+      t.references :job
     end
 
     add_index :job_alerts, :job_id

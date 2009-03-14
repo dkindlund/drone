@@ -1,31 +1,28 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+google:
   id: 1
   url: http://www.google.com/
-  client_id: 2
   priority: 1
   url_status_id: 1
   created_at: <%= 3.hours.ago %> 
   updated_at: <%= 3.hours.ago %>
   job_id: 1
 
-2:
+cnn:
   id: 2
   time_at: <%= 2.hours.ago.to_f %> 
   url: http://www.cnn.com/
-  client_id: 3
   priority: 10
   url_status_id: 2
   created_at: <%= 3.hours.ago %> 
   updated_at: <%= 2.hours.ago %>
   job_id: 2
 
-3:
+yahoo:
   id: 3
   time_at: <%= 1.hour.ago.to_f %> 
   url: http://www.yahoo.com/
-  client_id: 3
   priority: 100
   url_status_id: 3
   created_at: <%= 2.hours.ago %> 

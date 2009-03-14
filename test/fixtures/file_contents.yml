@@ -1,13 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+malware1:
   id: 1
   md5: ffe09f9b2470575727ea72bcb3ebce0a
   sha1: 3de659f926da5bc37586d0d67e2e94b95a347b63
   size: 23553
   mime_type: application/x-ms-dos-executable
 
-2:
+malware2:
   id: 2
   md5: 5a36a5b78611a7cae74d864c7b7f2448
   sha1: 2530aad5a002be47d3ab2d6f25f0b2b55f33b950

@@ -1,6 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-1:
+created:
   id: 1
   quick_clone_name: 72a27486dbaa95db56eab96376
   snapshot_name: 3602ef20cbe350d436a589790c
@@ -8,9 +8,9 @@
   host_id: 1
   application_id: 1
   os_id: 1
-  url_count: 0
+  job_count: 0
 
-2:
+running:
   id: 2
   quick_clone_name: 9dc1fe11ed6fdc3c819ce65485
   snapshot_name: 1080193e6d16a78faf39d8882b
@@ -18,9 +18,9 @@
   host_id: 2
   application_id: 2
   os_id: 2
-  url_count: 1
+  job_count: 1
 
-3:
+suspicious:
   id: 3
   quick_clone_name: 9dc1fe11ed6fdc3c819ce65483
   snapshot_name: 1080193e6d16a78faf39d8882d
@@ -29,4 +29,4 @@
   host_id: 2
   application_id: 2
   os_id: 2
-  url_count: 2
+  job_count: 1
