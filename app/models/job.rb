@@ -11,7 +11,7 @@ class Job < ActiveRecord::Base
   validates_numericality_of :url_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :uuid, :scope => [:uuid]
 
-  after_create  :update_url_counter_cache
+  after_create :update_url_counter_cache
 
   def to_label
     "#{uuid}"
