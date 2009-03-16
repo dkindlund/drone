@@ -7,7 +7,7 @@ class CreateProcessRegistries < ActiveRecord::Migration
       t.string :value_type
       t.binary :value
       t.decimal :time_at, :precision => 30, :scale => 6, :null => false
-      t.references :os_process, :null => false
+      t.references :os_process
     end
 
     add_index :process_registries, :os_process_id

@@ -7,7 +7,7 @@ class CreateOsProcesses < ActiveRecord::Migration
       t.integer :parent_pid
       t.integer :process_file_count, :default => 0, :null => false
       t.integer :process_registry_count, :default => 0, :null => false
-      t.references :fingerprint, :null => false
+      t.references :fingerprint
     end
 
     add_index :os_processes, :fingerprint_id

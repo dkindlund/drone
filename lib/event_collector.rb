@@ -9,6 +9,11 @@ require 'pp'
 
 class EventCollector
 
+  # Class variables.
+  @@allowed_actions    = [ "find_or_create",
+                           "find_and_update",
+                           "create" ]
+
   # Instance variables.
   @namespace           = nil
   @connection          = nil
@@ -61,7 +66,6 @@ class EventCollector
   private :_get_nested_attributes
 
   # Recursively deletes all "_id", "id", "_count", and "updated_at" keys from the specified hash table.
-  # TODO: Need to deal with other "_at" columns.
   def _normalize(data)
     if data.kind_of?(Hash)
       data.delete_if{|key,value| key == "id" || key == "updated_at" || key =~ /.*_id$/ || key =~ /.*_count$/}
@@ -81,13 +85,7 @@ class EventCollector
   # 
   def _find_or_create(klass = nil, params = {}, args = [])
 
-    # If we're given an array, then recurse into each element.
-    #if params.kind_of?(Array)
-    #  # TODO: Fix this.
-    #  params.map!{|p| _find_or_create(klass, p, args)}
-
     # If we're given a hash, then recurse into each value.
-    #elsif params.kind_of?(Hash)
     if params.kind_of?(Hash)
 
       # Recurse into each child and build out the corresponding child objects.
@@ -153,35 +151,73 @@ class EventCollector
     if (params.kind_of?(Hash) && (params.keys.size == 1))
       object_name = params.keys.first.to_s
       klass = object_name.camelize.constantize
+
+      # Find the existing entry; use an "id" if found (from recursive calls).
+      if (params[object_name].key?("id"))
+        # TODO: Delete this, eventually.
+        puts "--- ID FOUND! = " + params[object_name]["id"].to_s
+        object = klass.find(params[object_name]["id"].to_i)
+      else
      
-      # Search for valid attributes in params. 
-      attrs = {}
-      klass.column_names.each do |attrib|
-        # Skip unknown and update columns, and the id field.
-        next if params[object_name][attrib].nil? || attrib == "id" || !args.rindex(attrib.gsub('/_id$/','')).nil?
-        attrs[attrib] = params[object_name][attrib]
-      end
+        # Search for valid attributes in params. 
+        attrs = {}
+        klass.column_names.each do |attrib|
+          # Skip unknown and update columns, and the id field.
+          next if params[object_name][attrib].nil? || attrib == "id" || !args.rindex(attrib.gsub('/_id$/','')).nil?
+          attrs[attrib] = params[object_name][attrib]
+        end
 
-      # XXX: We assume Hash.keys and Hash.values return the same relative data, in order.
-      object = eval(klass.to_s + ".find_by_#{attrs.keys.join('_and_')}(\"#{attrs.values.join('","')}\")")
+        # XXX: We assume Hash.keys and Hash.values return the same relative data, in order.
+        object = eval(klass.to_s + ".find_by_#{attrs.keys.join('_and_')}(\"#{attrs.values.join('","')}\")")
 
-      # Sanity check: Make sure we have an object at this point.
-      if not object.kind_of?(klass)
-        # TODO: May want to output some sort of error message.
-        return params
+        # Sanity check: Make sure we have an object at this point.
+        if not object.kind_of?(klass)
+          # TODO: May want to output some sort of error message.
+          return params
+        end
+
       end
 
       # TODO: Delete this, eventually
       #pp object
 
       args.each do |update_attrib|
+
+        # Skip any undefined attributes.
+        next if !params[object_name].key?(update_attrib)
+
         # Figure out what type of updated attribute this is.
         if (params[object_name][update_attrib].kind_of?(Hash))
           # If it's a hash, then we need to resolve the attribute to a corresponding object. 
           eval("object.#{update_attrib} = _find_or_create(update_attrib.camelize.constantize, params[object_name][update_attrib], [])")
 
-        # TODO: Need to support this type - will be useful for URL updates.
-        #elsif (params[object_name][update_attrib].kind_of?(Array))
+        elsif (params[object_name][update_attrib].kind_of?(Array))
+
+          # Iterate through each entry in the array.
+          array = eval("object.#{update_attrib}")
+          array.each do |entry|
+            params[object_name][update_attrib].each do |update_hash|
+
+              # Make sure the update entry is a hash.
+              next if !update_hash.kind_of?(Hash)
+
+              # Find the existing entry.
+              # Obtain only the update hash entries that we're searching on.
+              filter_array = update_hash.clone.delete_if{|key,value| !args.rindex(key).nil?}.to_a
+
+              # Figure out if our entry contains all the matching attributes.
+              match = entry.attributes.to_a & filter_array
+
+              # If the intersection size is the same, then we assume this entry is our match.
+              if (filter_array.size == match.size)
+                update_hash["id"] = entry.id
+                # Update the existing entry.
+                _find_and_update(nil, {update_attrib.singularize => update_hash}, args)
+                entry.reload
+              end
+            end
+          end
+
         else
           # For all other types, assume it's just a primitive.
           eval("object.#{update_attrib} = params[object_name][update_attrib]")
@@ -196,6 +232,7 @@ class EventCollector
 
       params[object_name] = object
     end
+    # TODO: May want to output some sort of error message for non Hash types.
 
     # For all other data types, just return what was given.
     return params
@@ -211,13 +248,7 @@ class EventCollector
   # 
   def _create(klass = nil, params = {}, args = [])
 
-    # If we're given an array, then recurse into each element.
-    #if params.kind_of?(Array)
-    #  # TODO: Fix this.
-    #  params.map!{|p| _create(klass, p, args)}
-
     # If we're given a hash, then recurse into each value.
-    #elsif params.kind_of?(Hash)
     if params.kind_of?(Hash)
 
       # Recurse into each child and build out the corresponding child objects.
@@ -282,9 +313,14 @@ class EventCollector
   # TODO: Enable this.
   #private :_create
 
-  # TODO: Process the specified event.
+  # Process the specified event.
   def _process_event(header, msg)
     hash = ActiveSupport::JSON.decode(msg)
+
+    # Sanity check the message.
+    if not hash.kind_of?(Hash)
+      raise "Invalid message type: " + hash.class.to_s
+    end
 
     # TODO: Make sure we not removing too much information.
     hash = _normalize(hash)
@@ -296,14 +332,15 @@ class EventCollector
     array = header.properties[:routing_key].split('.')
     object_name = array[0]
     action = array[1]
-    args = array.values_at(2..-1) 
 
+    # Sanity check the action.
+    if (@@allowed_actions.rindex(action).nil?)
+      raise "Invalid action: " + action.to_s
+    end
+
+    args = array.values_at(2..-1) 
     pp eval("_" + action.to_s + "(nil, hash, args)")
 
-
-    #if msg.kind_of?(Array)
-    #else
-    #end
     return hash
   end
   private :_process_event
