@@ -16,12 +16,15 @@ class EventCollector
 
   # Instance variables.
   @namespace           = nil
+
+  # XXX: Possible deprecations.
   @connection          = nil
   @channel             = nil
   @events_exchange     = nil
   @commands_exchange   = nil
   @queue               = nil
 
+  # XXX: Possible deprecation.
   # Upon initialization, attempt to connect to the AMQP server.
   # Note: This must be called inside an EM.run block.
   def _setup
@@ -34,6 +37,9 @@ class EventCollector
                                :pass    => Configuration.get(:name => 'amqp.password',     :namespace => @namespace),
                                :vhost   => Configuration.get(:name => 'amqp.virtual_host', :namespace => @namespace),
                                :logging => false)
+
+# TODO: Delete this.
+puts "Opening a new connection..."
   
     # Open a channel on the AMQP connection.
     @channel = MQ.new(@connection)
@@ -326,6 +332,7 @@ class EventCollector
     hash = _normalize(hash)
 
     # TODO: Delete this, eventually.
+    puts "Input:"
     pp hash
 
     # Decode the key.
@@ -339,7 +346,11 @@ class EventCollector
     end
 
     args = array.values_at(2..-1) 
-    pp eval("_" + action.to_s + "(nil, hash, args)")
+    eval("_" + action.to_s + "(nil, hash, args)")
+
+    # TODO: Delete this, eventually.
+    puts "Output:"
+    pp hash
 
     return hash
   end
@@ -351,6 +362,7 @@ class EventCollector
   end
   private :_process_command
 
+  # XXX: Possible deprecation.
   # Starts the daemon.
   def start
     EM.run do
@@ -396,7 +408,12 @@ class EventCollector
           RAILS_DEFAULT_LOGGER.info "Stopping Event Collector Daemon [PID: " + Process.pid.to_s + "]"
 
           # Close the connection.
-          @connection.close{ EM.stop_event_loop }
+          #@connection.close{ EM.stop_event_loop }
+          #@connection.close{ EM.stop }
+          #AMQP.stop { @connection.close; EM.stop }
+#puts "Sleeping 10s..."
+#sleep 10
+          EM.next_tick { @connection.close{ EM.stop_event_loop } }
         end
   
       end
@@ -404,6 +421,7 @@ class EventCollector
     end
   end
 
+  # XXX: Possible deprecation.
   # Stops the daemon.
   def stop
     EM.run do
@@ -414,11 +432,16 @@ class EventCollector
       @commands_exchange.publish(message, {:routing_key => 'drone.' + @namespace.to_s, :persistent => true})
 
       # Close the connection.
-      @connection.close{ EM.stop_event_loop }
+      #@connection.close{ EM.stop_event_loop }
+      #@connection.close{ EM.stop }
+      #AMQP.stop { @connection.close; EM.stop }
+      #@connection.close{ AMQP.stop; EM.stop_event_loop }
+      EM.next_tick { @connection.close{ EM.stop_event_loop } }
   
     end
   end
 
+  # XXX: Possible deprecation.
   # Send events to the collector, in the form of one or more objects.
   def send(routing_key, object)
     EM.run do
@@ -436,10 +459,28 @@ class EventCollector
       end
 
       # Close the connection.
-      @connection.close{ EM.stop_event_loop }
-  
+      #@connection.close{ EM.stop_event_loop }
+      #@connection.close{ EM.stop }
+      #AMQP.stop { @connection.close; EM.stop }
+      #@connection.close{ AMQP.stop; EM.stop_event_loop }
+      EM.next_tick { @connection.close{ EM.stop_event_loop } }
     end
   end
 
+  class TestHeader
+    attr_accessor :properties
+  end
+
+  # Pretend to send the events to the collector (for integration testing).
+  def test_send_event(routing_key, object)
+    if object.kind_of?(Hash)
+      message = object.to_json()
+      header = TestHeader.new
+      header.properties = {
+        :routing_key => routing_key
+      }
+      return _process_event(header, message)
+    end
+  end
 end
 

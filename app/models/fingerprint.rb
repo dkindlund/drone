@@ -31,7 +31,6 @@ class Fingerprint < ActiveRecord::Base
   def increment_dst_os_process_counter_cache(os_process = nil)
     if not self.new_record?
       Fingerprint.increment_counter(:os_process_count, self.id)
-      self.reload
     end
   end
 
@@ -39,7 +38,6 @@ class Fingerprint < ActiveRecord::Base
   def decrement_os_process_counter_cache(os_process = nil)
     if not self.new_record?
       Fingerprint.decrement_counter(:os_process_count, self.id)
-      self.reload
     end
   end
 
@@ -48,6 +46,5 @@ class Fingerprint < ActiveRecord::Base
     self.os_process_count.upto(self.os_processes.size - 1) do
       Fingerprint.increment_counter(:os_process_count, self.id)
     end
-    self.reload
   end
 end

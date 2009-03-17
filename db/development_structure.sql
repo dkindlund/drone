@@ -5,7 +5,7 @@ CREATE TABLE `applications` (
   `short_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_applications_on_manufacturer` (`manufacturer`,`version`,`short_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `client_statuses` (
   `id` int(11) NOT NULL auto_increment,
@@ -13,7 +13,7 @@ CREATE TABLE `client_statuses` (
   `description` text NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_client_statuses_on_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clients` (
   `id` int(11) NOT NULL auto_increment,
@@ -36,7 +36,7 @@ CREATE TABLE `clients` (
   KEY `index_clients_on_created_at` (`created_at`),
   KEY `index_clients_on_updated_at` (`updated_at`),
   KEY `index_clients_on_suspended_at` (`suspended_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `configurations` (
   `id` int(11) NOT NULL auto_increment,
@@ -49,7 +49,7 @@ CREATE TABLE `configurations` (
   UNIQUE KEY `index_configurations_on_value` (`value`,`name`,`namespace`),
   KEY `index_configurations_on_name` (`name`),
   KEY `index_configurations_on_namespace` (`namespace`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `file_contents` (
   `id` int(11) NOT NULL auto_increment,
@@ -62,7 +62,7 @@ CREATE TABLE `file_contents` (
   KEY `index_file_contents_on_md5` (`md5`),
   KEY `index_file_contents_on_sha1` (`sha1`),
   KEY `index_file_contents_on_mime_type` (`mime_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `fingerprints` (
   `id` int(11) NOT NULL auto_increment,
@@ -70,7 +70,7 @@ CREATE TABLE `fingerprints` (
   `checksum` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `index_fingerprints_on_checksum` (`checksum`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `hosts` (
   `id` int(11) NOT NULL auto_increment,
@@ -80,7 +80,7 @@ CREATE TABLE `hosts` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_hosts_on_ip` (`ip`,`hostname`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `job_alerts` (
   `id` int(11) NOT NULL auto_increment,
@@ -89,7 +89,7 @@ CREATE TABLE `job_alerts` (
   `job_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `index_job_alerts_on_job_id` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `job_sources` (
   `id` int(11) NOT NULL auto_increment,
@@ -99,7 +99,7 @@ CREATE TABLE `job_sources` (
   UNIQUE KEY `by_unique_name_and_protocol` (`name`,`protocol`),
   KEY `index_job_sources_on_name` (`name`),
   KEY `index_job_sources_on_protocol` (`protocol`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `jobs` (
   `id` int(11) NOT NULL auto_increment,
@@ -117,7 +117,7 @@ CREATE TABLE `jobs` (
   KEY `index_jobs_on_created_at` (`created_at`),
   KEY `index_jobs_on_job_source_id` (`job_source_id`),
   KEY `index_jobs_on_client_id` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `os` (
   `id` int(11) NOT NULL auto_increment,
@@ -126,7 +126,7 @@ CREATE TABLE `os` (
   `short_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_os_on_name` (`name`,`version`,`short_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `os_processes` (
   `id` int(11) NOT NULL auto_increment,
@@ -141,7 +141,7 @@ CREATE TABLE `os_processes` (
   KEY `index_os_processes_on_fingerprint_id` (`fingerprint_id`),
   KEY `index_os_processes_on_namenamelength1024` (`name`(255)),
   KEY `index_os_processes_on_nameparent_namelength1024` (`parent_name`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_files` (
   `id` int(11) NOT NULL auto_increment,
@@ -154,7 +154,7 @@ CREATE TABLE `process_files` (
   KEY `index_process_files_on_file_content_id` (`file_content_id`),
   KEY `index_process_files_on_os_process_id` (`os_process_id`),
   KEY `index_process_files_on_namenamelength1024` (`name`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_registries` (
   `id` int(11) NOT NULL auto_increment,
@@ -168,7 +168,7 @@ CREATE TABLE `process_registries` (
   PRIMARY KEY  (`id`),
   KEY `index_process_registries_on_os_process_id` (`os_process_id`),
   KEY `index_process_registries_on_namenamelength1024` (`name`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
@@ -187,7 +187,7 @@ CREATE TABLE `url_statistics` (
   KEY `index_url_statistics_on_updated_at` (`updated_at`),
   KEY `index_url_statistics_on_url_status_id` (`url_status_id`),
   KEY `index_url_statistics_on_count` (`count`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `url_statuses` (
   `id` int(11) NOT NULL auto_increment,
@@ -196,7 +196,7 @@ CREATE TABLE `url_statuses` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `by_unique_status` (`status`),
   KEY `index_url_statuses_on_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `urls` (
   `id` int(11) NOT NULL auto_increment,
@@ -216,7 +216,7 @@ CREATE TABLE `urls` (
   KEY `index_urls_on_job_id` (`job_id`),
   KEY `index_urls_on_priority` (`priority`),
   KEY `index_urls_on_nameurllength1024` (`url`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8;
 
 INSERT INTO schema_migrations (version) VALUES ('20090227045745');
 

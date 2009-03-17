@@ -34,7 +34,6 @@ class Job < ActiveRecord::Base
   def increment_dst_url_counter_cache(url = nil)
     if not self.new_record?
       Job.increment_counter(:url_count, self.id)
-      self.reload
     end
   end
 
@@ -42,7 +41,6 @@ class Job < ActiveRecord::Base
   def decrement_url_counter_cache(url = nil)
     if not self.new_record?
       Job.decrement_counter(:url_count, self.id)
-      self.reload
     end
   end
 
@@ -51,6 +49,5 @@ class Job < ActiveRecord::Base
     self.url_count.upto(self.urls.size - 1) do
       Job.increment_counter(:url_count, self.id)
     end
-    self.reload
   end
 end

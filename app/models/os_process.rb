@@ -36,7 +36,6 @@ class OsProcess < ActiveRecord::Base
   def increment_dst_process_file_counter_cache(process_file = nil)
     if not self.new_record?
       OsProcess.increment_counter(:process_file_count, self.id)
-      self.reload
     end
   end
 
@@ -44,7 +43,6 @@ class OsProcess < ActiveRecord::Base
   def decrement_process_file_counter_cache(process_file = nil)
     if not self.new_record?
       OsProcess.decrement_counter(:process_file_count, self.id)
-      self.reload
     end
   end
 
@@ -53,7 +51,6 @@ class OsProcess < ActiveRecord::Base
     self.process_file_count.upto(self.process_files.size - 1) do
       OsProcess.increment_counter(:process_file_count, self.id)
     end
-    self.reload
   end
 
   # Before self.process_registries is added, then make sure the source process_registry.os_process.process_registry_count
@@ -68,7 +65,6 @@ class OsProcess < ActiveRecord::Base
   def increment_dst_process_registry_counter_cache(process_registry = nil)
     if not self.new_record?
       OsProcess.increment_counter(:process_registry_count, self.id)
-      self.reload
     end
   end
 
@@ -76,7 +72,6 @@ class OsProcess < ActiveRecord::Base
   def decrement_process_registry_counter_cache(process_registry = nil)
     if not self.new_record?
       OsProcess.decrement_counter(:process_registry_count, self.id)
-      self.reload
     end
   end
 
@@ -85,6 +80,5 @@ class OsProcess < ActiveRecord::Base
     self.process_registry_count.upto(self.process_registries.size - 1) do
       OsProcess.increment_counter(:process_registry_count, self.id)
     end
-    self.reload
   end
 end
