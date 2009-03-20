@@ -1,6 +1,6 @@
 class ProcessRegistry < ActiveRecord::Base
 
-  belongs_to :os_process, :counter_cache => :process_registry_count
+  belongs_to :os_process #, :counter_cache => :process_registry_count
 
   validates_presence_of :name, :event, :time_at
   validates_length_of :name, :maximum => 8192

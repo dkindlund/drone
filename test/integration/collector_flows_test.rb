@@ -99,6 +99,7 @@ class CollectorFlowsTest < ActionController::IntegrationTest
 
     # Simulate a new job getting created.
     job_uuid = Guid.new.to_s
+    time_at  = Time.now.utc
     job = {"job"             =>
             {"job_source"    =>
               {"name"        => "proxy.foo.com",
@@ -116,6 +117,7 @@ class CollectorFlowsTest < ActionController::IntegrationTest
                {"priority"   => 100,
                 "url"        => "http://www.foo.com/",
                 "url_status" => {"status" => "queued"}}],
+             "created_at"    => time_at.iso8601.to_s,
              "uuid"          => job_uuid}}
 
     # Specify that we want to create a new job and don't try
@@ -130,6 +132,7 @@ class CollectorFlowsTest < ActionController::IntegrationTest
     assert        !result["job"].new_record?, "Job record not saved"
     assert_equal   result["job"].uuid, job_uuid, "Invalid job.uuid"
     assert_nil     result["job"].completed_at, "Invalid job.completed_at"
+    assert_equal   Time.parse(result["job"].created_at.to_s).to_s, time_at.to_s, "Invalid job.created_at"
 
     assert         result["job"].job_source.valid?, "JobSource record not valid"
     assert        !result["job"].job_source.new_record?, "JobSource record not saved"

@@ -1,40 +1,54 @@
-// Honeyclient  messages from database
+// Event Messages
 
-message Url{
+message Application{
 
-  optional double time_at = 1 ;
+  required string manufacturer = 1 ;
 
-  required string url = 2 [default = ];
+  required string version = 2 ;
 
-  required uint64 priority = 3 [default = 1];
-
-  required string created_at = 4 ;
-
-  required string updated_at = 5 ;
-
-}
-
-message JobSource{
-
-  required string name = 1 [default = ];
-
-  required string protocol = 2 [default = ];
+  required string short_name = 3 ;
 
 }
 
 message Client{
 
-  required string quick_clone_name = 1 [default = ];
+  required string quick_clone_name = 1 ;
 
-  required string snapshot_name = 2 [default = ];
+  required string snapshot_name = 2 ;
 
   optional string suspended_at = 3 ;
 
-  required string created_at = 4 ;
+  required uint64 job_count = 4 [default = 0];
 
-  required string updated_at = 5 ;
+  required string created_at = 5 ;
 
-  repeated Url urls = 6;
+  required string updated_at = 6 ;
+
+  repeated Job jobs = 7;
+
+}
+
+message ClientStatus{
+
+  required string status = 1 ;
+
+  required string description = 2 [default = ];
+
+  repeated Client clients = 3;
+
+}
+
+message FileContent{
+
+  required string md5 = 1 ;
+
+  required string sha1 = 2 ;
+
+  required uint64 size = 3 [default = 0];
+
+  required string mime_type = 4 ;
+
+  repeated ProcessFile process_files = 5;
 
 }
 
@@ -42,37 +56,59 @@ message Fingerprint{
 
   required uint64 os_process_count = 1 [default = 0];
 
-  required string checksum = 2 [default = ];
+  required string checksum = 2 ;
 
   repeated OsProcess os_processes = 3;
 
 }
 
-message FileContent{
+message Host{
 
-  required string md5 = 1 [default = ];
+  required string hostname = 1 ;
 
-  required string sha1 = 2 [default = ];
+  required string ip = 2 ;
 
-  required uint64 size = 3 [default = 0];
+  required string created_at = 3 ;
 
-  required string mime_type = 4 [default = ];
+  required string updated_at = 4 ;
+
+  repeated Client clients = 5;
 
 }
 
-message ProcessRegistry{
+message JobAlert{
 
-  required string name = 1 [default = ];
+  required string protocol = 1 ;
 
-  required string event = 2 [default = ];
+  required string address = 2 ;
 
-  optional string value_name = 3 ;
+}
 
-  optional string value_type = 4 ;
+message Job{
 
-  optional  value = 5 ;
+  required string uuid = 1 ;
 
-  required double time_at = 6 ;
+  required uint64 url_count = 2 [default = 0];
+
+  optional string completed_at = 3 ;
+
+  required string created_at = 4 ;
+
+  required string updated_at = 5 ;
+
+  repeated Url urls = 6;
+
+  repeated JobAlert job_alerts = 7;
+
+}
+
+message JobSource{
+
+  required string name = 1 ;
+
+  required string protocol = 2 ;
+
+  repeated Job jobs = 3;
 
 }
 
@@ -90,7 +126,71 @@ message OsProcess{
 
   required uint64 process_registry_count = 6 [default = 0];
 
-  repeated ProcessRegistry process_registries = 7;
+  repeated ProcessFile process_files = 7;
+
+  repeated ProcessRegistry process_registries = 8;
+
+}
+
+message Os{
+
+  required string name = 1 ;
+
+  required string version = 2 ;
+
+  required string short_name = 3 ;
+
+  repeated Client clients = 4;
+
+}
+
+message ProcessFile{
+
+  required string name = 1 [default = ];
+
+  required string event = 2 ;
+
+  required double time_at = 3 ;
+
+}
+
+message ProcessRegistry{
+
+  required string name = 1 [default = ];
+
+  required string event = 2 ;
+
+  optional string value_name = 3 ;
+
+  optional string value_type = 4 ;
+
+  optional  value = 5 ;
+
+  required double time_at = 6 ;
+
+}
+
+message Url{
+
+  optional double time_at = 1 ;
+
+  required string url = 2 [default = ];
+
+  required uint64 priority = 3 [default = 1];
+
+  required string created_at = 4 ;
+
+  required string updated_at = 5 ;
+
+}
+
+message UrlStatus{
+
+  required string status = 1 ;
+
+  required string description = 2 [default = ];
+
+  repeated Url urls = 3;
 
 }
 

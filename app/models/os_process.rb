@@ -1,6 +1,6 @@
 class OsProcess < ActiveRecord::Base
 
-  belongs_to :fingerprint, :counter_cache => :os_process_count
+  belongs_to :fingerprint #, :counter_cache => :os_process_count
   has_many :process_files, :before_add => :decrement_src_process_file_counter_cache, :after_add => :increment_dst_process_file_counter_cache, :after_remove => :decrement_process_file_counter_cache
   has_many :process_registries, :before_add => :decrement_src_process_registry_counter_cache, :after_add => :increment_dst_process_registry_counter_cache, :after_remove => :decrement_process_registry_counter_cache
 

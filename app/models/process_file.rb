@@ -1,6 +1,6 @@
 class ProcessFile < ActiveRecord::Base
 
-  belongs_to :os_process, :counter_cache => :process_file_count
+  belongs_to :os_process #, :counter_cache => :process_file_count
   belongs_to :file_content
 
   validates_presence_of :name, :event, :time_at

@@ -6,12 +6,18 @@ output_file: "messages_spec.proto"
 # generate a spec for. Note: use the 
 # 'filename' of the model NOT the class name.
 models:
-- url
-- job_source
+- application
 - client
-- fingerprint
+- client_status
 - file_content
-- process_registry
+- fingerprint
+- host
+- job_alert
+- job
+- job_source
 - os_process
-
-
+- os
+- process_file
+- process_registry
+- url
+- url_status
