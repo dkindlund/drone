@@ -3,6 +3,7 @@ class Url < ActiveRecord::Base
   belongs_to :url_status
   belongs_to :fingerprint
   belongs_to :job, :counter_cache => :url_count
+  belongs_to :client
 
   validates_presence_of :url, :priority, :url_status
   validates_associated :url_status, :fingerprint

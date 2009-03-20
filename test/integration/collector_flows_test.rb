@@ -191,30 +191,38 @@ class CollectorFlowsTest < ActionController::IntegrationTest
 
     # Simulate client visiting URLs in job.
     time_at = Time.now.utc
-    job = {"job"             =>
-            {"uuid"          => job_uuid,
-             "urls"          =>
-              [{"time_at"    => time_at.to_f,
-                "url"        => "http://www.foo.com/",
-                "url_status" => {"status" => "visited"}},
-               {"time_at"    => time_at.to_f,
-                "url"        => "http://www.baz.com/",
-                "url_status" => {"status" => "timed_out"}}]}}
+    job = {"job"                     =>
+            {"uuid"                  => job_uuid,
+             "urls"                  =>
+              [{"time_at"            => time_at.to_f,
+                "url"                => "http://www.foo.com/",
+                "client"             =>
+                 {"quick_clone_name" => quick_clone_name,
+                  "snapshot_name"    => snapshot_name},
+                "url_status"         => {"status" => "visited"}},
+               {"time_at"            => time_at.to_f,
+                "url"                => "http://www.baz.com/",
+                "client"             =>
+                 {"quick_clone_name" => quick_clone_name,
+                  "snapshot_name"    => snapshot_name},
+                "url_status"         => {"status" => "timed_out"}}]}}
 
     # Specify that we want to update an existing job and specifically
     # just update: urls array of sub-hashes.
     assert_nothing_raised do
-      result = collector.test_send_event('job.find_and_update.urls.url_status.time_at', job)
+      result = collector.test_send_event('job.find_and_update.urls.url_status.time_at.client', job)
     end
 
     # Sanity check the output.
     assert_equal   result["job"].id, job_id, "Invalid job"
+    assert_equal   result["job"].urls[1].client_id, client_id, "Invalid job.urls[1].client"
     assert_equal   result["job"].urls[1].url, "http://www.baz.com/", "Invalid job.urls[1].url"
     assert_equal   Time.at(result["job"].urls[1].time_at.to_f).utc.to_s, time_at.to_s, "Invalid job.urls[1].time_at"
     assert         result["job"].urls[1].url_status.valid?, "UrlStatus record not valid"
     assert        !result["job"].urls[1].url_status.new_record?, "UrlStatus record not saved"
     assert_equal   result["job"].urls[1].url_status.status, "timed_out", "Invalid job.urls[1].url_status.status"
     
+    assert_equal   result["job"].urls[2].client_id, client_id, "Invalid job.urls[2].client"
     assert_equal   result["job"].urls[2].url, "http://www.foo.com/", "Invalid job.urls[2].url"
     assert_equal   Time.at(result["job"].urls[2].time_at.to_f).utc.to_s, time_at.to_s, "Invalid job.urls[2].time_at"
     assert         result["job"].urls[2].url_status.valid?, "UrlStatus record not valid"
@@ -223,22 +231,26 @@ class CollectorFlowsTest < ActionController::IntegrationTest
 
     # Simulate client encountering a suspicious URL in a job.
     time_at = Time.now.utc
-    job = {"job"             =>
-            {"uuid"          => job_uuid,
-             "completed_at"  => time_at.iso8601.to_s,
-             "urls"          =>
-              [{"time_at"    => time_at.to_f,
-                "url"        => "http://www.bar.com/",
-                "url_status" => {"status" => "suspicious"}}]}}
+    job = {"job"                     =>
+            {"uuid"                  => job_uuid,
+             "completed_at"          => time_at.iso8601.to_s,
+             "urls"                  =>
+              [{"time_at"            => time_at.to_f,
+                "url"                => "http://www.bar.com/",
+                "client"             =>
+                 {"quick_clone_name" => quick_clone_name,
+                  "snapshot_name"    => snapshot_name},
+                "url_status"         => {"status" => "suspicious"}}]}}
     # Specify that we want to update an existing job and specifically
     # just update: urls array of sub-hashes.
     assert_nothing_raised do
-      result = collector.test_send_event('job.find_and_update.completed_at.urls.url_status.time_at', job)
+      result = collector.test_send_event('job.find_and_update.completed_at.urls.url_status.time_at.client', job)
     end
 
     # Sanity check the output.
     assert_equal   result["job"].id, job_id, "Invalid job"
     assert_equal   Time.parse(result["job"].completed_at.to_s).to_s, time_at.to_s, "Invalid job.created_at"
+    assert_equal   result["job"].urls[0].client_id, client_id, "Invalid job.urls[0].client"
     assert_equal   result["job"].urls[0].url, "http://www.bar.com/", "Invalid job.urls[0].url"
     assert_equal   Time.at(result["job"].urls[0].time_at.to_f).utc.to_s, time_at.to_s, "Invalid job.urls[0].time_at"
     assert         result["job"].urls[0].url_status.valid?, "UrlStatus record not valid"

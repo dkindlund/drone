@@ -18,6 +18,7 @@ cnn:
   created_at: <%= 3.hours.ago %> 
   updated_at: <%= 2.hours.ago %>
   job_id: 2
+  client_id: 3
 
 yahoo:
   id: 3
@@ -29,3 +30,4 @@ yahoo:
   updated_at: <%= 1.hours.ago %>
   fingerprint_id: 1
   job_id: 2
+  client_id: 3

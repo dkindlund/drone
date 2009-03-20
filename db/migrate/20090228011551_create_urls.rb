@@ -9,6 +9,7 @@ class CreateUrls < ActiveRecord::Migration
       t.references :url_status,  :default => 1,    :null => false
       t.references :fingerprint
       t.references :job
+      t.references :client
 
       t.timestamps :null => false
     end
