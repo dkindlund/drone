@@ -56,7 +56,7 @@ message Fingerprint{
 
   required uint64 os_process_count = 1 [default = 0];
 
-  required string checksum = 2 ;
+  optional string checksum = 2 ;
 
   repeated OsProcess os_processes = 3;
 

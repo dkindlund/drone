@@ -25,5 +25,9 @@ class ClientsController < ApplicationController
     config.columns[:created_at].label = "Created"
     config.columns[:suspended_at].label = "Suspended"
     config.columns[:os].label = "OS"
+
+    # Make sure the client_status column is searchable.
+    config.columns[:client_status].search_sql = 'client_statuses.status'
+    config.search.columns << :client_status
   end
 end

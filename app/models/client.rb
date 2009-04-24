@@ -1,6 +1,6 @@
 class Client < ActiveRecord::Base
 
-  default_scope :order => 'suspended_at DESC, updated_at DESC'
+  default_scope :order => 'clients.suspended_at DESC, clients.updated_at DESC'
   named_scope :bad,  :conditions => { :client_status_id => [3,4] }
   # TODO: May need to update this scope.
   named_scope :good, :conditions => { :client_status_id => [1,2] }
