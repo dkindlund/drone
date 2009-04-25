@@ -38,9 +38,6 @@ class EventCollector
                                :vhost   => Configuration.get(:name => 'amqp.virtual_host', :namespace => @namespace),
                                :logging => false)
 
-# TODO: Delete this.
-puts "Opening a new connection..."
-  
     # Open a channel on the AMQP connection.
     @channel = MQ.new(@connection)
 
@@ -432,12 +429,7 @@ puts "Opening a new connection..."
       @commands_exchange.publish(message, {:routing_key => 'drone.' + @namespace.to_s, :persistent => true})
 
       # Close the connection.
-      #@connection.close{ EM.stop_event_loop }
-      #@connection.close{ EM.stop }
-      #AMQP.stop { @connection.close; EM.stop }
-      #@connection.close{ AMQP.stop; EM.stop_event_loop }
-      EM.next_tick { @connection.close{ EM.stop_event_loop } }
-  
+      @connection.close{ EM.stop }
     end
   end
 
@@ -459,11 +451,7 @@ puts "Opening a new connection..."
       end
 
       # Close the connection.
-      #@connection.close{ EM.stop_event_loop }
-      #@connection.close{ EM.stop }
-      #AMQP.stop { @connection.close; EM.stop }
-      #@connection.close{ AMQP.stop; EM.stop_event_loop }
-      EM.next_tick { @connection.close{ EM.stop_event_loop } }
+      @connection.close{ EM.stop }
     end
   end
 
