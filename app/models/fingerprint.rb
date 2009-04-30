@@ -1,6 +1,7 @@
 require 'md5'
 
 class Fingerprint < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_one :url
   has_many :os_processes, :order => 'pid ASC', :before_add => :decrement_src_os_process_counter_cache, :after_add => :increment_dst_os_process_counter_cache, :after_remove => :decrement_os_process_counter_cache

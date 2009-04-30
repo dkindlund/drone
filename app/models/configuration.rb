@@ -1,4 +1,5 @@
 class Configuration < ActiveRecord::Base
+  include AuthorizationHelper
 
   validates_presence_of :name, :value, :namespace
   validates_length_of :name, :maximum => 255

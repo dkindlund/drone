@@ -41,6 +41,11 @@ Rails::Initializer.run do |config|
   # Preserve MySQL specific indexing in the generated schema.
   config.active_record.schema_format = :sql
 
+  # Force all environments to use the same logger level
+  # (by default production uses :info, the others :debug)
+  # TODO: Change this back to :info, eventually.
+  config.log_level = :debug
+
   # Configure the default logger.
   # config.logger = Logger.new
 

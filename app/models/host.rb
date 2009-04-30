@@ -1,4 +1,5 @@
 class Host < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :clients
 

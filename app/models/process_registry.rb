@@ -1,4 +1,5 @@
 class ProcessRegistry < ActiveRecord::Base
+  include AuthorizationHelper
 
   belongs_to :os_process #, :counter_cache => :process_registry_count
 

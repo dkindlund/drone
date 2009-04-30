@@ -1,4 +1,5 @@
 class Client < ActiveRecord::Base
+  include AuthorizationHelper
 
   default_scope :order => 'clients.suspended_at DESC, clients.updated_at DESC'
   named_scope :bad,  :conditions => { :client_status_id => [3,4] }

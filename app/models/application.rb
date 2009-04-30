@@ -1,4 +1,5 @@
 class Application < ActiveRecord::Base
+  include AuthorizationHelper
 
   validates_presence_of :manufacturer, :version, :short_name
   validates_length_of :manufacturer, :maximum => 255

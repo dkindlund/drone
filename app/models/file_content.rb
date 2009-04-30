@@ -1,4 +1,5 @@
 class FileContent < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :process_files
 

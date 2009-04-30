@@ -1,4 +1,5 @@
 class ProcessFile < ActiveRecord::Base
+  include AuthorizationHelper
 
   belongs_to :os_process #, :counter_cache => :process_file_count
   belongs_to :file_content

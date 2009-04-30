@@ -1,4 +1,5 @@
 class JobSource < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :jobs
 

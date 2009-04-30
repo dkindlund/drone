@@ -1,4 +1,5 @@
 class ClientStatus < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :clients
 

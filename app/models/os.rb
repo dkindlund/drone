@@ -1,4 +1,5 @@
 class Os < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :clients
 

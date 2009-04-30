@@ -1,4 +1,5 @@
 class Job < ActiveRecord::Base
+  include AuthorizationHelper
 
   belongs_to :client, :counter_cache => :job_count
   belongs_to :job_source

@@ -1,4 +1,5 @@
 class JobAlert < ActiveRecord::Base
+  include AuthorizationHelper
 
   belongs_to :job
 

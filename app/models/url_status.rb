@@ -1,4 +1,5 @@
 class UrlStatus < ActiveRecord::Base
+  include AuthorizationHelper
 
   has_many :urls
   has_many :url_statistics

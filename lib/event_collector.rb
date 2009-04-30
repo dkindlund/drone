@@ -329,8 +329,8 @@ class EventCollector
     hash = _normalize(hash)
 
     # TODO: Delete this, eventually.
-    puts "Input:"
-    pp hash
+    #puts "Input:"
+    #pp hash
 
     # Decode the key.
     array = header.properties[:routing_key].split('.')
@@ -346,7 +346,7 @@ class EventCollector
     eval("_" + action.to_s + "(nil, hash, args)")
 
     # TODO: Delete this, eventually.
-    puts "Output:"
+    #puts "Output:"
     pp hash
 
     return hash
@@ -385,7 +385,7 @@ class EventCollector
   
         # Process message.
         # TODO: Delete this, eventually.
-        pp [:got, header, msg]
+        #pp [:got, header, msg]
 
         begin 
           msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")

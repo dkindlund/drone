@@ -3,7 +3,7 @@
 development:
   adapter: mysql
   encoding: utf8
-  database: drone_test
+  database: drone_development_v2
   username: drone_user
   password: drone_pass
   reconnect: true
@@ -16,7 +16,7 @@ development:
 test:
   adapter: mysql
   encoding: utf8
-  database: drone_test
+  database: drone_test_v2
   username: drone_user
   password: drone_pass
   reconnect: true
@@ -26,7 +26,7 @@ test:
 production:
   adapter: mysql
   encoding: utf8
-  database: drone_test
+  database: drone_production_v2
   username: drone_user
   password: drone_pass
   reconnect: true

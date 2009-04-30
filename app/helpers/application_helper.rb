@@ -28,5 +28,4 @@ module ApplicationHelper
       time_ago_in_words(record.updated_at) + " ago"
     end
   end
-
 end

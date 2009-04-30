@@ -4,6 +4,10 @@
 class ApplicationController < ActionController::Base
   include ExceptionNotifiable
 
+  ActiveScaffold.set_defaults do |config|
+    config.security.default_permission = false
+  end
+
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
