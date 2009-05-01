@@ -1,0 +1,134 @@
+
+/* Messages
+   ========================= */
+
+.active-scaffold .empty-message, .active-scaffold .filtered-message {
+background-color: #e8e8e8;
+padding: 4px;
+font: bold 11px verdana, sans-serif;
+text-align: center;
+color: #666;
+}
+
+/* Tables 
+   ========================= */
+
+.active-scaffold tr.deleted td.client_status-column {
+background-color: #DDDDDD;
+}
+
+.active-scaffold tr.even-record-deleted td.client_status-column {
+background-color: #EEEEEE;
+}
+
+.active-scaffold tr.compromised td.client_status-column {
+background-color: #FF5544;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.compromised td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-compromised td.client_status-column {
+background-color: #FF8877;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.even-record-compromised td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.false_positive td.client_status-column {
+background-color: #FFEE00;
+}
+
+.active-scaffold tr.false_positive td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-false_positive td.client_status-column {
+background-color: #FFFF88;
+}
+
+.active-scaffold tr.even-record-false_positive td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.running td.client_status-column {
+background-color: #22FF22;
+}
+
+.active-scaffold tr.running td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-running td.client_status-column {
+background-color: #99FF88;
+}
+
+.active-scaffold tr.even-record-running td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.error td.client_status-column {
+background-color: #FFEE00;
+}
+
+.active-scaffold tr.error td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-error td.client_status-column {
+background-color: #FFFF88;
+}
+
+.active-scaffold tr.even-record-error td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.unknown td.client_status-column {
+background-color: #FFEE00;
+}
+
+.active-scaffold tr.unknown td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-unknown td.client_status-column {
+background-color: #FFFF88;
+}
+
+.active-scaffold tr.even-record-unknown td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.suspicious td.client_status-column {
+background-color: #FF8844;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.suspicious td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-suspicious td.client_status-column {
+background-color: #FF9955;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.even-record-suspicious td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}

@@ -1,0 +1,5 @@
+1. Setup DB user permissions.
+2. Update config/database.yml
+3. RAILS_ENV=production rake db:create
+4. RAILS_ENV=production rake db:migrate
+5. script/update_secret

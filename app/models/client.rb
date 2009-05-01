@@ -1,7 +1,6 @@
 class Client < ActiveRecord::Base
   include AuthorizationHelper
 
-  default_scope :order => 'clients.suspended_at DESC, clients.updated_at DESC'
   named_scope :bad,  :conditions => { :client_status_id => [3,4] }
   # TODO: May need to update this scope.
   named_scope :good, :conditions => { :client_status_id => [1,2] }
@@ -11,6 +10,7 @@ class Client < ActiveRecord::Base
   belongs_to :os
   belongs_to :application
   has_many   :jobs
+  has_many   :urls, :through => :jobs
 
   validates_presence_of :quick_clone_name, :snapshot_name, :client_status, :host
   validates_associated :client_status, :host, :os, :application, :jobs

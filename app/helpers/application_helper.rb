@@ -28,4 +28,11 @@ module ApplicationHelper
       time_ago_in_words(record.updated_at) + " ago"
     end
   end
+
+  # Show the time_at time in words.
+  def time_at_column(record)
+    if not record.time_at.nil?
+      time_ago_in_words(Time.at(record.time_at.to_f)) + " ago"
+    end
+  end
 end
