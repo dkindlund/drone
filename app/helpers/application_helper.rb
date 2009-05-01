@@ -35,4 +35,13 @@ module ApplicationHelper
       time_ago_in_words(Time.at(record.time_at.to_f)) + " ago"
     end
   end
+
+  # Assign a CSS class, for the following record types.
+  def list_row_class(record)
+    if record.is_a?(Client)
+      return record.client_status.status
+    elsif record.is_a?(Url)
+      return record.url_status.status
+    end
+  end
 end

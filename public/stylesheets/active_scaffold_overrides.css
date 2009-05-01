@@ -10,7 +10,7 @@ text-align: center;
 color: #666;
 }
 
-/* Tables 
+/* Tables - Clients
    ========================= */
 
 .active-scaffold tr.deleted td.client_status-column {
@@ -129,6 +129,95 @@ border-bottom: solid 1px #000000;
 }
 
 .active-scaffold tr.even-record-suspicious td.client_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+/* Tables - URLs
+   ========================= */
+
+.active-scaffold tr.queued td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-queued td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.suspicious td.url_status-column {
+background-color: #FF8844;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.suspicious td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-suspicious td.url_status-column {
+background-color: #FF9955;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.even-record-suspicious td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.error td.url_status-column {
+background-color: #FFEE00;
+}
+
+.active-scaffold tr.error td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-error td.url_status-column {
+background-color: #FFFF88;
+}
+
+.active-scaffold tr.even-record-error td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.compromised td.url_status-column {
+background-color: #FF5544;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.compromised td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-compromised td.url_status-column {
+background-color: #FF8877;
+border-bottom: solid 1px #000000;
+}
+
+.active-scaffold tr.even-record-compromised td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.visited td.url_status-column {
+background-color: #22FF22;
+}
+
+.active-scaffold tr.visited td.url_status-column a.disabled {
+color: black;
+font-weight: bold;
+}
+
+.active-scaffold tr.even-record-visited td.url_status-column {
+background-color: #99FF88;
+}
+
+.active-scaffold tr.even-record-visited td.url_status-column a.disabled {
 color: black;
 font-weight: bold;
 }

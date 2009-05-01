@@ -25,6 +25,6 @@ class UrlsController < ApplicationController
     config.actions.exclude :show
 
     # Include the following show actions.
-    config.columns[:fingerprint].set_link :show, :controller => 'fingerprints', :parameters => {:parent_controller => 'urls'}
+    #config.columns[:fingerprint].set_link :show, :controller => 'fingerprints', :parameters => {:parent_controller => 'urls'}
   end
 end
