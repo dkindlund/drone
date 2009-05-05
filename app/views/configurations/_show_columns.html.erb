@@ -1,0 +1,14 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <% if column.name == :value -%>
+    <dt class="<%= "configuration_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "configuration_#{column.name}_value" %>"><%= h(@record.value) -%></dd>
+  <% elsif column.name == :description -%>
+    <dt class="<%= "configuration_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "configuration_#{column.name}_value" %>"><%= h(@record.description) -%></dd>
+  <% else -%>
+    <dt class="<%= "configuration_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "configuration_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+<% end -%>
+</dl>

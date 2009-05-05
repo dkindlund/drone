@@ -1,0 +1,26 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <% if column.name == :name -%>
+    <dt class="<%= "os_process_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "os_process_name_value" %>"><%= h(@record.name) -%></dd>
+  <% elsif column.name == :parent_name -%>
+    <dt class="<%= "os_process_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "os_process_name_value" %>"><%= h(@record.parent_name) -%></dd>
+  <% else -%>
+    <dt class="<%= "os_process_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "os_process_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+<% end -%>
+<% if @record.process_file_count > 0 -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'process_files', :constraints => { :os_process_id => @record.id } %></dd>
+<% end -%>
+<% if @record.process_registry_count > 0 -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'process_registries', :constraints => { :os_process_id => @record.id } %></dd>
+<% end -%>
+<% if @show_nested_fingerprints -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'fingerprints', :constraints => { :id => @record.fingerprint_id } %></dd>
+<% end -%>
+</dl>

@@ -5,6 +5,7 @@ class HostsController < ApplicationController
 
     # Show the following columns in the specified order.
     config.list.columns = [:hostname, :ip, :created_at, :updated_at]
+    config.show.columns = [:hostname, :ip, :created_at, :updated_at]
 
     # Sort columns in the following order.
     config.list.sorting = {:hostname => :asc}
@@ -16,5 +17,9 @@ class HostsController < ApplicationController
     config.columns[:ip].label = "IP Address"
     config.columns[:created_at].label = "Created"
     config.columns[:updated_at].label = "Updated"
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "Host Details"
   end
 end

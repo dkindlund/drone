@@ -18,7 +18,9 @@ module ApplicationHelper
   # Show the suspended_at time in words.
   def suspended_at_column(record)
     if not record.suspended_at.nil?
-      time_ago_in_words(record.suspended_at) + " ago"
+      # TODO: Delete this?
+      # TODO: time_ago_in_words(record.suspended_at) + " ago"
+      record.suspended_at.strftime("%b %d %H:%M:%S %Z %Y")
     end
   end
 
@@ -32,16 +34,37 @@ module ApplicationHelper
   # Show the time_at time in words.
   def time_at_column(record)
     if not record.time_at.nil?
-      time_ago_in_words(Time.at(record.time_at.to_f)) + " ago"
+      if record.is_a?(Client)
+        time_ago_in_words(Time.at(record.time_at.to_f)) + " ago"
+      else
+        time = Time.at(record.time_at.to_f)
+        return time.strftime("%b %d %H:%M:%S.") + record.time_at.frac.to_s.sub!('0.','') + time.strftime(" %Z %Y")
+      end
+    end
+  end
+
+  # Truncate the value column if greater than the specified length.
+  def value_column(record)
+    if (record.value.to_s.length > 47)
+      record.value.to_s[0,47] + "..."
+    else
+      record.value.to_s
+    end
+  end
+
+  # Make sure the description column is completely printed.
+  def description_column(record)
+    if not record.description.nil?
+      h(record.description)
     end
   end
 
   # Assign a CSS class, for the following record types.
   def list_row_class(record)
     if record.is_a?(Client)
-      return record.client_status.status
+      record.client_status.status
     elsif record.is_a?(Url)
-      return record.url_status.status
+      record.url_status.status
     end
   end
 end

@@ -8,5 +8,9 @@ class JobAlertsController < ApplicationController
 
     # Rename the following columns.
     config.columns[:job].label = "Job ID"
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "Notification Details"
   end
 end

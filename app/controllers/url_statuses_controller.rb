@@ -11,5 +11,9 @@ class UrlStatusesController < ApplicationController
 
     # Disable eager loading for the following attributes.
     config.columns[:urls].includes = nil
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "URL Status Details"
   end
 end

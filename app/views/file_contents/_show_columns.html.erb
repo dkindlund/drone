@@ -1,0 +1,10 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <dt class="<%= "file_content_#{column.name}_name" %>"><%= column.label -%></dt>
+  <dd class="<%= "file_content_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+<% end -%>
+<% if @show_nested_process_files -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'process_files', :constraints => { :file_content_id => @record.id } %></dd>
+<% end -%>
+</dl>

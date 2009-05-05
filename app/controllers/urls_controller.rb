@@ -5,6 +5,7 @@ class UrlsController < ApplicationController
 
     # Show the following columns in the specified order.
     config.list.columns = [:job, :url, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
+    config.show.columns = [:job, :url, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
 
     # Sort columns in the following order.
     config.list.sorting = {:time_at => :desc}
@@ -21,10 +22,24 @@ class UrlsController < ApplicationController
     config.columns[:url_status].search_sql = 'url_statuses.status'
     config.search.columns << :url_status
 
-    # Exclude the following actions.
-    config.actions.exclude :show
+    # Make sure the fingerprint column is searchable.
+    config.columns[:fingerprint].search_sql = 'fingerprints.checksum'
+    config.search.columns << :fingerprint
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "URL Details"
 
     # Include the following show actions.
-    #config.columns[:fingerprint].set_link :show, :controller => 'fingerprints', :parameters => {:parent_controller => 'urls'}
+    config.columns[:fingerprint].set_link :show, :controller => 'fingerprints', :parameters => {:parent_controller => 'urls'}
+    config.columns[:client].set_link :show, :controller => 'clients', :parameters => {:parent_controller => 'urls'}
+    # TODO: Should provide this next one as a tooltip.
+    # TODO: ? config.columns[:url_status].set_link :show, :controller => 'url_statuses', :parameters => {:parent_controller => 'urls'}
+
+    # Disable eager loading of the following associations.
+    config.columns[:job].includes = nil
+    config.columns[:client].includes = nil
+    # TODO: Check if this is needed for performance reasons; if we enable it, be sure to remove the fingerprint column searchability.
+    #config.columns[:fingerprint].includes = nil
   end
 end

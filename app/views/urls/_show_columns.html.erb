@@ -1,0 +1,11 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <% if column.name == :url -%>
+    <dt class="<%= "url_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "url_value" %>"><%= h(@record.url) -%></dd>
+  <% else -%>
+    <dt class="<%= "url_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "url_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+<% end -%>
+</dl>

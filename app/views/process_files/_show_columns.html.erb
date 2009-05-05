@@ -1,0 +1,25 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <% if column.name == :os_process -%>
+    <dt class="<%= "os_process_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "os_process_name_value" %>"><%= h(@record.os_process.name) -%></dd>
+  <% elsif column.name == :name -%>
+    <dt class="<%= "process_file_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "process_file_name_value" %>"><%= h(@record.name) -%></dd>
+  <% elsif ((column.name == :file_content) && (not @record.file_content.nil?)) -%>
+    <dt class="<%= "process_file_content_size_name" %>">Size</dt>
+    <dd class="<%= "process_file_content_size_name_value" %>"><%= h(@record.file_content.size) -%></dd>
+    <dt class="<%= "process_file_content_sha1_name" %>">SHA1</dt>
+    <dd class="<%= "process_file_content_sha1_name_value" %>"><%= h(@record.file_content.sha1) -%></dd>
+    <dt class="<%= "process_file_content_md5_name" %>">MD5</dt>
+    <dd class="<%= "process_file_content_md5_name_value" %>"><%= h(@record.file_content.md5) -%></dd>
+    <dt class="<%= "process_file_content_type_name" %>">Type</dt>
+    <dd class="<%= "process_file_content_type_name_value" %>"><%= h(@record.file_content.mime_type) -%></dd>
+  <% else -%>
+    <dt class="<%= "process_file_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "process_file_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+<% end -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'os_processes', :constraints => { :id => @record.os_process_id } %></dd>
+</dl>

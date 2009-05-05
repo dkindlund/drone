@@ -1,4 +1,6 @@
 class FingerprintsController < ApplicationController
+  before_filter :check_for_nested_urls
+
   active_scaffold :fingerprint do |config|
     # Table Title
     config.list.label = "Fingerprints"
@@ -11,5 +13,19 @@ class FingerprintsController < ApplicationController
 
     # Rename the following columns.
     config.columns[:os_process_count].label = "# Processes Found"
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "Fingerprint Details"
+  end
+
+  # Helper function to determine if the fingerprint view should show
+  # nested URLs.
+  def check_for_nested_urls
+    if params[:parent_controller] == "urls"
+      @show_nested_urls = false
+    else
+      @show_nested_urls = true
+    end
   end
 end

@@ -19,6 +19,10 @@ class JobsController < ApplicationController
     config.columns[:url_count].label = "# URLs"
 
     # Disable eager loading.
-    # TODO: config.list.columns.exclude :urls
+    config.list.columns.exclude :urls
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "Job Details"
   end
 end

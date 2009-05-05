@@ -1,0 +1,17 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <% if column.name == :checksum -%>
+    <dt class="<%= "#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%> &nbsp;</dd>
+  <% elsif column.name == :url -%>
+    <dt class="<%= "#{column.name}_name" %>"><%= column.label.upcase -%></dt>
+    <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+<% end -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'os_processes', :constraints => { :fingerprint_id => @record.id } %></dd>
+<% if @show_nested_urls -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'urls', :constraints => { :fingerprint_id => @record.id } %></dd>
+<% end -%>
+</dl>
