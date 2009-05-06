@@ -24,6 +24,10 @@ class ClientsController < ApplicationController
     # Make sure the client_status column is searchable.
     config.columns[:client_status].search_sql = 'client_statuses.status'
     config.search.columns << :client_status
+    
+    # Make sure the id column is searchable.
+    config.columns[:id].search_sql = 'clients.id'
+    config.search.columns << :id
 
     # Rename the following actions.
     config.show.link.label = "Details"
@@ -35,8 +39,5 @@ class ClientsController < ApplicationController
     config.columns[:application].set_link :show, :controller => 'applications', :parameters => {:parent_controller => 'clients'}
     # TODO: Should provide this next one as a tooltip.
     # TODO: ? config.columns[:client_status].set_link :show, :controller => 'client_statuses', :parameters => {:parent_controller => 'clients'}
-
-    # Nest the following associations.
-    config.nested.add_link("URLs Processed", [:urls])
   end
 end

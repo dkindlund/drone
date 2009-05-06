@@ -5,6 +5,7 @@ class JobSourcesController < ApplicationController
 
     # Show the following columns in the specified order.
     config.list.columns = [:name, :protocol]
+    config.show.columns = [:name, :protocol]
 
     # Sort columns in the following order.
     config.list.sorting = {:name => :asc}

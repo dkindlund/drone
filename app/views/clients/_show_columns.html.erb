@@ -1,0 +1,10 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <dt class="<%= "client_#{column.name}_name" %>"><%= column.label -%></dt>
+  <dd class="<%= "client_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+<% end -%>
+<% if @record.urls.size > 0 -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'urls', :constraints => { :client_id => @record.id } %></dd>
+<% end -%>
+</dl>

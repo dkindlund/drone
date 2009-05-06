@@ -15,4 +15,11 @@ class Url < ActiveRecord::Base
     "#{url}"
   end
 
+  def job_source
+    if (!self.job.nil? && !self.job.job_source.nil?)
+      return self.job.job_source.to_label
+    else
+      return nil
+    end
+  end
 end
