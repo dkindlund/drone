@@ -1,5 +1,7 @@
-1. Setup DB user permissions.
-2. Update config/database.yml
-3. RAILS_ENV=production rake db:create
-4. RAILS_ENV=production rake db:migrate
-5. script/update_secret
+- Setup DB user permissions.
+- Update config/database.yml
+- Update config/environment.rb with better email address and site info.
+- Update config/initializers/mail.rb
+- RAILS_ENV=production rake db:create
+- RAILS_ENV=production rake db:migrate
+- script/update_secret

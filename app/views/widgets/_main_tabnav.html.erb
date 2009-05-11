@@ -13,15 +13,24 @@
 #     
 render_tabnav :main, 
               :generate_css => true do 
-    
-  # this generates a tab for every controller in your app
-  # you'll probably want to delete this and
-  # add tabs one by one as shown below
-  controller_names.each do |name|
-    add_tab do |t|
-      t.named name.camelize
-      t.titled "Go to #{name.camelize}"
-      t.links_to :controller => name
+
+  # Generate a tab for each controller that has been defined in the configurations.
+  names = []
+  if current_user.has_role?(:admin)
+    names = Configuration.get(:name => "ui.tab_order.admin").split(',')
+  else
+    names = Configuration.get(:name => "ui.tab_order").split(',')
+  end
+  names.each do |name|
+    next if name == "application"
+    tab_name = Configuration.get(:name => "ui.tab_name", :namespace => name.camelize.singularize)
+    if (!tab_name.nil? && !tab_name.empty?)
+      add_tab do |t|
+        t.named tab_name.to_s
+        # TODO: Add tooltip support.
+        t.titled "Go to #{tab_name.to_s}"
+        t.links_to :controller => name
+      end
     end
   end 
          

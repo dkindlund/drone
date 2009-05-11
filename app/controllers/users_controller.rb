@@ -1,0 +1,99 @@
+class UsersController < ApplicationController
+  ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column
+  
+  before_filter :login_required, :except => [:new, :create, :activate]
+  before_filter :admin_required, :only => [:index, :list]
+  before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge]
+
+  active_scaffold :user do |config|
+    # Table Title
+    config.list.label = "Users"
+
+    # Show the following columns in the specified order.
+    config.list.columns = [:name, :login, :email, :organization, :state, :roles, :created_at, :updated_at, :activated_at, :deleted_at]
+    config.show.columns = [:name, :login, :email, :organization, :state, :roles, :created_at, :updated_at, :activated_at, :deleted_at]
+
+    # Sort columns in the following order.
+    config.list.sorting = {:login => :asc}
+
+    # Rename the following columns.
+    config.columns[:created_at].label = "Created"
+    config.columns[:updated_at].label = "Updated"
+    config.columns[:activated_at].label = "Activated"
+    config.columns[:deleted_at].label = "Deleted"
+
+    # Rename the following actions.
+    config.show.link.label = "Details"
+    config.show.label = "User Details"
+  end
+  
+  # render new.rhtml
+  def new
+    logout_keeping_session!
+    @user = User.new
+  end
+ 
+  def create
+    logout_keeping_session!
+    @user = User.new(params[:user])
+    @user.register! if @user && @user.valid?
+    @success = @user && @user.valid?
+    if @success && @user.errors.empty?
+      @user.roles << Role.find_by_name("member")
+      flash.now[:notice] = "Account created.  We're sending you an email with your activation code."
+      flash.now[:error] = "Please make sure mail from <b>#{ADMIN_EMAIL}</b> is not blocked by your spam filter."
+      render :action => :new
+    else
+      flash[:error]  = "Unable to register account."
+      render :action => :new
+    end
+  end
+
+  def activate
+    logout_keeping_session!
+    user = User.find_by_activation_code(params[:activation_code]) unless params[:activation_code].blank?
+    case
+    when (!params[:activation_code].blank?) && user && !user.active?
+      user.activate!
+      flash[:notice] = 'Registration complete.  Please <a href="/login">login</a> to continue.'
+    when params[:activation_code].blank?
+      flash[:error] = "The activation code was missing.  Please follow the URL from your activation email."
+    else 
+      flash[:error]  = 'Invalid activation code or activation already complete. <a href="/login">Login</a> to continue.'
+    end
+  end
+
+  def suspend
+    @user.suspend! 
+    redirect_to users_path
+  end
+
+  def unsuspend
+    @user.unsuspend! 
+    redirect_to users_path
+  end
+
+  def destroy
+    @user.delete!
+    redirect_to users_path
+  end
+
+  def purge
+    @user.destroy
+    redirect_to users_path
+  end
+  
+  # There's no page here to update or destroy a user.  If you add those, be
+  # smart -- make sure you check that the visitor is authorized to do so, that they
+  # supply their old password along with a new one to update it, etc.
+  protected
+  def find_user
+    @user = User.find(params[:id])
+  end
+
+  def admin_required
+    if (current_user.nil? || !current_user.has_role?(:admin))
+      redirect_back_or_default('/')
+    end
+  end
+end

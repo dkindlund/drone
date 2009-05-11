@@ -22,6 +22,7 @@ Rails::Initializer.run do |config|
   config.gem "guid"
   config.gem "eventmachine"
   config.gem "amqp"
+  config.gem "rubyist-aasm", :lib => "aasm", :source => "http://gems.github.com"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -32,6 +33,7 @@ Rails::Initializer.run do |config|
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
   # Activate observers that should always be running
+  config.active_record.observers = :user_observer
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
@@ -60,3 +62,8 @@ ExceptionNotifier.email_prefix = "[drone] "
 
 # Specify who will receive email notifications when exceptions occur.
 ExceptionNotifier.exception_recipients = %w(darien@kindlund.com)
+
+# TODO: Update this, eventually.
+SITE_DOMAIN = "drone.honeyclient.org"
+SITE_URL = "http://#{SITE_DOMAIN}"
+ADMIN_EMAIL = "noreply@drone.honeyclient.org"

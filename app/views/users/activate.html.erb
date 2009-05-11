@@ -1,0 +1,6 @@
+<div class="login">
+  <h1>User Activation</h1>
+  <% flash.each do |key, msg| %>
+    <%= content_tag(:p, msg, :class => "flash #{key}") %>
+  <% end %>
+</div>

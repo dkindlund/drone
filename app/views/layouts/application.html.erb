@@ -8,14 +8,28 @@
   <%= javascript_include_tag :defaults %>
   <%= active_scaffold_includes %>
   <%= stylesheet_link_tag 'active_scaffold_overrides' %>
+  <%= stylesheet_link_tag 'style' %>
 </head>
+<% if logged_in? %>
 <body>
-
-<p style="color: green"><%= flash[:notice] %></p>
-
-  <% tabnav :main do %>
-    <%= yield  %>
-  <% end %>
-
+  <div id="wrap">
+    <%= render :partial => "users/user_bar" %>
+    <div id="content">
+    <% flash.each do |key, msg| %>
+      <%= content_tag(:p, msg, :class => "flash #{key}") %>
+    <% end %>
+    <% tabnav :main do %>
+      <%= yield  %>
+    <% end %>
+    </div>
+  </div>
+<!--
+ # TODO: Include footer here.
+ -->
 </body>
+<% else %>
+<body class="login">
+  <%= yield  %>
+</body>
+<% end %>
 </html>

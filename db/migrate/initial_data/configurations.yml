@@ -79,3 +79,187 @@ commands_routing_key:
   namespace: collector
   description: The routing key used to bind the queue to the commands exchange.
   default_value: drone.# 
+
+default_ui_tab_name:
+  id: 11
+  name: ui.tab_name
+  value: ""
+  namespace: ""
+  description: The default tab name to assign to each controller.
+  default_value: ""
+
+applications_ui_tab_name:
+  id: 12
+  name: ui.tab_name
+  value: Applications 
+  namespace: Application
+  description: The tab name to assign to the Applications controller.
+  default_value: Applications
+
+configurations_ui_tab_name:
+  id: 13
+  name: ui.tab_name
+  value: Configurations
+  namespace: Configuration
+  description: The tab name to assign to the Configurations controller.
+  default_value: Configurations
+
+client_statuses_ui_tab_name:
+  id: 14
+  name: ui.tab_name
+  value: Client Status
+  namespace: ClientStatus
+  description: The tab name to assign to the ClientStatuses controller.
+  default_value: Client Status
+
+clients_ui_tab_name:
+  id: 15
+  name: ui.tab_name
+  value: Clients
+  namespace: Client
+  description: The tab name to assign to the Clients controller.
+  default_value: Clients
+
+dashboard_ui_tab_name:
+  id: 16
+  name: ui.tab_name
+  value: Home
+  namespace: Dashboard
+  description: The tab name to assign to the Dashboard controller.
+  default_value: Home
+
+file_contents_ui_tab_name:
+  id: 17
+  name: ui.tab_name
+  value: File Content
+  namespace: FileContent
+  description: The tab name to assign to the FileContents controller.
+  default_value: File Content
+
+fingerprints_ui_tab_name:
+  id: 18
+  name: ui.tab_name
+  value: Fingerprints
+  namespace: Fingerprint
+  description: The tab name to assign to the Fingerprints controller.
+  default_value: Fingerprints
+
+hosts_ui_tab_name:
+  id: 19
+  name: ui.tab_name
+  value: Hosts
+  namespace: Host
+  description: The tab name to assign to the Hosts controller.
+  default_value: Hosts
+
+job_alerts_ui_tab_name:
+  id: 20
+  name: ui.tab_name
+  value: Notifications
+  namespace: JobAlert
+  description: The tab name to assign to the JobAlerts controller.
+  default_value: Notifications
+
+jobs_ui_tab_name:
+  id: 21
+  name: ui.tab_name
+  value: Jobs
+  namespace: Job
+  description: The tab name to assign to the Jobs controller.
+  default_value: Jobs
+
+os_ui_tab_name:
+  id: 22
+  name: ui.tab_name
+  value: OS
+  namespace: Os
+  description: The tab name to assign to the Os controller.
+  default_value: OS
+
+os_processes_ui_tab_name:
+  id: 23
+  name: ui.tab_name
+  value: Processes
+  namespace: OsProcess
+  description: The tab name to assign to the OsProcesses controller.
+  default_value: Processes
+
+process_files_ui_tab_name:
+  id: 24
+  name: ui.tab_name
+  value: Files
+  namespace: ProcessFile
+  description: The tab name to assign to the ProcessFiles controller.
+  default_value: Files
+
+process_registries_ui_tab_name:
+  id: 25
+  name: ui.tab_name
+  value: Registries
+  namespace: ProcessRegistry
+  description: The tab name to assign to the ProcessRegistries controller.
+  default_value: Registries
+
+url_statistics_ui_tab_name:
+  id: 26
+  name: ui.tab_name
+  value: URL Stats
+  namespace: UrlStatistic
+  description: The tab name to assign to the UrlStatistics controller.
+  default_value: URL Stats
+
+url_statuses_ui_tab_name:
+  id: 27
+  name: ui.tab_name
+  value: URL Status
+  namespace: UrlStatus
+  description: The tab name to assign to the UrlStatuses controller.
+  default_value: URL Status
+
+urls_ui_tab_name:
+  id: 28
+  name: ui.tab_name
+  value: URLs
+  namespace: Url
+  description: The tab name to assign to the Urls controller.
+  default_value: URLs
+
+users_ui_tab_name:
+  id: 29
+  name: ui.tab_name
+  value: Users
+  namespace: User
+  description: The tab name to assign to the Users controller.
+  default_value: Users
+
+job_sources_ui_tab_name:
+  id: 30
+  name: ui.tab_name
+  value: Sources
+  namespace: JobSource
+  description: The tab name to assign to the JobSources controller.
+  default_value: Sources
+
+roles_ui_tab_name:
+  id: 31
+  name: ui.tab_name
+  value: Roles
+  namespace: Role
+  description: The tab name to assign to the Roles controller.
+  default_value: Roles
+
+admin_ui_tab_order:
+  id: 32
+  name: ui.tab_order.admin
+  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,roles
+  namespace:
+  description: The tab order for all controllers accessible by users who have the admin role.
+  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,roles
+
+ui_tab_order:
+  id: 33
+  name: ui.tab_order
+  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents
+  namespace:
+  description: The tab order for all controllers accessible non-admin users.
+  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents

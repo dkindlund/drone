@@ -1,0 +1,31 @@
+<div class="login">
+  <h1>User Registration</h1>
+  <% flash.each do |key, msg| %>
+    <%= content_tag(:p, msg, :class => "flash #{key}") %>
+  <% end %>
+
+  <% @user.password = @user.password_confirmation = nil %>
+
+  <%= error_messages_for :user %>
+  <% form_for :user, :url => users_path do |f| -%>
+    <%= label_tag 'name', nil, :class => "form-label" %><br/>
+    <%= f.text_field :name %><br/>
+
+    <%= label_tag 'organization', nil, :class => "form-label" %><br/>
+    <%= f.text_field :organization %><br/>
+
+    <%= label_tag 'email', nil, :class => "form-label" %><br/>
+    <%= f.text_field :email %><br/>
+
+    <%= label_tag 'login', nil, :class => "form-label" %><br/>
+    <%= f.text_field :login %><br/>
+
+    <%= label_tag 'password', nil, :class => "form-label" %><br/>
+    <%= f.password_field :password %><br/>
+ 
+    <%= label_tag 'password_confirmation', 'Confirm Password', :class => "form-label" %><br/>
+    <%= f.password_field :password_confirmation %><br/>
+
+    <%= submit_tag 'Register', :class => "form-button" %>
+  <% end -%>
+</div>

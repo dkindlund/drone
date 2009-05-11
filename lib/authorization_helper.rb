@@ -8,7 +8,6 @@ module AuthorizationHelper
 
   # By default, allow all authenticated users read-only access
   # to the interface.
-  # TODO: Need user authentication.
   def authorized_for_read?
     return true
   end

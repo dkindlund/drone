@@ -1,0 +1,16 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+admin_role:
+  id: 1
+  name: admin
+  description: Grants users read/write access to all data.
+
+member_role:
+  id: 2
+  name: member
+  description: Grants users read only access to all data.
+
+guest_role:
+  id: 3
+  name: guest
+  description: Grants users restricted access.

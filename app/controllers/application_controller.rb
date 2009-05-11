@@ -2,6 +2,10 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include SslRequirement
+  include AuthenticatedSystem
+  # You can move this into a different controller, if you wish.  This module gives you the require_role helpers, and others.
+  include RoleRequirementSystem
   include ExceptionNotifiable
 
   ActiveScaffold.set_defaults do |config|
@@ -13,4 +17,10 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   filter_parameter_logging :password
+
+  # Make all access denied calls redirect to login path.
+  def access_denied
+    alias new_session_path login_path
+    super
+  end
 end

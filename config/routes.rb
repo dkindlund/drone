@@ -1,4 +1,14 @@
 ActionController::Routing::Routes.draw do |map|
+  map.logout '/logout', :controller => 'sessions', :action => 'destroy'
+  map.login '/login', :controller => 'sessions', :action => 'new'
+  map.signup '/signup', :controller => 'users', :action => 'new'
+  map.activate '/activate/:activation_code', :controller => 'users', :action => 'activate', :activation_code => nil
+  map.register '/register', :controller => 'users', :action => 'create'
+  map.resources :users, :member => { :suspend   => :put,
+                                     :unsuspend => :put,
+                                     :purge     => :delete },
+                        :active_scaffold => true
+  map.resource :session
 
   map.resources :applications, :active_scaffold => true
   map.resources :clients, :active_scaffold => true
@@ -17,6 +27,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :urls, :active_scaffold => true
   map.resources :url_statistics, :active_scaffold => true
   map.resources :url_statuses, :active_scaffold => true
+  map.resources :roles, :active_scaffold => true
 
   # The priority is based upon order of creation: first created -> highest priority.
 

@@ -1,0 +1,22 @@
+<div class="login">
+  <h1><%= Configuration.get(:name => "ui.title").to_s %></h1>
+  <% flash.each do |key, msg| %>
+    <%= content_tag(:p, msg, :class => "flash #{key}") %>
+  <% end %>
+  <% form_tag session_path do -%>
+    <%= label_tag 'login', nil, :class => "form-label" %><br/>
+    <%= text_field_tag 'login', @login %><br/>
+    <%= label_tag 'password', nil, :class => "form-label" %><br/>
+    <%= password_field_tag 'password', nil %><br/>
+    <label>
+      <%= check_box_tag 'remember_me', '1', @remember_me, :class => "auto" %>
+      Remember me on this computer
+    </label><br/>
+    <%= submit_tag 'Login', :class => "form-button" %>
+  <% end -%>
+  <div class="extras">
+    <ul>
+      <li>New user? <%= link_to 'Register here.', :controller => 'users', :action => :new %></li>
+    </ul>
+  </div>
+</div>

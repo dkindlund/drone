@@ -1,3 +1,5 @@
+require 'active_record/fixtures'
+
 class CreateConfigurations < ActiveRecord::Migration
   def self.up
     create_table :configurations do |t|

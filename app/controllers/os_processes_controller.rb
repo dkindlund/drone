@@ -1,4 +1,6 @@
 class OsProcessesController < ApplicationController
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column
+  before_filter :login_required
   before_filter :check_for_nested_fingerprints
 
   active_scaffold :os_process do |config|

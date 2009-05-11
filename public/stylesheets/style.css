@@ -1,0 +1,185 @@
+/* Main styles */
+body
+{
+  margin: 0;
+  background: #fff;
+  font-family: "Lucida Grande", verdana, arial, helvetica, sans-serif;
+  color: #000;
+  font-size: 14px;
+}
+
+#wrap, #footer
+{
+  margin: 0px auto;
+  text-align: left;
+  width: auto;
+}
+
+#content
+{
+}
+
+/* User bar. */
+.user-bar ul {
+  font-size:12px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin:0;
+  text-align:right;
+}
+
+.user-bar li {
+  border-right:1px solid #D7D7D7;
+  display:inline;
+  padding:0 0.75em;
+  white-space:nowrap;
+}
+
+.user-bar li.last {
+  border-right:medium none;
+}
+
+/* Login styles. */
+body.login {
+  background:#E5E5E5 none repeat scroll 0 0;
+  background-color:#E5E5E5;
+  color:#000000;
+  text-align: center;
+}
+
+body.login div.login {
+  background-color:#F5F5F5;
+  border:10px solid #CCCCCC;
+  font-family:lucida grande,verdana;
+  font-size:12px;
+  margin:50px auto;
+  padding:20px;
+  text-align:left;
+  width:400px;
+}
+
+body.login div.login h1 {
+  color:#000000;
+  font-size:16px;
+  margin:0 0 20px;
+  padding:0;
+  border-bottom:0 none;
+  font-family:"Lucida Grande",arial,sans-serif;
+  font-weight:bold;
+}
+
+label.form-label {
+  color:#000000;
+  font-size:12px;
+  margin:0 0 2px;
+  padding:0;
+  font-weight:bold;
+}
+
+body.login div.login input {
+  font-size:14px;
+  margin-bottom:10px;
+  padding:3px;
+  width:275px;
+}
+
+body.login div.login label {
+  margin-bottom:10px;
+}
+
+body.login div.login input.auto {
+  width:auto;
+}
+body.login div.login label input {
+  margin-bottom:0;
+}
+
+body.login div.login input.form-button {
+  font-size:14px;
+  margin:10px 0 0;
+  padding:3px;
+  width:auto;
+}
+
+body.login div.login div.extras {
+  border-top:1px dashed #999999;
+  margin-top:20px;
+  padding-top:10px;
+}
+
+body.login div.login div.extras ul {
+  margin:0 0 0 17px;
+  padding:0;
+}
+
+body.login div.login div.extras ul li {
+  font-size:12px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:square;
+  padding-bottom:3px;
+}
+
+/* TODO: Check these. 
+a:link,a:visited {
+  color: #0033CC;
+  font-weight: normal;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #0033CC;
+  text-decoration: underline;
+}
+*/
+
+/* Alerts and notifications */
+.success {
+  border: 1px solid #FFCC66;
+  background-color: #FFFFCC;
+  font-size: 12px;
+  padding: 6px;
+}
+.notice {
+  border: 1px solid #FFCC66;
+  background-color: #FFFFCC;
+  font-size: 12px;
+  padding: 6px;
+}
+.error {
+  border: 1px solid #FFCC66;
+  background-color: #FFFFCC;
+  font-size: 12px;
+  padding: 6px;
+}
+
+.error,
+.notice,
+.success    { padding: .8em; margin-bottom: 1em; border: 2px solid #ddd;
+              margin-top: 1em; }
+
+.error      { background: #FBE3E4; color: #8a1f11; border-color: #FBC2C4; }
+.notice     { background: #FFF6BF; color: #514721; border-color: #FFD324; }
+.success    { background: #E6EFC2; color: #264409; border-color: #C6D880; }
+
+.errorExplanation {
+  border: 1px solid #FFCC66;
+  background-color: #FFFFCC;
+  margin-bottom: 1em;
+  padding: 1em;
+}
+.errorExplanation h2 {
+  background: 0;
+  border: 0;
+  font-size: 1.2em;
+  margin-top: 0;
+  padding: 0;
+}
+.pagination {
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  margin-bottom: 12px;
+}

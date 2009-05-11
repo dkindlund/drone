@@ -35,4 +35,8 @@ class Configuration < ActiveRecord::Base
     return obj.nil? ? nil : obj.value
   end
 
+  # Allow all admins to update any data.
+  def authorized_for_update?
+    return (!current_user.nil? && current_user.has_role?(:admin))
+  end
 end

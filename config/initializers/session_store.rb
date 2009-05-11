@@ -6,7 +6,7 @@
 # no regular words or you'll be exposed to dictionary attacks.
 ActionController::Base.session = {
   :key         => '_drone.honeyclient.org_session',
-  :secret      => '24bbf65b18a77abd4a15ce10c0b08c36a85e8e2ae6e55c164721cf7e533a7a54113b65d77ff2cac9117792d18e17a58808457c2e3c31cbe78125904d18100fc8'
+  :secret      => '30dbc6b198cd5d15cded5c4a28e5719dacf0e83abc74037c5d394b5a4cf580f34ba424a4d10ef2406e1d1ed2545656cd53451dc3823c7cd53c5edd66ebaf879e'
 }
 
 # Use the database for sessions instead of the cookie-based default,
