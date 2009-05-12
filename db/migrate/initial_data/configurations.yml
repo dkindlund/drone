@@ -263,3 +263,35 @@ ui_tab_order:
   namespace:
   description: The tab order for all controllers accessible non-admin users.
   default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents
+
+default_url_priority:
+  id: 34
+  name: url.priority
+  value: 1
+  namespace: Job
+  description: The default priority assigned to URLs, when creating a new Job.
+  default_value: 1
+
+low_priority_routing_key:
+  id: 35
+  name: low.routing_key
+  value: job.create.job.urls.job_alerts
+  namespace: Job
+  description: The routing key to use when creating a low priority Job.
+  default_value: job.create.job.urls.job_alerts
+
+high_priority_routing_key:
+  id: 36
+  name: high.routing_key
+  value: job.create.job.urls.job_alerts
+  namespace: Job
+  description: The routing key to use when creating a high priority Job.
+  default_value: job.create.job.urls.job_alerts
+
+url_priority_threshold:
+  id: 37
+  name: url.priority.threshold
+  value: 500
+  namespace: Job
+  description: When any URL priority is greater than or equal to the specified threshold, then the corresponding Job will be created with high priority; otherwise, a low priority Job will be created.
+  default_value: 500

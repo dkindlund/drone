@@ -30,16 +30,25 @@ class UsersController < ApplicationController
   # render new.rhtml
   def new
     logout_keeping_session!
+    if User.find(:first).nil?
+      flash.now[:notice] = "Since this is the first user created, this user will have <b>admin</b> privileges, by default."
+    end
     @user = User.new
   end
  
   def create
     logout_keeping_session!
+    first_user = User.find(:first).nil?
     @user = User.new(params[:user])
     @user.register! if @user && @user.valid?
     @success = @user && @user.valid?
     if @success && @user.errors.empty?
-      @user.roles << Role.find_by_name("member")
+      # If this account is the first, then make it an admin account.
+      if first_user
+        @user.roles << Role.find_by_name("admin")
+      else
+        @user.roles << Role.find_by_name("member")
+      end
       flash.now[:notice] = "Account created.  We're sending you an email with your activation code."
       flash.now[:error] = "Please make sure mail from <b>#{ADMIN_EMAIL}</b> is not blocked by your spam filter."
       render :action => :new

@@ -18,6 +18,11 @@ class Job < ActiveRecord::Base
     "#{uuid}"
   end
 
+  # Allow all admins and members to create new jobs.
+  def authorized_for_create?
+    return (!current_user.nil? && (current_user.has_role?(:member) || current_user.has_role?(:admin)))
+  end
+
   private
 
   # XXX: These methods are probably inefficient, but its not clear how the

@@ -1,0 +1,14 @@
+<ol class="form" <%= 'style="display: none;"' if columns.collapsed -%>>
+  <% columns.each :for => @record do |column| -%>
+    <% if column.name == :urls -%>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>Priority</dt>
+        <dd><%= text_field(:input, :priority, :size => 3, :value => Configuration.get(:name => "url.priority", :namespace => controller.controller_name.camelize.singularize).to_s) %></dd>
+      </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>URLs</dt>
+        <dd><%= text_area(:input, :urls, :rows => 1, :cols => 100, :onfocus => "new ResizingTextArea(this);") %></dd>
+      </li>
+    <% end %>
+  <% end -%>
+</ol>

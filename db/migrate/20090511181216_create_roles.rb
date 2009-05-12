@@ -17,9 +17,6 @@ class CreateRoles < ActiveRecord::Migration
 
     dir = File.join(File.dirname(__FILE__),"initial_data")
     Fixtures.create_fixtures(dir,"roles")
-
-    # Give the default "admin" account the "admin" role.
-    User.find(1).roles << Role.find(1)
   end
 
   def self.down

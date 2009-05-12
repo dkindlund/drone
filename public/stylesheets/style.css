@@ -19,6 +19,17 @@ body
 {
 }
 
+/* Job creation form. */
+.form-element dt {
+  font-weight:bold;
+}
+
+.form-element dd textarea {
+  font-weight:bold;
+  font-family: courier, sans-serif;
+  font-size: 9px;
+}
+
 /* User bar. */
 .user-bar ul {
   font-size:12px;

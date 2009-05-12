@@ -1,5 +1,3 @@
-require 'active_record/fixtures'
-
 class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table "users", :force => true do |t|
@@ -20,9 +18,6 @@ class CreateUsers < ActiveRecord::Migration
     end
 
     add_index :users, :login, :unique => true
-
-    dir = File.join(File.dirname(__FILE__),"initial_data")
-    Fixtures.create_fixtures(dir,"users")
   end
 
   def self.down
