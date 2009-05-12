@@ -61,10 +61,8 @@ class JobsController < ApplicationController
     else
       @record = Job.new(:uuid       => Guid.new.to_s,
                         :created_at => Time.now.utc,
-                        :job_source => JobSource.find_or_create_by_name_and_protocol(current_user.name, "https"),
                         :job_alerts => [JobAlert.new(:protocol => "smtp", :address => current_user.email)])
     end
-
 
     # Sanity Check.
     if (!params.key?(:input) || !params[:input].key?(:urls))
@@ -80,10 +78,23 @@ class JobsController < ApplicationController
       raise ActiveRecord::RecordInvalid.new(@record)
     end
 
+    # Figure out if job_source was specified.
+    if (params.key?(:input) &&
+        params[:input].key?(:job_source) &&
+        params[:input][:job_source].key?(:name) &&
+        params[:input][:job_source].key?(:protocol))
+      @record.job_source = JobSource.find_or_create_by_name_and_protocol(params[:input][:job_source][:name], params[:input][:job_source][:protocol])
+    else
+      @record.job_source = JobSource.find_or_create_by_name_and_protocol(current_user.name, "https")
+    end
+
     # Collect the URLs.
     @record.urls = params[:input][:urls].split(' ').map!{|u| Url.new(:url        => u,
                                                                      :priority   => params[:input][:priority].to_i,
                                                                      :url_status => UrlStatus.find_by_status("queued"))}
+
+    # Manually update the URL count.
+    @record.url_count = @record.urls.size
 
     # If the record is not valid, return an exception.
     if (!@record.valid?)
