@@ -53,7 +53,7 @@ queue_name:
   name: queue_name
   value: drone
   namespace: collector
-  description: The name of the AMQP queue used to send events to this component.
+  description: The name of the AMQP queue used to send events to the collector daemon.
   default_value: drone
 
 events_routing_key:
@@ -61,7 +61,7 @@ events_routing_key:
   name: events_routing_key
   value: "#"
   namespace: collector
-  description: The routing key used to bind the queue to the events exchange.
+  description: The routing key used to bind the collector queue to the events exchange.
   default_value: "#"
 
 commands_exchange_name:
@@ -77,7 +77,7 @@ commands_routing_key:
   name: commands_routing_key
   value: drone.#
   namespace: collector
-  description: The routing key used to bind the queue to the commands exchange.
+  description: The routing key used to bind the collector queue to the commands exchange.
   default_value: drone.# 
 
 default_ui_tab_name:
@@ -295,3 +295,27 @@ url_priority_threshold:
   namespace: Job
   description: When any URL priority is greater than or equal to the specified threshold, then the corresponding Job will be created with high priority; otherwise, a low priority Job will be created.
   default_value: 500
+
+notifier_queue_name:
+  id: 38
+  name: queue_name
+  value: notifier
+  namespace: notifier
+  description: The name of the AMQP queue used to send events to the notifier daemon.
+  default_value: notifier
+
+notifier_events_routing_key:
+  id: 39
+  name: events_routing_key
+  value: "job.create.#;job.find_and_update.#.completed_at.#"
+  namespace: notifier
+  description: The routing keys used to bind the notifier queue to the events exchange.
+  default_value: "job.create.#;job.find_and_update.#.completed_at.#"
+
+notifier_commands_routing_key:
+  id: 40
+  name: commands_routing_key
+  value: notifier.#
+  namespace: notifier
+  description: The routing key used to bind the notifier queue to the commands exchange.
+  default_value: notifier.# 

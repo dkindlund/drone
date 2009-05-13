@@ -1,0 +1,22 @@
+Status:              Completed
+Suspicious Activity: <%= @suspicious_activity.to_s %> 
+Job ID:              <%= @uuid.to_s %>
+Completed:           <%= @completed_at.to_s %>
+# URLs:              <%= @url_count.to_s %>
+Details:             <%= @uuid_url.to_s %>
+
+Statistics:
+-----------
+<%- @url_statistics.each_pair do |url_status, count| -%>
+# <%= url_status.to_s %>: <%= count.to_s %> 
+<%- end -%>
+
+URLs Analyzed:
+--------------
+<%- @urls_by_type.each_pair do |type, urls| -%>
+:: <%= type.to_s %> ::
+<%- urls.each do |url| -%>
+[<%= Time.at(url["time_at"]).to_s %>] <%= url["url"].to_s %>
+  <%- end -%>
+
+<%- end -%>

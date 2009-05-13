@@ -1,0 +1,13 @@
+Your job has been submitted to the honeyclient system for analysis.  If you have submitted any lengthy URLs, please review the output below to make sure each URL has been parsed correctly.  When all URLs have been analyzed, you will receive another email with the results.
+
+Status:  Submitted
+Job ID:  <%= @uuid.to_s %>
+Created: <%= @created_at.to_s %>
+# URLs:  <%= @url_count.to_s %>
+Details: <%= @uuid_url.to_s %>
+
+URLs Parsed:
+------------
+<%- @urls.each do |url| -%>
+<%= url["url"].to_s %>
+<%- end -%>

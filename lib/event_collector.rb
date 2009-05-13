@@ -16,15 +16,12 @@ class EventCollector
 
   # Instance variables.
   @namespace           = nil
-
-  # XXX: Possible deprecations.
   @connection          = nil
   @channel             = nil
   @events_exchange     = nil
   @commands_exchange   = nil
   @queue               = nil
 
-  # XXX: Possible deprecation.
   # Upon initialization, attempt to connect to the AMQP server.
   # Note: This must be called inside an EM.run block.
   def _setup
@@ -78,8 +75,7 @@ class EventCollector
     end 
     return data
   end
-  # TODO: Enable this.
-  #private :_normalize
+  private :_normalize
 
   # Recursively finds or creates the nested object(s), based on the specified params.
   # Returns the nested object(s).
@@ -141,8 +137,7 @@ class EventCollector
     # For all other data types, just return what was given.
     return params
   end
-  # TODO: Enable this.
-  #private :_find_or_create
+  private :_find_or_create
 
   # Finds the corresponding object and updates the object, based upon the specified array of args.
   # 
@@ -158,7 +153,7 @@ class EventCollector
       # Find the existing entry; use an "id" if found (from recursive calls).
       if (params[object_name].key?("id"))
         # TODO: Delete this, eventually.
-        puts "--- ID FOUND! = " + params[object_name]["id"].to_s
+        #puts "--- ID FOUND! = " + params[object_name]["id"].to_s
         object = klass.find(params[object_name]["id"].to_i)
       else
      
@@ -240,8 +235,7 @@ class EventCollector
     # For all other data types, just return what was given.
     return params
   end
-  # TODO: Enable this.
-  #private :_find_and_update
+  private :_find_and_update
 
   # Creates the corresponding object and tries to reuse as many predeclared sub-objects as possible.
   # Only attributes specified in args will be (potentially) duplicated; all other attributes will be
@@ -313,8 +307,7 @@ class EventCollector
     return params
 
   end
-  # TODO: Enable this.
-  #private :_create
+  private :_create
 
   # Process the specified event.
   def _process_event(header, msg)
@@ -359,7 +352,6 @@ class EventCollector
   end
   private :_process_command
 
-  # XXX: Possible deprecation.
   # Starts the daemon.
   def start
     EM.run do
@@ -403,13 +395,6 @@ class EventCollector
             (msg == "shutdown"))
 
           RAILS_DEFAULT_LOGGER.info "Stopping Event Collector Daemon [PID: " + Process.pid.to_s + "]"
-
-          # Close the connection.
-          #@connection.close{ EM.stop_event_loop }
-          #@connection.close{ EM.stop }
-          #AMQP.stop { @connection.close; EM.stop }
-#puts "Sleeping 10s..."
-#sleep 10
           EM.next_tick { @connection.close{ EM.stop_event_loop } }
         end
   
@@ -418,7 +403,6 @@ class EventCollector
     end
   end
 
-  # XXX: Possible deprecation.
   # Stops the daemon.
   def stop
     EM.run do
@@ -433,7 +417,6 @@ class EventCollector
     end
   end
 
-  # XXX: Possible deprecation.
   # Send events to the collector, in the form of one or more objects.
   def send(routing_key, object)
     EM.run do
