@@ -1,3 +1,4 @@
+<% require 'uri' %>
 <dl>
 <% columns.each :for => @record do |column| %>
   <% if column.name == :checksum -%>
@@ -5,7 +6,7 @@
     <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%> &nbsp;</dd>
   <% elsif column.name == :url -%>
     <dt class="<%= "#{column.name}_name" %>"><%= column.label.upcase -%></dt>
-    <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+    <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%><%= clippy(h(URI.escape(@record.url.url, Regexp.union(URI::REGEXP::UNSAFE, /&/))),'#EDEDED') -%></dd>
   <% end -%>
 <% end -%>
   <dt></dt>
