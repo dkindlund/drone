@@ -9,6 +9,9 @@ class UrlStatus < ActiveRecord::Base
   validates_length_of :description, :maximum => 8192
   validates_uniqueness_of :status, :scope => [:status]
 
+  version 1
+  index :status
+
   def to_label
     "#{status}"
   end

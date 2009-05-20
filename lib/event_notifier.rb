@@ -30,17 +30,17 @@ class EventNotifier
     @namespace = "collector"
 
     # Connect to the AMQP server.
-    @connection = AMQP.connect(:host    => Configuration.get(:name => 'amqp.address',      :namespace => @namespace),
-                               :user    => Configuration.get(:name => 'amqp.user_name',    :namespace => @namespace),
-                               :pass    => Configuration.get(:name => 'amqp.password',     :namespace => @namespace),
-                               :vhost   => Configuration.get(:name => 'amqp.virtual_host', :namespace => @namespace),
+    @connection = AMQP.connect(:host    => Configuration.find_retry(:name => 'amqp.address',      :namespace => @namespace),
+                               :user    => Configuration.find_retry(:name => 'amqp.user_name',    :namespace => @namespace),
+                               :pass    => Configuration.find_retry(:name => 'amqp.password',     :namespace => @namespace),
+                               :vhost   => Configuration.find_retry(:name => 'amqp.virtual_host', :namespace => @namespace),
                                :logging => false)
 
     # Open a channel on the AMQP connection.
     @channel = MQ.new(@connection)
 
     # Declare/create the events exchange.
-    @events_exchange = MQ::Exchange.new(@channel, :topic, Configuration.get(:name      => 'events_exchange_name',
+    @events_exchange = MQ::Exchange.new(@channel, :topic, Configuration.find_retry(:name      => 'events_exchange_name',
                                                                             :namespace => @namespace),
                                  {:passive     => false,
                                   :durable     => true,
@@ -49,7 +49,7 @@ class EventNotifier
                                   :nowait      => false})
 
     # Declare/create the commands exchange.
-    @commands_exchange = MQ::Exchange.new(@channel, :topic, Configuration.get(:name      => 'commands_exchange_name',
+    @commands_exchange = MQ::Exchange.new(@channel, :topic, Configuration.find_retry(:name      => 'commands_exchange_name',
                                                                               :namespace => @namespace),
                                  {:passive     => false,
                                   :durable     => true,
@@ -129,15 +129,27 @@ class EventNotifier
 
     # Decode the key.
     array = header.properties[:routing_key].split('.')
-    object_name = array[0]
-    action = array[1]
+
+    # Figure out if a priority was supplied as the first
+    # entry.
+    if ((Integer(array[0]) rescue false) == false)
+      # No priority found.
+      object_name = array[0]
+      action = array[1]
+      remainder_index = 2
+    else
+      # Priority found.
+      object_name = array[1]
+      action = array[2]
+      remainder_index = 3
+    end
 
     # Sanity check the action.
     if (@@allowed_actions.rindex(action).nil?)
       raise "Invalid action: " + action.to_s
     end
 
-    args = array.values_at(2..-1) 
+    args = array.values_at(remainder_index..-1) 
     eval("_" + action.to_s + "(nil, hash, args)")
 
     # TODO: Delete this, eventually.
@@ -162,7 +174,7 @@ class EventNotifier
       RAILS_DEFAULT_LOGGER.info "Starting Event Notifier Daemon [PID: " + Process.pid.to_s + "]"
 
       # Declare the queue on the channel.
-      @queue = MQ::Queue.new(@channel, Configuration.get(:name => 'queue_name', :namespace => @namespace), 
+      @queue = MQ::Queue.new(@channel, Configuration.find_retry(:name => 'queue_name', :namespace => @namespace), 
                              {:passive     => false,
                               :durable     => true,
                               :exclusive   => false,
@@ -171,8 +183,8 @@ class EventNotifier
 
     
       # Bind the queue to the exchanges.
-      @queue.bind(@commands_exchange, :key => Configuration.get(:name => 'commands_routing_key', :namespace => @namespace))
-      events_routing_keys = Configuration.get(:name => 'events_routing_key', :namespace => @namespace).split(';')
+      @queue.bind(@commands_exchange, :key => Configuration.find_retry(:name => 'commands_routing_key', :namespace => @namespace))
+      events_routing_keys = Configuration.find_retry(:name => 'events_routing_key', :namespace => @namespace).split(';')
       events_routing_keys.each do |events_routing_key|
         @queue.bind(@events_exchange, :key => events_routing_key)
       end
@@ -186,9 +198,15 @@ class EventNotifier
 
         begin 
           msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-        rescue
+        rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
+          # If our memcached server goes away, then retry.
           RAILS_DEFAULT_LOGGER.warn $!.to_s
-          puts $!.to_s
+          puts "Retrying Event - " + $!.to_s
+          retry
+        rescue
+          # Otherwise, log the error and discard the event.
+          RAILS_DEFAULT_LOGGER.warn $!.to_s
+          pp $!
         end
  
         # ACK receipt of message.

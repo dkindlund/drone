@@ -3,7 +3,7 @@
     <% if column.name == :urls -%>
       <li class="form-element <%= 'required' if column.required? %>">
         <dt>Priority</dt>
-        <dd><%= text_field(:input, :priority, :size => 3, :value => Configuration.get(:name => "url.priority", :namespace => controller.controller_name.camelize.singularize).to_s) %></dd>
+        <dd><%= text_field(:input, :priority, :size => 3, :value => Configuration.find_retry(:name => "url.priority", :namespace => controller.controller_name.camelize.singularize).to_s) %></dd>
       </li>
       <li class="form-element <%= 'required' if column.required? %>">
         <dt>URLs</dt>

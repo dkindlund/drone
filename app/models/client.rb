@@ -20,6 +20,20 @@ class Client < ActiveRecord::Base
   validates_numericality_of :job_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :quick_clone_name, :scope => [:snapshot_name]
 
+  version 1
+  index :host_id
+  index [:host_id, :id]
+  index :client_status_id
+  index [:client_status_id, :id]
+  index :os_id
+  index [:os_id, :id]
+  index :application_id
+  index [:application_id, :id]
+  index :created_at
+  index :updated_at
+  index :suspended_at
+  index [:quick_clone_name, :snapshot_name]
+
   def to_label
     "#{id}"
   end

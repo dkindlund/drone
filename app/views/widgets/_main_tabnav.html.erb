@@ -17,13 +17,13 @@ render_tabnav :main,
   # Generate a tab for each controller that has been defined in the configurations.
   names = []
   if current_user.has_role?(:admin)
-    names = Configuration.get(:name => "ui.tab_order.admin").split(',')
+    names = Configuration.find_retry(:name => "ui.tab_order.admin").split(',')
   else
-    names = Configuration.get(:name => "ui.tab_order").split(',')
+    names = Configuration.find_retry(:name => "ui.tab_order").split(',')
   end
   names.each do |name|
     next if name == "application"
-    tab_name = Configuration.get(:name => "ui.tab_name", :namespace => name.camelize.singularize)
+    tab_name = Configuration.find_retry(:name => "ui.tab_name", :namespace => name.camelize.singularize)
     if (!tab_name.nil? && !tab_name.empty?)
       add_tab do |t|
         t.named tab_name.to_s

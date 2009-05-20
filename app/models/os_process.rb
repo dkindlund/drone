@@ -14,6 +14,10 @@ class OsProcess < ActiveRecord::Base
   validates_numericality_of :process_file_count, :greater_than_or_equal_to => 0
   validates_numericality_of :process_registry_count, :greater_than_or_equal_to => 0
 
+  version 1
+  index :fingerprint_id
+  index [:fingerprint_id, :id]
+
   after_create :update_process_file_counter_cache, :update_process_registry_counter_cache
 
   def to_label

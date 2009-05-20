@@ -6,6 +6,7 @@ require 'rubygems'
 require 'eventmachine'
 require 'mq'
 require 'pp'
+require 'memcached'
 
 class EventCollector
 
@@ -24,23 +25,23 @@ class EventCollector
 
   # Upon initialization, attempt to connect to the AMQP server.
   # Note: This must be called inside an EM.run block.
-  def _setup
+  def _setup()
     # Declare the namespace.
     @namespace = "collector"
 
     # Connect to the AMQP server.
-    @connection = AMQP.connect(:host    => Configuration.get(:name => 'amqp.address',      :namespace => @namespace),
-                               :user    => Configuration.get(:name => 'amqp.user_name',    :namespace => @namespace),
-                               :pass    => Configuration.get(:name => 'amqp.password',     :namespace => @namespace),
-                               :vhost   => Configuration.get(:name => 'amqp.virtual_host', :namespace => @namespace),
+    @connection = AMQP.connect(:host    => Configuration.find_retry(:name => 'amqp.address',      :namespace => @namespace),
+                               :user    => Configuration.find_retry(:name => 'amqp.user_name',    :namespace => @namespace),
+                               :pass    => Configuration.find_retry(:name => 'amqp.password',     :namespace => @namespace),
+                               :vhost   => Configuration.find_retry(:name => 'amqp.virtual_host', :namespace => @namespace),
                                :logging => false)
 
     # Open a channel on the AMQP connection.
     @channel = MQ.new(@connection)
 
     # Declare/create the events exchange.
-    @events_exchange = MQ::Exchange.new(@channel, :topic, Configuration.get(:name      => 'events_exchange_name',
-                                                                            :namespace => @namespace),
+    @events_exchange = MQ::Exchange.new(@channel, :topic, Configuration.find_retry(:name      => 'events_exchange_name',
+                                                                                   :namespace => @namespace),
                                  {:passive     => false,
                                   :durable     => true,
                                   :auto_delete => false,
@@ -48,8 +49,8 @@ class EventCollector
                                   :nowait      => false})
 
     # Declare/create the commands exchange.
-    @commands_exchange = MQ::Exchange.new(@channel, :topic, Configuration.get(:name      => 'commands_exchange_name',
-                                                                              :namespace => @namespace),
+    @commands_exchange = MQ::Exchange.new(@channel, :topic, Configuration.find_retry(:name      => 'commands_exchange_name',
+                                                                                     :namespace => @namespace),
                                  {:passive     => false,
                                   :durable     => true,
                                   :auto_delete => false,
@@ -318,25 +319,47 @@ class EventCollector
       raise "Invalid message type: " + hash.class.to_s
     end
 
-    # TODO: Make sure we not removing too much information.
     hash = _normalize(hash)
-
-    # TODO: Delete this, eventually.
-    #puts "Input:"
-    #pp hash
 
     # Decode the key.
     array = header.properties[:routing_key].split('.')
-    object_name = array[0]
-    action = array[1]
+
+    # Figure out if a priority was supplied as the first
+    # entry.
+    if ((Integer(array[0]) rescue false) == false)
+      # No priority found.
+      object_name = array[0]
+      action = array[1]
+      remainder_index = 2
+    else
+      # Priority found.
+      object_name = array[1]
+      action = array[2]
+      remainder_index = 3
+    end
 
     # Sanity check the action.
     if (@@allowed_actions.rindex(action).nil?)
       raise "Invalid action: " + action.to_s
     end
 
-    args = array.values_at(2..-1) 
+    puts "Processing '" + object_name.to_s + "' event..."
+
+    start_time = Time.now
+    args = array.values_at(remainder_index..-1) 
     eval("_" + action.to_s + "(nil, hash, args)")
+    puts "Completed in " + (Time.now - start_time).seconds.to_s + " seconds"
+
+    # If the object was modified, then expire the
+    # corresponding caches.
+    if (hash.kind_of?(Hash) &&
+        hash.key?(object_name) &&
+        hash[object_name].kind_of?(Object) &&
+        hash[object_name].respond_to?(:expire_caches))
+      # TODO: Delete this, eventually.
+      puts "Expiring cache for: '" + object_name.to_s + "'"
+      hash[object_name].expire_caches
+    end
 
     # TODO: Delete this, eventually.
     #puts "Output:"
@@ -353,14 +376,14 @@ class EventCollector
   private :_process_command
 
   # Starts the daemon.
-  def start
+  def start(priority = '')
     EM.run do
       _setup()
 
-      RAILS_DEFAULT_LOGGER.info "Starting Event Collector Daemon [PID: " + Process.pid.to_s + "]"
+      RAILS_DEFAULT_LOGGER.info "Starting " + priority.to_s.camelize + " Event Collector Daemon [PID: " + Process.pid.to_s + "]"
 
       # Declare the queue on the channel.
-      @queue = MQ::Queue.new(@channel, Configuration.get(:name => 'queue_name', :namespace => @namespace), 
+      @queue = MQ::Queue.new(@channel, Configuration.find_retry(:name => 'queue_name', :namespace => @namespace) + '.' + priority.to_s, 
                              {:passive     => false,
                               :durable     => true,
                               :exclusive   => false,
@@ -369,8 +392,13 @@ class EventCollector
 
     
       # Bind the queue to the exchanges.
-      @queue.bind(@events_exchange, :key => Configuration.get(:name => 'events_routing_key', :namespace => @namespace))
-      @queue.bind(@commands_exchange, :key => Configuration.get(:name => 'commands_routing_key', :namespace => @namespace))
+      events_exchange_routing_key_prefix = ''
+      if (!priority.to_s.empty?)
+        events_exchange_routing_key_prefix = Configuration.find_retry(:name => priority.to_s + '_priority', :namespace => @namespace) + '.'
+      end 
+      @queue.bind(@events_exchange, :key => events_exchange_routing_key_prefix + Configuration.find_retry(:name => 'events_routing_key', :namespace => @namespace))
+      @queue.bind(@commands_exchange, :key => Configuration.find_retry(:name => 'commands_routing_key_prefix', :namespace => @namespace) +
+                                              priority.to_s + '.#')
       
       # Subscribe to the messages in the queue.
       @queue.subscribe(:ack => true, :nowait => false) do |header, msg|
@@ -381,9 +409,15 @@ class EventCollector
 
         begin 
           msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-        rescue
+        rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
+          # If our memcached server goes away, then retry.
           RAILS_DEFAULT_LOGGER.warn $!.to_s
-          puts $!.to_s
+          puts "Retrying Event - " + $!.to_s
+          retry
+        rescue
+          # Otherwise, log the error and discard the event.
+          RAILS_DEFAULT_LOGGER.warn $!.to_s
+          pp $!
         end
  
         # ACK receipt of message.
@@ -391,10 +425,10 @@ class EventCollector
 
         # Check if we were given the shutdown command.
         if ((header.properties[:exchange] == "commands") &&
-            (header.properties[:routing_key] == "drone." + @namespace.to_s) &&
+            (header.properties[:routing_key] == @namespace.to_s + '.' + priority.to_s) &&
             (msg == "shutdown"))
 
-          RAILS_DEFAULT_LOGGER.info "Stopping Event Collector Daemon [PID: " + Process.pid.to_s + "]"
+          RAILS_DEFAULT_LOGGER.info "Stopping " + priority.to_s.camelize + " Event Collector Daemon [PID: " + Process.pid.to_s + "]"
           EM.next_tick { @connection.close{ EM.stop_event_loop } }
         end
   
@@ -404,13 +438,13 @@ class EventCollector
   end
 
   # Stops the daemon.
-  def stop
+  def stop(priority = '')
     EM.run do
       _setup()
 
       # Publish the message to the exchange.
       message = "shutdown".to_json
-      @commands_exchange.publish(message, {:routing_key => 'drone.' + @namespace.to_s, :persistent => true})
+      @commands_exchange.publish(message, {:routing_key => @namespace.to_s + '.' + priority.to_s, :persistent => true})
 
       # Close the connection.
       @connection.close{ EM.stop }

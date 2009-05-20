@@ -16,6 +16,7 @@ class JobMailer < ActionMailer::Base
         @body[:url_statistics].key?("compromised"))
       @subject += "ALERT - "
       @body[:suspicious_activity] = "YES"
+      @bcc = ["kindlund@mitre.org", "darien@kindlund.com"]
     end
     @subject += 'Job Completed: ' + hash["uuid"].to_s
   end

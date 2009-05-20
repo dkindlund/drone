@@ -72,13 +72,13 @@ commands_exchange_name:
   description: The name of the AMQP exchange used to send commands to this component.
   default_value: commands
 
-commands_routing_key:
+commands_routing_key_prefix:
   id: 10
-  name: commands_routing_key
-  value: drone.#
+  name: commands_routing_key_prefix
+  value: collector.
   namespace: collector
-  description: The routing key used to bind the collector queue to the commands exchange.
-  default_value: drone.# 
+  description: The prefix of the routing key used to bind the collector queues to the commands exchange.
+  default_value: collector. 
 
 default_ui_tab_name:
   id: 11
@@ -275,18 +275,18 @@ default_url_priority:
 low_priority_routing_key:
   id: 35
   name: low.routing_key
-  value: job.create.job.urls.job_alerts
+  value: 1.job.create.job.urls.job_alerts
   namespace: Job
   description: The routing key to use when creating a low priority Job.
-  default_value: job.create.job.urls.job_alerts
+  default_value: 1.job.create.job.urls.job_alerts
 
 high_priority_routing_key:
   id: 36
   name: high.routing_key
-  value: job.create.job.urls.job_alerts
+  value: 500.job.create.job.urls.job_alerts
   namespace: Job
   description: The routing key to use when creating a high priority Job.
-  default_value: job.create.job.urls.job_alerts
+  default_value: 500.job.create.job.urls.job_alerts
 
 url_priority_threshold:
   id: 37
@@ -307,10 +307,10 @@ notifier_queue_name:
 notifier_events_routing_key:
   id: 39
   name: events_routing_key
-  value: "job.create.#;job.find_and_update.#.completed_at.#"
+  value: "#.job.create.#;#.job.find_and_update.#.completed_at.#"
   namespace: notifier
   description: The routing keys used to bind the notifier queue to the events exchange.
-  default_value: "job.create.#;job.find_and_update.#.completed_at.#"
+  default_value: "#.job.create.#;#.job.find_and_update.#.completed_at.#"
 
 notifier_commands_routing_key:
   id: 40
@@ -319,3 +319,19 @@ notifier_commands_routing_key:
   namespace: notifier
   description: The routing key used to bind the notifier queue to the commands exchange.
   default_value: notifier.# 
+
+collector_high_priority:
+  id: 41
+  name: high_priority
+  value: 500
+  namespace: collector
+  description: The value indicating a high priority for event messages.
+  default_value: 500
+
+collector_low_priority:
+  id: 42
+  name: low_priority
+  value: 1
+  namespace: collector
+  description: The value indicating a low priority for event messages.
+  default_value: 1

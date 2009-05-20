@@ -1,5 +1,5 @@
 <div class="login">
-  <h1><%= Configuration.get(:name => "ui.title").to_s %></h1>
+  <h1><%= Configuration.find_retry(:name => "ui.title").to_s %></h1>
   <% flash.each do |key, msg| %>
     <%= content_tag(:p, msg, :class => "flash #{key}") %>
   <% end %>

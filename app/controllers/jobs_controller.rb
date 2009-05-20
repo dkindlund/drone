@@ -107,17 +107,17 @@ class JobsController < ApplicationController
       namespace = "collector"
 
       # Connect to the AMQP server.
-      connection = AMQP.connect(:host    => Configuration.get(:name => "amqp.address", :namespace => namespace),
-                                :user    => Configuration.get(:name => "amqp.user_name", :namespace => namespace),
-                                :pass    => Configuration.get(:name => "amqp.password", :namespace => namespace),
-                                :vhost   => Configuration.get(:name => "amqp.virtual_host", :namespace => namespace),
+      connection = AMQP.connect(:host    => Configuration.find_retry(:name => "amqp.address", :namespace => namespace),
+                                :user    => Configuration.find_retry(:name => "amqp.user_name", :namespace => namespace),
+                                :pass    => Configuration.find_retry(:name => "amqp.password", :namespace => namespace),
+                                :vhost   => Configuration.find_retry(:name => "amqp.virtual_host", :namespace => namespace),
                                 :logging => false)
 
       # Open a channel on the AMQP connection.
       channel = MQ.new(connection)
 
       # Declare/create the events exchange.
-      events_exchange = MQ::Exchange.new(channel, :topic, Configuration.get(:name => "events_exchange_name", :namespace => namespace),
+      events_exchange = MQ::Exchange.new(channel, :topic, Configuration.find_retry(:name => "events_exchange_name", :namespace => namespace),
                                          {:passive     => false,
                                           :durable     => true,
                                           :auto_delete => false,
@@ -126,15 +126,34 @@ class JobsController < ApplicationController
 
       # Encode the message.
       # TODO: Figure out if using high or low routing key.
-      events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
-                              {:routing_key => Configuration.get(:name => "low.routing_key",
-                               :namespace => "Job"),
-                              :persistent => true})
+      if (params[:input][:priority].to_i >= Configuration.find_retry(:name => "high_priority", :namespace => namespace).to_i)
+        events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
+                                {:routing_key => Configuration.find_retry(:name => "high.routing_key",
+                                 :namespace => "Job"),
+                                :persistent => true})
+      else
+        events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
+                                {:routing_key => Configuration.find_retry(:name => "low.routing_key",
+                                 :namespace => "Job"),
+                                :persistent => true})
+      end
 
       # Close the connection.
       connection.close { EM.stop }
     end
-    flash.now[:info] = "Job submitted. Please refresh for updated listings."
+
+    # Refresh the job.
+    # XXX: This works great as long as there is not a backlog in the queue.
+    # Then, this will loop for a long period of time a not return feedback to the user.
+    #new_job = Job.find_by_uuid(@record.uuid.to_s)
+    #while (new_job.nil?)
+    #  new_job = Job.find_by_uuid(@record.uuid.to_s)
+    #  sleep 1
+    #end
+    #new_job.expire_caches
+    #@record = new_job
+
+    flash.now[:info] = "Job submitted. Please refresh before viewing job details.  If the job does not appear shortly after refresh, then resubmit with a higher priority (e.g., >= " + Configuration.find_retry(:name => "high_priority", :namespace => "collector").to_s + ")."
     return @record
   end
 end

@@ -364,5 +364,37 @@ namespace :collector do
     # just update: client_status and suspended_at sub-hashes.
     result = collector.test_send_event('client.find_and_update.client_status.suspended_at', client)
   end
+
+  namespace :high do
+    desc "Starts the high-priority collector daemon, in order to obtain updated data from the Honeyclient Manager"
+    task :start => [:environment] do
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
+      daemon = EventCollector.new
+      daemon.start('high')
+    end
+
+    desc "Stops the high-priority collector daemon"
+    task :stop => [:environment] do
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
+      daemon = EventCollector.new
+      daemon.stop('high')
+    end
+  end
+
+  namespace :low do
+    desc "Starts the low-priority collector daemon, in order to obtain updated data from the Honeyclient Manager"
+    task :start => [:environment] do
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
+      daemon = EventCollector.new
+      daemon.start('low')
+    end
+
+    desc "Stops the low-priority collector daemon"
+    task :stop => [:environment] do
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
+      daemon = EventCollector.new
+      daemon.stop('low')
+    end
+  end
 end
 

@@ -1,5 +1,8 @@
 # Settings specified here will take precedence over those in config/environment.rb
 
+# Log error messages when you accidentally call methods on nil.
+config.whiny_nils = true
+
 # The production environment is meant for finished, "live" apps.
 # Code is not reloaded between requests
 config.cache_classes = true
@@ -10,7 +13,7 @@ config.action_controller.perform_caching             = true
 config.action_view.cache_template_loading            = true
 
 # See everything in the log (default is :info)
-# config.log_level = :debug
+# config.log_level = :info
 
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new

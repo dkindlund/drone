@@ -9,6 +9,11 @@ class Host < ActiveRecord::Base
   validates_length_of :ip, :maximum => 255
   validates_uniqueness_of :hostname, :scope => [:ip]
 
+  version 1
+  index :hostname
+  index :ip
+  index [:hostname, :ip]
+
   def to_label
     "#{hostname}"
   end
