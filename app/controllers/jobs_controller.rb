@@ -125,7 +125,6 @@ class JobsController < ApplicationController
                                           :nowait      => false})
 
       # Encode the message.
-      # TODO: Figure out if using high or low routing key.
       if (params[:input][:priority].to_i >= Configuration.find_retry(:name => "high_priority", :namespace => namespace).to_i)
         events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
                                 {:routing_key => Configuration.find_retry(:name => "high.routing_key",
