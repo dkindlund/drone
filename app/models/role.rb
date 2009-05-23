@@ -3,6 +3,6 @@ class Role < ActiveRecord::Base
 
   has_and_belongs_to_many :users
 
-  version 1
-  index :name
+  version 5
+  index :name, :limit => 500, :buffer => 0
 end

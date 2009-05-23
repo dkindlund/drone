@@ -7,11 +7,11 @@ class Application < ActiveRecord::Base
   validates_length_of :short_name, :maximum => 255
   validates_uniqueness_of :short_name, :scope => [:manufacturer, :version]
 
-  version 1
-  index :manufacturer
-  index :version
-  index :short_name
-  index [:manufacturer, :version, :short_name]
+  version 5
+  index :manufacturer,                          :limit => 500, :buffer => 0
+  index :version,                               :limit => 500, :buffer => 0
+  index :short_name,                            :limit => 500, :buffer => 0
+  index [:manufacturer, :version, :short_name], :limit => 500, :buffer => 0
 
   def to_label
     abbreviation = short_name.split(" ").map {|word| word[0].chr}.join

@@ -7,10 +7,10 @@ class Configuration < ActiveRecord::Base
   validates_length_of :namespace, :maximum => 255
   validates_uniqueness_of :name, :scope => [:value, :namespace]
 
-  version 1
-  index :name
-  index :namespace
-  index [:name, :namespace]
+  version 10
+  index :name,               :limit => 500, :buffer => 0
+  index :namespace,          :limit => 500, :buffer => 0
+  index [:name, :namespace], :limit => 500, :buffer => 0
 
   def to_label
     "#{namespace}_#{name}"

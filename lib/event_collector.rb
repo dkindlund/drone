@@ -123,7 +123,10 @@ class EventCollector
           attrs[attrib] = params[attrib]
         end
 
+# TODO: Delete this, eventually.
+start_time = Time.now
         params = eval(klass.to_s + ".find_or_create_by_#{attrs.keys.join('_and_')}(params)")
+puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + " seconds"
 
         # If the object is still new or has changed, then force a save to generate an exception.
         if (params.new_record? || params.changed?)
@@ -167,6 +170,8 @@ class EventCollector
         end
 
         # XXX: We assume Hash.keys and Hash.values return the same relative data, in order.
+# TODO: Delete this, eventually.
+puts "evaling: " + klass.to_s + ".find_by_#{attrs.keys.join('_and_')}(\"#{attrs.values.join('","')}\")"
         object = eval(klass.to_s + ".find_by_#{attrs.keys.join('_and_')}(\"#{attrs.values.join('","')}\")")
 
         # Sanity check: Make sure we have an object at this point.
@@ -223,8 +228,10 @@ class EventCollector
         end
       end
 
+start_time = Time.now
       # Update the object.
       object.save!
+puts "save! Completed in " + (Time.now - start_time).seconds.to_s + " seconds"
 
       # TODO: Delete this, eventually
       #pp object
@@ -292,7 +299,9 @@ class EventCollector
             attrs[attrib] = params[attrib]
           end
 
+start_time = Time.now
           params = eval(klass.to_s + ".find_or_create_by_#{attrs.keys.join('_and_')}(params)")
+puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + " seconds"
 
         end
 
@@ -343,7 +352,7 @@ class EventCollector
       raise "Invalid action: " + action.to_s
     end
 
-    puts "Processing '" + object_name.to_s + "' event..."
+    puts "Processing '" + header.properties[:routing_key].to_s + "'..."
 
     start_time = Time.now
     args = array.values_at(remainder_index..-1) 
@@ -362,8 +371,8 @@ class EventCollector
     end
 
     # TODO: Delete this, eventually.
-    #puts "Output:"
-    pp hash
+    #puts "Output!"
+    #pp hash
 
     return hash
   end
@@ -399,29 +408,31 @@ class EventCollector
       @queue.bind(@events_exchange, :key => events_exchange_routing_key_prefix + Configuration.find_retry(:name => 'events_routing_key', :namespace => @namespace))
       @queue.bind(@commands_exchange, :key => Configuration.find_retry(:name => 'commands_routing_key_prefix', :namespace => @namespace) +
                                               priority.to_s + '.#')
-      
+
+      shutdown = false
       # Subscribe to the messages in the queue.
       @queue.subscribe(:ack => true, :nowait => false) do |header, msg|
-  
-        # Process message.
-        # TODO: Delete this, eventually.
-        #pp [:got, header, msg]
+        unless shutdown
+          # Process message.
+          # TODO: Delete this, eventually.
+          #pp [:got, header, msg]
 
-        begin 
-          msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-        rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
-          # If our memcached server goes away, then retry.
-          RAILS_DEFAULT_LOGGER.warn $!.to_s
-          puts "Retrying Event - " + $!.to_s
-          retry
-        rescue
-          # Otherwise, log the error and discard the event.
-          RAILS_DEFAULT_LOGGER.warn $!.to_s
-          pp $!
-        end
+          begin
+            msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
+          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
+            # If our memcached server goes away, then retry.
+            RAILS_DEFAULT_LOGGER.warn $!.to_s
+            puts "Retrying Event - " + $!.to_s
+            retry
+          rescue
+            # Otherwise, log the error and discard the event.
+            RAILS_DEFAULT_LOGGER.warn $!.to_s
+            pp $!
+          end
  
-        # ACK receipt of message.
-        header.ack()
+          # ACK receipt of message.
+          header.ack()
+        end
 
         # Check if we were given the shutdown command.
         if ((header.properties[:exchange] == "commands") &&
@@ -429,11 +440,10 @@ class EventCollector
             (msg == "shutdown"))
 
           RAILS_DEFAULT_LOGGER.info "Stopping " + priority.to_s.camelize + " Event Collector Daemon [PID: " + Process.pid.to_s + "]"
-          EM.next_tick { @connection.close{ EM.stop_event_loop } }
+          shutdown = true
+          EM.next_tick { @connection.close{ EM.stop_event_loop; exit } }
         end
-  
       end
-  
     end
   end
 

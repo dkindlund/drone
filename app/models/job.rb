@@ -12,14 +12,14 @@ class Job < ActiveRecord::Base
   validates_numericality_of :url_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :uuid, :scope => [:uuid]
 
-  version 1
-  index :uuid
-  index :completed_at
-  index :created_at
-  index :job_source_id
-  index [:job_source_id, :id]
-  index :client_id
-  index [:client_id, :id]
+  version 5
+  index :uuid,                 :limit => 500, :buffer => 0
+  index :completed_at,         :limit => 500, :buffer => 0
+  index :created_at,           :limit => 500, :buffer => 0
+  index :job_source_id,        :limit => 500, :buffer => 0
+  index [:job_source_id, :id], :limit => 500, :buffer => 0
+  index :client_id,            :limit => 500, :buffer => 0
+  index [:client_id, :id],     :limit => 500, :buffer => 0
 
   after_create :update_url_counter_cache
 

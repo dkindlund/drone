@@ -11,8 +11,8 @@ class Fingerprint < ActiveRecord::Base
   validates_length_of :checksum, :allow_nil => true, :maximum => 255
   validates_numericality_of :os_process_count, :greater_than_or_equal_to => 0
 
-  version 1
-  index :checksum
+  version 5
+  index :checksum, :limit => 500, :buffer => 0
 
   before_create :calculate_checksum
   after_create :update_os_process_counter_cache

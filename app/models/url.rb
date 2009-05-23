@@ -8,20 +8,21 @@ class Url < ActiveRecord::Base
 
   validates_presence_of :url, :priority, :url_status
   validates_associated :url_status, :fingerprint
-  validates_length_of :url, :maximum => 8192
+  # TODO: Is this the cause for the slowdown?
+  #validates_length_of :url, :maximum => 8192
   validates_numericality_of :priority, :greater_than_or_equal_to => 1
 
-  version 1
-  index :priority
-  index :url_status_id
-  index [:url_status_id, :id]
-  index :fingerprint_id
-  index [:fingerprint_id, :id]
-  index :job_id
-  index [:job_id, :id]
-  index :client_id
-  index [:client_id, :id]
-  index :time_at
+  version 14
+  index :priority,              :limit => 500, :buffer => 0
+  index :url_status_id,         :limit => 500, :buffer => 0
+  index [:url_status_id, :id],  :limit => 500, :buffer => 0
+  index :fingerprint_id,        :limit => 500, :buffer => 0
+  index [:fingerprint_id, :id], :limit => 500, :buffer => 0
+  index :job_id,                :limit => 500, :buffer => 0
+  index [:job_id, :id],         :limit => 500, :buffer => 0
+  index :client_id,             :limit => 500, :buffer => 0
+  index [:client_id, :id],      :limit => 500, :buffer => 0
+  index :time_at,               :limit => 500, :buffer => 0
 
   def to_label
     "#{url}"

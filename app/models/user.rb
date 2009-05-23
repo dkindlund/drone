@@ -24,18 +24,18 @@ class User < ActiveRecord::Base
   validates_uniqueness_of   :email
   validates_format_of       :email,    :with => Authentication.email_regex, :message => Authentication.bad_email_message
 
-  version 1
-  index :login
-  index :name
-  index :organization
-  index :email
-  index :state
-  index :activation_code
-  index :remember_token
-  index :created_at
-  index :updated_at
-  index :activated_at
-  index :deleted_at
+  version 5
+  index :login,           :limit => 500, :buffer => 0
+  index :name,            :limit => 500, :buffer => 0
+  index :organization,    :limit => 500, :buffer => 0
+  index :email,           :limit => 500, :buffer => 0
+  index :state,           :limit => 500, :buffer => 0
+  index :activation_code, :limit => 500, :buffer => 0
+  index :remember_token,  :limit => 500, :buffer => 0
+  index :created_at,      :limit => 500, :buffer => 0
+  index :updated_at,      :limit => 500, :buffer => 0
+  index :activated_at,    :limit => 500, :buffer => 0
+  index :deleted_at,      :limit => 500, :buffer => 0
 
   # HACK HACK HACK -- how to do attr_accessible from here?
   # prevents a user from submitting a crafted form that bypasses activation

@@ -7,13 +7,13 @@ class UrlStatistic < ActiveRecord::Base
   validates_numericality_of :count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :url_status_id, :scope => [:created_at, :updated_at]
 
-  version 1
-  index :created_at
-  index :updated_at
-  index :url_status_id
-  index [:url_status_id, :id]
-  index :count
-  index [:created_at, :updated_at, :url_status_id]
+  version 5
+  index :created_at,                                :limit => 500, :buffer => 0
+  index :updated_at,                                :limit => 500, :buffer => 0
+  index :url_status_id,                             :limit => 500, :buffer => 0
+  index [:url_status_id, :id],                      :limit => 500, :buffer => 0
+  index :count,                                     :limit => 500, :buffer => 0
+  index [:created_at, :updated_at, :url_status_id], :limit => 500, :buffer => 0
 
   def to_label
     "#{created_at} (#{count})"

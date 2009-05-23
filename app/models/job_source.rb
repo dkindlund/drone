@@ -8,10 +8,10 @@ class JobSource < ActiveRecord::Base
   validates_length_of :protocol, :maximum => 255
   validates_uniqueness_of :name, :scope => [:protocol]
 
-  version 1
-  index :name
-  index :protocol
-  index [:name, :protocol]
+  version 5
+  index :name,              :limit => 500, :buffer => 0
+  index :protocol,          :limit => 500, :buffer => 0
+  index [:name, :protocol], :limit => 500, :buffer => 0
 
   def to_label
     "#{name}"

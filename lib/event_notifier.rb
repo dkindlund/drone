@@ -188,29 +188,32 @@ class EventNotifier
       events_routing_keys.each do |events_routing_key|
         @queue.bind(@events_exchange, :key => events_routing_key)
       end
-      
+     
+      shutdown = false 
       # Subscribe to the messages in the queue.
       @queue.subscribe(:ack => true, :nowait => false) do |header, msg|
-  
-        # Process message.
-        # TODO: Delete this, eventually.
-        #pp [:got, header, msg]
-
-        begin 
-          msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-        rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
-          # If our memcached server goes away, then retry.
-          RAILS_DEFAULT_LOGGER.warn $!.to_s
-          puts "Retrying Event - " + $!.to_s
-          retry
-        rescue
-          # Otherwise, log the error and discard the event.
-          RAILS_DEFAULT_LOGGER.warn $!.to_s
-          pp $!
-        end
  
-        # ACK receipt of message.
-        header.ack()
+        unless shutdown 
+          # Process message.
+          # TODO: Delete this, eventually.
+          #pp [:got, header, msg]
+
+          begin 
+            msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
+          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
+            # If our memcached server goes away, then retry.
+            RAILS_DEFAULT_LOGGER.warn $!.to_s
+            puts "Retrying Event - " + $!.to_s
+            retry
+          rescue
+            # Otherwise, log the error and discard the event.
+            RAILS_DEFAULT_LOGGER.warn $!.to_s
+            pp $!
+          end
+ 
+          # ACK receipt of message.
+          header.ack()
+        end
 
         # Check if we were given the shutdown command.
         if ((header.properties[:exchange] == "commands") &&
@@ -218,6 +221,7 @@ class EventNotifier
             (msg == "shutdown"))
 
           RAILS_DEFAULT_LOGGER.info "Stopping Event Notifier Daemon [PID: " + Process.pid.to_s + "]"
+          shutdown = true
           EM.next_tick { @connection.close{ EM.stop_event_loop } }
         end
   

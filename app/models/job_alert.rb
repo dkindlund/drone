@@ -7,11 +7,11 @@ class JobAlert < ActiveRecord::Base
   validates_length_of :protocol, :maximum => 255
   validates_length_of :address, :maximum => 255
 
-  version 1
-  index :protocol
-  index :address
-  index [:protocol, :address]
-  index [:job_id, :id]
+  version 5
+  index :protocol,             :limit => 500, :buffer => 0
+  index :address,              :limit => 500, :buffer => 0
+  index [:protocol, :address], :limit => 500, :buffer => 0
+  index [:job_id, :id],        :limit => 500, :buffer => 0
 
   def to_label
     "#{protocol}:#{address}"
