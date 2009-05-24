@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column
+  ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
   
   before_filter :login_required, :except => [:new, :create, :activate]
   before_filter :admin_required, :only => [:index, :list]
