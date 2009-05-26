@@ -1,8 +1,5 @@
 class CreateGroups < ActiveRecord::Migration
   def self.up
-    # TODO: Delete this, eventually.
-    add_index :roles, :name, :unique => true
-
     create_table :groups do |t|
       t.string :name
     end
