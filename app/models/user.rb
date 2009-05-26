@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'acts_as_ferret'
 
 class User < ActiveRecord::Base
   include Authentication
@@ -8,6 +9,7 @@ class User < ActiveRecord::Base
   include AuthorizationHelper
 
   has_and_belongs_to_many :roles
+  has_and_belongs_to_many :groups
 
   validates_presence_of     :login
   validates_length_of       :login,    :within => 3..40
@@ -36,6 +38,10 @@ class User < ActiveRecord::Base
   index :updated_at,      :limit => 500, :buffer => 0
   index :activated_at,    :limit => 500, :buffer => 0
   index :deleted_at,      :limit => 500, :buffer => 0
+
+  after_create :set_group
+
+  acts_as_ferret( { :fields => [:name], :remote => true } )
 
   # HACK HACK HACK -- how to do attr_accessible from here?
   # prevents a user from submitting a crafted form that bypasses activation
@@ -101,5 +107,16 @@ class User < ActiveRecord::Base
   def make_activation_code
     self.deleted_at = nil
     self.activation_code = self.class.make_token
+  end
+
+  private
+
+  # Sets the primary group of the User, by using the organization
+  # name as a basis.
+  def set_group
+    if (self.organization.to_s.length > 0)
+      group = Group.find_or_create_by_name(self.organization.to_s)
+      self.groups << group
+    end
   end
 end

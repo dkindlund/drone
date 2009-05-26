@@ -54,6 +54,20 @@ class JobsController < ApplicationController
     config.create.edit_after_create = false
   end
 
+  # Restrict who can see what records in list view.
+  # - Admins can see everything.
+  # - Users in groups can see only those corresponding records along with records not in any group.
+  # - Users not in a group can see only those corresponding records.
+  def conditions_for_collection
+    return [] if current_user.has_role?(:admin)
+    groups = current_user.groups
+    if (groups.size > 0)
+      return [ '(jobs.group_id IN (?) OR jobs.group_id IS NULL)', groups.map!{|g| g.id} ]
+    else
+      return [ 'jobs.group_id IS NULL' ]
+    end
+  end
+
   def do_create
     # Create a blank job.
     if (current_user.nil?)

@@ -55,4 +55,18 @@ class UrlsController < ApplicationController
     # TODO: Check if this is needed for performance reasons; if we enable it, be sure to remove the fingerprint column searchability.
     #config.columns[:fingerprint].includes = nil
   end
+
+  # Restrict who can see what records in list view.
+  # - Admins can see everything.
+  # - Users in groups can see only those corresponding records along with records not in any group.
+  # - Users not in a group can see only those corresponding records.
+  def conditions_for_collection
+    return [] if current_user.has_role?(:admin)
+    groups = current_user.groups
+    if (groups.size > 0)
+      return [ '(urls.group_id IN (?) OR urls.group_id IS NULL)', groups.map!{|g| g.id} ]
+    else
+      return [ 'urls.group_id IS NULL' ]
+    end
+  end
 end

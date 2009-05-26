@@ -251,18 +251,18 @@ roles_ui_tab_name:
 admin_ui_tab_order:
   id: 32
   name: ui.tab_order.admin
-  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,roles
+  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,groups,roles
   namespace:
   description: The tab order for all controllers accessible by users who have the admin role.
-  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,roles
+  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,job_sources,job_alerts,os,applications,client_statuses,hosts,url_statistics,url_statuses,configurations,users,groups,roles
 
 ui_tab_order:
   id: 33
   name: ui.tab_order
-  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents
+  value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,users
   namespace:
   description: The tab order for all controllers accessible non-admin users.
-  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents
+  default_value: dashboard,clients,jobs,urls,fingerprints,os_processes,process_registries,process_files,file_contents,users
 
 default_url_priority:
   id: 34
@@ -335,3 +335,11 @@ collector_low_priority:
   namespace: collector
   description: The value indicating a low priority for event messages.
   default_value: 1
+
+groups_ui_tab_name:
+  id: 43
+  name: ui.tab_name
+  value: Groups
+  namespace: Group
+  description: The tab name to assign to the Groups controller.
+  default_value: Groups

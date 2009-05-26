@@ -2,7 +2,6 @@ class UsersController < ApplicationController
   ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
   
   before_filter :login_required, :except => [:new, :create, :activate]
-  before_filter :admin_required, :only => [:index, :list]
   before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge]
 
   active_scaffold :user do |config|
@@ -11,7 +10,7 @@ class UsersController < ApplicationController
 
     # Show the following columns in the specified order.
     config.list.columns = [:name, :login, :email, :organization, :state, :roles, :created_at, :updated_at, :activated_at, :deleted_at]
-    config.show.columns = [:name, :login, :email, :organization, :state, :roles, :created_at, :updated_at, :activated_at, :deleted_at]
+    config.show.columns = [:name, :login, :email, :organization, :state, :roles, :groups, :created_at, :updated_at, :activated_at, :deleted_at]
 
     # Sort columns in the following order.
     config.list.sorting = {:login => :asc}
@@ -26,7 +25,20 @@ class UsersController < ApplicationController
     config.show.link.label = "Details"
     config.show.label = "User Details"
   end
-  
+
+  # Restrict who can see what records in list view.
+  # - Admins can see everything.
+  # - Users in same organization can see only those corresponding records.
+  # - Users not in an organization can see only those corresponding records.
+  def conditions_for_collection
+    return [] if current_user.has_role?(:admin)
+    if (!current_user.organization.nil?)
+      return [ 'users.organization = ?', current_user.organization.to_s ]
+    else
+      return [ 'users.organization IS NULL' ]
+    end
+  end
+
   # render new.rhtml
   def new
     logout_keeping_session!
@@ -98,11 +110,5 @@ class UsersController < ApplicationController
   protected
   def find_user
     @user = User.find(params[:id])
-  end
-
-  def admin_required
-    if (current_user.nil? || !current_user.has_role?(:admin))
-      redirect_back_or_default('/')
-    end
   end
 end

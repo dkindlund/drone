@@ -16,4 +16,19 @@ class JobAlert < ActiveRecord::Base
   def to_label
     "#{protocol}:#{address}"
   end
+
+  # Allow all admins to read any data.
+  # Allow members to read only their own data.
+  def authorized_for_read?
+    return true if !existing_record_check?
+    if !current_user.nil?
+      if current_user.has_role?(:admin)
+        return true
+      else
+        return !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(self.job.group_id).nil?
+      end
+    else
+      return false
+    end
+  end
 end

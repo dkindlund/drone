@@ -3,6 +3,7 @@ class Job < ActiveRecord::Base
 
   belongs_to :client, :counter_cache => :job_count
   belongs_to :job_source
+  belongs_to :group
   has_many :job_alerts
   has_many :urls, :before_add => :decrement_src_url_counter_cache, :after_add => :increment_dst_url_counter_cache, :after_remove => :decrement_url_counter_cache
 
@@ -12,7 +13,7 @@ class Job < ActiveRecord::Base
   validates_numericality_of :url_count, :greater_than_or_equal_to => 0
   validates_uniqueness_of :uuid, :scope => [:uuid]
 
-  version 5
+  version 6
   index :uuid,                 :limit => 500, :buffer => 0
   index :completed_at,         :limit => 500, :buffer => 0
   index :created_at,           :limit => 500, :buffer => 0
@@ -20,11 +21,29 @@ class Job < ActiveRecord::Base
   index [:job_source_id, :id], :limit => 500, :buffer => 0
   index :client_id,            :limit => 500, :buffer => 0
   index [:client_id, :id],     :limit => 500, :buffer => 0
+  index :group_id,             :limit => 500, :buffer => 0
+  index [:group_id, :id],      :limit => 500, :buffer => 0
 
-  after_create :update_url_counter_cache
+  before_create :set_group
+  after_create [:update_url_counter_cache, :set_urls_group]
 
   def to_label
     "#{uuid}"
+  end
+
+  # Allow all admins to read any data.
+  # Allow members to read only their own data or unowned data.
+  def authorized_for_read?
+    return true if !existing_record_check?
+    if !current_user.nil?
+      if current_user.has_role?(:admin)
+        return true
+      else
+        return self.group_id.nil? || !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(self.group_id).nil?
+      end
+    else
+      return false
+    end
   end
 
   # Allow all admins and members to create new jobs.
@@ -33,6 +52,21 @@ class Job < ActiveRecord::Base
   end
 
   private
+
+  # Attempts to set the group of a new Job, using the
+  # JobSource.group (if specified).
+  def set_group
+    if (!self.job_source.nil? && !self.job_source.group.nil?)
+      self.group = self.job_source.group
+    end
+  end
+
+  # After self.urls is added, then update each url.group with self.group
+  def set_urls_group
+    if (!self.id.nil? && !self.group_id.nil?)
+      Url.update_all("group_id = " + self.group_id.to_s, [ "job_id = ?", self.id.to_s ])
+    end
+  end
 
   # XXX: These methods are probably inefficient, but its not clear how the
   # counter cache can be manipulated in any other way.
