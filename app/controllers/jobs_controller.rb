@@ -97,9 +97,9 @@ class JobsController < ApplicationController
         params[:input].key?(:job_source) &&
         params[:input][:job_source].key?(:name) &&
         params[:input][:job_source].key?(:protocol))
-      @record.job_source = JobSource.find_or_create_by_name_and_protocol(params[:input][:job_source][:name], params[:input][:job_source][:protocol])
+      @record.job_source = JobSource.find_or_initialize_by_name_and_protocol_and_group_id(params[:input][:job_source][:name], params[:input][:job_source][:protocol], (current_user.groups.first.nil? ? nil : current_user.groups.first.id))
     else
-      @record.job_source = JobSource.find_or_create_by_name_and_protocol(current_user.name, "https")
+      @record.job_source = JobSource.find_or_initialize_by_name_and_protocol_and_group_id(current_user.name, "https", (current_user.groups.first.nil? ? nil : current_user.groups.first.id))
     end
 
     # Collect the URLs.
@@ -140,12 +140,12 @@ class JobsController < ApplicationController
 
       # Encode the message.
       if (params[:input][:priority].to_i >= Configuration.find_retry(:name => "high_priority", :namespace => namespace).to_i)
-        events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id}}), 
                                 {:routing_key => Configuration.find_retry(:name => "high.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})
       else
-        events_exchange.publish(@record.to_json(:include => [:job_source, :job_alerts, :urls]), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id}}), 
                                 {:routing_key => Configuration.find_retry(:name => "low.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})
