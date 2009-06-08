@@ -1,0 +1,17 @@
+# Configuration file for workers.
+# You can configure to run more than one worker with the same rake task.
+# Each instance of a task should have a different (unique) pidfile name.
+# For example to run two collector tasks with the same worker, you can setup
+# the configuration like the example below. Note the pidfiles names are unique.
+# You must also set the phonehome to the shortname address of the node running
+# the worker console.
+
+sample:
+  pidfile: "collector_1.pid"
+  command: "collector:start_as_daemon"
+  phonehome: "theman_console@hostname"
+
+another:
+  pidfile: "collector_2.pid"
+  command: "collector:start_as_daemon"
+  phonehome: "theman_console@hostname"
