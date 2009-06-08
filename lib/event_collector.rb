@@ -7,9 +7,11 @@ require 'eventmachine'
 require 'mq'
 require 'pp'
 require 'memcached'
+require 'daemonize'
 
 class EventCollector
-
+  include DaemonizeHelper
+  
   # Class variables.
   @@allowed_actions    = [ "find_or_create",
                            "find_and_update",
@@ -385,8 +387,12 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
   private :_process_command
 
   # Starts the daemon.
-  def start(priority = '')
+  def start(priority = '',detach=false)
     EM.run do
+      
+      # Daemonize the process if flag is set
+      daemonize if detach
+      
       _setup()
 
       RAILS_DEFAULT_LOGGER.info "Starting " + priority.to_s.camelize + " Event Collector Daemon [PID: " + Process.pid.to_s + "]"
@@ -458,6 +464,9 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
 
       # Close the connection.
       @connection.close{ EM.stop }
+      
+      # kill pid if daemonized
+      stop_daemon
     end
   end
 

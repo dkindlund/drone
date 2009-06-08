@@ -14,7 +14,26 @@ namespace :collector do
     daemon = EventCollector.new
     daemon.start
   end
-
+  
+  # Call as 'rake collect:start_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
+  desc "Start Daemon mode: An example of how to add true daemon mode (detached from terminal)"
+  task :start_as_daemon, :configkey, :needs => [:environment] do |t,args|
+    abort "Missing config key. Run as 'rake:start_as_daemon['CONFIGKEY']'" unless args.configkey
+    daemon = EventCollector.new
+    daemon.configkey = args.configkey
+    daemon.start('',true)
+  end
+  
+  # Call as 'rake collector:stop_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
+  desc "Stop Daemon mode: An example of how to stop the daemon"
+  task :stop_as_daemon, :configkey, :needs => [:environment] do |t,args|
+    abort "Missing config key. Run as 'rake:start_as_daemon['CONFIGKEY']'" unless args.configkey
+    daemon = EventCollector.new
+    daemon.configkey = args.configkey
+    daemon.stop
+  end
+  
+  
   desc "Stops the collector daemon"
   task :stop => [:environment] do
     RAILS_DEFAULT_LOGGER.auto_flushing = true
