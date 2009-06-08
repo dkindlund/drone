@@ -4,9 +4,11 @@ development:
   adapter: mysql
   encoding: utf8
   database: drone_production_v2
-  username: root
-  password: 
-  host: localhost
+  username: drone_user
+  password: drone_pass
+  reconnect: true
+  pool: 5
+  host: 172.16.164.2
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -15,14 +17,18 @@ test:
   adapter: mysql
   encoding: utf8
   database: drone_test_v2
-  username: root
-  password: 
-  host: localhost
+  username: drone_user
+  password: drone_pass
+  reconnect: true
+  pool: 5
+  host: 172.16.164.2
 
 production:
   adapter: mysql
   encoding: utf8
   database: drone_production_v2
-  username: root
-  password: 
-  host: localhost
+  username: drone_user
+  password: drone_pass
+  reconnect: true
+  pool: 5
+  host: 172.16.164.2

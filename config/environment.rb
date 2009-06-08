@@ -22,9 +22,9 @@ Rails::Initializer.run do |config|
   config.gem "guid"
   config.gem "eventmachine"
   config.gem "amqp"
-  #config.gem "rubyist-aasm", :lib => "aasm", :source => "http://gems.github.com"
-  #config.gem "ferret"
-  #config.gem "acts_as_ferret"
+  config.gem "rubyist-aasm", :lib => "aasm", :source => "http://gems.github.com"
+  config.gem "ferret"
+  config.gem "acts_as_ferret"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
