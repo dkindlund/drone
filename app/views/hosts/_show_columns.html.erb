@@ -1,0 +1,8 @@
+<dl>
+<% columns.each :for => @record do |column| %>
+  <dt class="<%= "#{column.name}_name" %>"><%= column.label -%></dt>
+  <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%> &nbsp;</dd>
+<% end -%>
+  <dt></dt>
+  <dd><%= render :active_scaffold => 'clients', :constraints => { :host_id => @record.id } %></dd>
+</dl>

@@ -1,0 +1,34 @@
+<div id="queued_urls_gauge">
+  <script type="text/javascript">
+    google.load("visualization", "1", {packages:["gauge"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Label');
+      data.addColumn('number', 'Value');
+      data.addRows(1);
+      data.setValue(0, 0, 'URL Queue');
+      data.setValue(0, 1, <%= @url_queue_size.to_s %>);
+  
+      var chart = new google.visualization.Gauge(document.getElementById('queued_urls_gauge_image'));
+      var options = {width:      <%= @gauge_size %>,
+                     height:     <%= @gauge_size %>,
+                     min:        <%= @url_queue_gauge_min.to_s %>,
+                     max:        <%= @url_queue_gauge_max.to_s %>,
+                     greenFrom:  <%= @url_queue_gauge_min.to_s %>,
+                     greenTo:    <%= @url_queue_gauge_green_to.to_s %>,
+                     yellowFrom: <%= @url_queue_gauge_green_to.to_s %>,
+                     yellowTo:   <%= @url_queue_gauge_yellow_to.to_s %>,
+                     redFrom:    <%= @url_queue_gauge_yellow_to.to_s %>,
+                     redTo:      <%= @url_queue_gauge_max.to_s %>,
+                     minorTicks:     5,
+                     majorTicks: ["", "", "", "", ""]};
+      chart.draw(data, options);
+
+      new PeriodicalExecuter(function() {
+        <%= remote_function(:url => { :action => 'url_queue_size' }, :success => 'var json = request.responseText.evalJSON(true); data.setValue(0, 1, json.url_queue_size); chart.draw(data, options);').to_s %>
+      }, <%= @url_queue_update_frequency.to_s %>)
+    }
+  </script>
+  <div id="queued_urls_gauge_image"></div>
+</div>

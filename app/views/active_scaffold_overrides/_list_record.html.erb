@@ -1,5 +1,9 @@
 <%
 record = list_record if list_record # compat with render :partial :collection
+if !defined?(refresh).nil?
+  record.expire_caches
+  record.reload
+end
 dont_show_calculations ||= false
 if defined?(tr_class).nil?
   tr_class = cycle("", "even-record even-record-")
@@ -13,7 +17,7 @@ url_options = params_for(:action => :list, :id => record.id)
     <% column_value = get_column_value(record, column) -%>
 
     <td class="<%= column_class(column, column_value) %>" >
-      <%= render_list_column(column_value, column, record) %>
+      <%= record.authorized_for?(:action => :read, :column => column.name) ? render_list_column(column_value, column, record) : '' %>
     </td>
   <% end -%>
   <% if active_scaffold_config.action_links.any? {|link| link.type == :record } -%>

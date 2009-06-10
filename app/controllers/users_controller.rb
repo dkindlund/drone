@@ -24,6 +24,12 @@ class UsersController < ApplicationController
     # Rename the following actions.
     config.show.link.label = "Details"
     config.show.label = "User Details"
+
+    # Exclude the following actions.
+    config.actions.exclude :create
+
+    # Use field searching.
+    config.actions.swap :search, :field_search
   end
 
   # Restrict who can see what records in list view.
@@ -110,5 +116,10 @@ class UsersController < ApplicationController
   protected
   def find_user
     @user = User.find(params[:id])
+  end
+
+  # Enable signup functionality.
+  def create_authorized?
+    return true
   end
 end

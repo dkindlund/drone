@@ -20,6 +20,9 @@ class ConfigurationsController < ApplicationController
     # Rename the following actions.
     config.show.link.label = "Details"
     config.show.label = "Configuration Details"
+
+    # Use field searching.
+    config.actions.swap :search, :field_search
   end
 
   protected

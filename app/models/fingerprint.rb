@@ -1,19 +1,24 @@
 require 'md5'
+require 'guid'
+require 'base64'
+require 'zlib'
 
 class Fingerprint < ActiveRecord::Base
   include AuthorizationHelper
 
   has_one :url
-  has_many :os_processes, :order => 'pid ASC', :before_add => :decrement_src_os_process_counter_cache, :after_add => :increment_dst_os_process_counter_cache, :after_remove => :decrement_os_process_counter_cache
+  has_many :os_processes, :before_add => :decrement_src_os_process_counter_cache, :after_add => :increment_dst_os_process_counter_cache, :after_remove => :decrement_os_process_counter_cache
 
   validates_presence_of :os_process_count
   validates_associated :os_processes
   validates_length_of :checksum, :allow_nil => true, :maximum => 255
   validates_numericality_of :os_process_count, :greater_than_or_equal_to => 0
 
-  version 5
+  version 7
   index :checksum, :limit => 500, :buffer => 0
+  index :pcap,     :limit => 500, :buffer => 0
 
+  before_validation_on_create :extract_pcap
   before_create :calculate_checksum
   after_create :update_os_process_counter_cache
 
@@ -22,6 +27,27 @@ class Fingerprint < ActiveRecord::Base
   end
 
   private
+
+  def extract_pcap()
+    if (!self.pcap.nil?)
+      data = self.pcap.to_s
+      filename = Configuration.find_retry(:name => "pcap.directory", :namespace => "Fingerprint").to_s + '/' +
+                 Digest::MD5.hexdigest(Guid.new.to_s) + ".pcap"
+
+      # Attempt to write the PCAP out to the directory.
+      self.pcap = nil
+      begin
+        open("public/" + filename, 'wb') do |file|
+          file.print Zlib::Inflate.inflate(Base64.decode64(data))
+        end
+        # Only update the filename reference if the save was successful.
+        self.pcap = filename.to_s
+      rescue
+        # Log any failures.
+        RAILS_DEFAULT_LOGGER.warn "Unable to save PCAP data to: " + filename.to_s + " - " + $!.to_s
+      end
+    end
+  end
 
   # Calculates the fingerprint checksum, if need be.
   def calculate_checksum()

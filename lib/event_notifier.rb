@@ -200,7 +200,7 @@ class EventNotifier
 
           begin 
             msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure
+          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure, Memcached::ATimeoutOccurred
             # If our memcached server goes away, then retry.
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             puts "Retrying Event - " + $!.to_s

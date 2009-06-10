@@ -10,8 +10,8 @@ class UrlsController < ApplicationController
     config.columns << :job_source
 
     # Show the following columns in the specified order.
-    config.list.columns = [:job, :job_source, :url, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
-    config.show.columns = [:job, :job_source, :url, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
+    config.list.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :updated_at]
+    config.show.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
 
     # Sort columns in the following order.
     config.list.sorting = {:time_at => :desc}
@@ -20,6 +20,7 @@ class UrlsController < ApplicationController
     config.columns[:job].label = "Job ID"
     config.columns[:job_source].label = "Job Source"
     config.columns[:url].label = "URL"
+    config.columns[:ip].label = "IP"
     config.columns[:url_status].label = "Status"
     config.columns[:time_at].label = "Visited"
     config.columns[:created_at].label = "Created"
@@ -61,6 +62,7 @@ class UrlsController < ApplicationController
   # - Users in groups can see only those corresponding records along with records not in any group.
   # - Users not in a group can see only those corresponding records.
   def conditions_for_collection
+    return [ 'urls.group_id IS NULL' ] if current_user.nil?
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)

@@ -1,196 +1,220 @@
-// Event Messages
+package HoneyClient;
 
-message Application{
+message Message {
 
-  required string manufacturer = 1 ;
+    message Application {
 
-  required string version = 2 ;
+        required string manufacturer = 1;
+        required string version      = 2;
+        required string short_name   = 3;
 
-  required string short_name = 3 ;
+    }
 
+    message Os {
+
+        required string name       = 1;
+        required string version    = 2;
+        required string short_name = 3;
+
+    }
+
+    message ClientStatus {
+
+        required string status      = 1;
+        optional string description = 2;
+
+    }
+
+    message Host {
+
+        required string hostname = 1;
+        required string ip       = 2;
+
+    }
+
+    message Client {
+
+        required string               quick_clone_name = 1;
+        required string               snapshot_name    = 2;
+        optional string               created_at       = 3;
+
+        optional Message.Os           os               = 4;
+        optional Message.Application  application      = 5;
+        optional Message.ClientStatus client_status    = 6;
+        optional Message.Host         host             = 7;
+
+        optional string suspended_at                   = 8;
+        optional string ip                             = 9;
+        optional string mac                            = 10;
+
+    }
+
+    message Group {
+
+        optional string name     = 1;
+
+    }
+
+    message JobSource {
+
+        required string name         = 1;
+        required string protocol     = 2;
+        optional Message.Group group = 3;
+
+    }
+
+    message JobAlert {
+
+        required string protocol = 1;
+        required string address  = 2;
+
+    }
+
+    message UrlStatus {
+
+        required string status      = 1;
+        optional string description = 2;
+
+    }
+
+    message Url {
+
+        required string              url        = 1;
+
+        optional uint64              priority   = 2 [default = 1];
+        optional Message.UrlStatus   url_status = 3;
+        optional double              time_at    = 4;
+        optional Message.Client      client     = 5;
+        optional string              ip         = 6;
+
+    }
+
+    message Job {
+
+        required string            uuid         = 1;
+
+        optional Message.JobSource job_source   = 2;
+        optional string            created_at   = 3;
+        optional string            completed_at = 4;
+        optional Message.Client    client       = 5;
+
+        repeated Message.JobAlert  job_alerts   = 6;
+        repeated Message.Url       urls         = 7;
+
+    }
+
+    message FileContent {
+
+        required uint64 size      = 1 [default = 0];
+        required string md5       = 2;
+        required string sha1      = 3;
+        required string mime_type = 4;
+
+        optional string data      = 5;
+
+    }
+
+    message ProcessFile {
+
+        required double              time_at      = 1;
+        required string              name         = 2;
+        required string              event        = 3;
+
+        optional Message.FileContent file_content = 4;
+
+    }
+
+    message ProcessRegistry {
+
+        required double time_at    = 1;
+        required string name       = 2;
+        required string event      = 3;
+        optional string value_name = 4;
+        optional string value_type = 5;
+        optional string value      = 6;
+    }
+
+    message OsProcess {
+
+        required string                  name               = 1;
+        required uint64                  pid                = 2;
+
+        optional string                  parent_name        = 3;
+        optional uint64                  parent_pid         = 4;
+
+        repeated Message.ProcessFile     process_files      = 5;
+        repeated Message.ProcessRegistry process_registries = 6;
+
+    }
+
+    message Fingerprint {
+
+        optional string            checksum     = 1;
+        optional string            pcap         = 2;
+        optional Message.Url       url          = 3;
+
+        repeated Message.OsProcess os_processes = 4;
+
+    }
+
+    message Firewall {
+
+        message Command {
+
+            enum ActionType {
+                UNKNOWN   = 1;
+                DENY_ALL  = 2;
+                DENY_VM   = 3;
+                ALLOW_VM  = 4;
+                ALLOW_ALL = 5;
+            }
+
+            enum ResponseType {
+                ERROR     = 1;
+                OK        = 2;
+            }
+
+            required ActionType action     = 1 [default = UNKNOWN];
+            optional ResponseType response = 2 [default = ERROR];
+            optional string err_message    = 3;
+            optional string chain_name     = 4;
+            optional string mac_address    = 5;
+            optional string ip_address     = 6;
+            optional string protocol       = 7;
+            repeated uint32 port           = 8;
+        }
+    }
+
+    message Pcap {
+
+        message Command {
+
+            enum ActionType {
+                UNKNOWN   = 1;
+                STOP_ALL  = 2;
+                STOP_VM   = 3;
+                START_VM  = 4;
+                GET_IP    = 5;
+                GET_FILE  = 6;
+            }
+
+            enum ResponseType {
+                ERROR     = 1;
+                OK        = 2;
+            }
+
+            required ActionType action       = 1 [default = UNKNOWN];
+            optional ResponseType response   = 2 [default = ERROR];
+            optional string response_message = 3;
+            optional string err_message      = 4;
+            optional string quick_clone_name = 5;
+            optional string mac_address      = 6;
+            optional string src_ip_address   = 7;
+            optional uint32 dst_tcp_port     = 8;
+            optional bool   delete_pcap      = 9;
+        }
+    }
 }
 
-message Client{
-
-  required string quick_clone_name = 1 ;
-
-  required string snapshot_name = 2 ;
-
-  optional string suspended_at = 3 ;
-
-  required uint64 job_count = 4 [default = 0];
-
-  required string created_at = 5 ;
-
-  required string updated_at = 6 ;
-
-  repeated Job jobs = 7;
-
-}
-
-message ClientStatus{
-
-  required string status = 1 ;
-
-  required string description = 2 [default = ];
-
-  repeated Client clients = 3;
-
-}
-
-message FileContent{
-
-  required string md5 = 1 ;
-
-  required string sha1 = 2 ;
-
-  required uint64 size = 3 [default = 0];
-
-  required string mime_type = 4 ;
-
-  repeated ProcessFile process_files = 5;
-
-}
-
-message Fingerprint{
-
-  required uint64 os_process_count = 1 [default = 0];
-
-  optional string checksum = 2 ;
-
-  repeated OsProcess os_processes = 3;
-
-}
-
-message Host{
-
-  required string hostname = 1 ;
-
-  required string ip = 2 ;
-
-  required string created_at = 3 ;
-
-  required string updated_at = 4 ;
-
-  repeated Client clients = 5;
-
-}
-
-message JobAlert{
-
-  required string protocol = 1 ;
-
-  required string address = 2 ;
-
-}
-
-message Job{
-
-  required string uuid = 1 ;
-
-  required uint64 url_count = 2 [default = 0];
-
-  optional string completed_at = 3 ;
-
-  required string created_at = 4 ;
-
-  required string updated_at = 5 ;
-
-  repeated Url urls = 6;
-
-  repeated JobAlert job_alerts = 7;
-
-}
-
-message JobSource{
-
-  required string name = 1 ;
-
-  required string protocol = 2 ;
-
-  repeated Job jobs = 3;
-
-}
-
-message OsProcess{
-
-  required string name = 1 [default = ];
-
-  required uint64 pid = 2 ;
-
-  optional string parent_name = 3 ;
-
-  optional uint64 parent_pid = 4 ;
-
-  required uint64 process_file_count = 5 [default = 0];
-
-  required uint64 process_registry_count = 6 [default = 0];
-
-  repeated ProcessFile process_files = 7;
-
-  repeated ProcessRegistry process_registries = 8;
-
-}
-
-message Os{
-
-  required string name = 1 ;
-
-  required string version = 2 ;
-
-  required string short_name = 3 ;
-
-  repeated Client clients = 4;
-
-}
-
-message ProcessFile{
-
-  required string name = 1 [default = ];
-
-  required string event = 2 ;
-
-  required double time_at = 3 ;
-
-}
-
-message ProcessRegistry{
-
-  required string name = 1 [default = ];
-
-  required string event = 2 ;
-
-  optional string value_name = 3 ;
-
-  optional string value_type = 4 ;
-
-  optional  value = 5 ;
-
-  required double time_at = 6 ;
-
-}
-
-message Url{
-
-  optional double time_at = 1 ;
-
-  required string url = 2 [default = ];
-
-  required uint64 priority = 3 [default = 1];
-
-  required string created_at = 4 ;
-
-  required string updated_at = 5 ;
-
-}
-
-message UrlStatus{
-
-  required string status = 1 ;
-
-  required string description = 2 [default = ];
-
-  repeated Url urls = 3;
-
-}
-
+option optimize_for = SPEED;
+option java_package = "org.honeyclient.Message";

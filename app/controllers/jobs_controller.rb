@@ -59,6 +59,7 @@ class JobsController < ApplicationController
   # - Users in groups can see only those corresponding records along with records not in any group.
   # - Users not in a group can see only those corresponding records.
   def conditions_for_collection
+    return [ 'jobs.group_id IS NULL' ] if current_user.nil?
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)

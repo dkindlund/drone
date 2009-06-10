@@ -35,7 +35,7 @@ Rails::Initializer.run do |config|
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
   # Activate observers that should always be running
-  config.active_record.observers = :user_observer
+  config.active_record.observers = :user_observer, :url_observer
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
@@ -67,5 +67,5 @@ ExceptionNotifier.exception_recipients = %w(darien@kindlund.com)
 
 # TODO: Update this, eventually.
 SITE_DOMAIN = "drone.honeyclient.org"
-SITE_URL = "http://#{SITE_DOMAIN}"
+SITE_URL = "https://#{SITE_DOMAIN}"
 ADMIN_EMAIL = "noreply@drone.honeyclient.org"

@@ -1,0 +1,34 @@
+<div id="running_vms_gauge">
+  <script type="text/javascript">
+    google.load("visualization", "1", {packages:["gauge"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Label');
+      data.addColumn('number', 'Value');
+      data.addRows(1);
+      data.setValue(0, 0, 'Running VMs');
+      data.setValue(0, 1, <%= @running_vms_count.to_s %>);
+  
+      var chart = new google.visualization.Gauge(document.getElementById('running_vms_gauge_image'));
+      var options = {width:      <%= @gauge_size %>,
+                     height:     <%= @gauge_size %>,
+                     min:        <%= @running_vms_gauge_min.to_s %>,
+                     max:        <%= @running_vms_gauge_max.to_s %>,
+                     redFrom:    <%= @running_vms_gauge_min.to_s %>,
+                     redTo:      <%= @running_vms_gauge_red_to.to_s %>,
+                     yellowFrom: <%= @running_vms_gauge_red_to.to_s %>,
+                     yellowTo:   <%= @running_vms_gauge_yellow_to.to_s %>,
+                     greenFrom:  <%= @running_vms_gauge_yellow_to.to_s %>,
+                     greenTo:    <%= @running_vms_gauge_max.to_s %>,
+                     minorTicks:     5,
+                     majorTicks: ["", "", "", "", ""]};
+      chart.draw(data, options);
+
+      new PeriodicalExecuter(function() {
+        <%= remote_function(:url => { :action => 'running_vms_count' }, :success => 'var json = request.responseText.evalJSON(true); data.setValue(0, 1, json.running_vms_count); chart.draw(data, options);').to_s %>
+      }, <%= @running_vms_update_frequency.to_s %>)
+    }
+  </script>
+  <div id="running_vms_gauge_image"></div>
+</div>

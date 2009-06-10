@@ -5,3 +5,7 @@
 - RAILS_ENV=production rake db:create
 - RAILS_ENV=production rake db:migrate
 - script/update_secret
+- run collector
+- run notifier
+- run ferret
+- run memcached

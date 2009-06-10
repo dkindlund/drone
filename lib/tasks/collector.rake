@@ -15,7 +15,7 @@ namespace :collector do
     daemon.start
   end
   
-  # Call as 'rake collect:start_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
+  # Call as 'rake collector:start_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
   desc "Start Daemon mode: An example of how to add true daemon mode (detached from terminal)"
   task :start_as_daemon, :configkey, :needs => [:environment] do |t,args|
     abort "Missing config key. Run as 'rake:start_as_daemon['CONFIGKEY']'" unless args.configkey

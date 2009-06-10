@@ -3,7 +3,7 @@
   <dt class="<%= "job_#{column.name}_name" %>"><%= column.label -%></dt>
   <dd class="<%= "job_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
 <% end -%>
-<% if @record.url_count > 0 -%>
+<% if @record.urls.size > 0 -%>
   <dt></dt>
   <dd><%= render :active_scaffold => 'urls', :constraints => { :job_id => @record.id } %></dd>
 <% end -%>

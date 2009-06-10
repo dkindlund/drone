@@ -37,4 +37,10 @@ class Client < ActiveRecord::Base
   def to_label
     "#{id}"
   end
+
+  # Allow all admins to update any data.
+  # TODO: Allow "editors" to update only their own client_status data.
+  def authorized_for_update?
+    return (!current_user.nil? && current_user.has_role?(:admin))
+  end
 end

@@ -1,0 +1,43 @@
+<%
+  require 'uri'
+  @annotations[:suspicious_urls] = {}
+  @suspicious_urls.each do |url|
+    if (!url.fingerprint.nil?)
+      time_at = Time.at(url.time_at.to_f)
+      if (@annotations[:suspicious_urls].key?(time_at))
+        @annotations[:suspicious_urls][time_at] << [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) ]
+      else
+        @annotations[:suspicious_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
+      end
+    end
+  end
+  @annotations[:compromised_urls] = {}
+  @compromised_urls.each do |url|
+    if (!url.fingerprint.nil?)
+      time_at = Time.at(url.time_at.to_f)
+      if (@annotations[:compromised_urls].key?(time_at))
+        @annotations[:compromised_urls][time_at] << [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) ]
+      else
+        @annotations[:compromised_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
+      end
+    end
+  end
+%>
+<%= annotated_timeline @timeline_data, 'timeline', 
+    {
+      :annotations => @annotations,
+      :displayAnnotations => true,
+      :displayAnnotationsFilter => true,
+      :displayExactValues => true,
+      :displayRangeSelector => true,
+      :legendPosition => "newRow",
+      :scaleType => "allfixed",
+      :scaleColumns => [0, 5, 3],
+      :fill => 50,
+      :thickness => 2,
+      :colors => [ "red", "black", "black", "orange", "black", "blue" ],
+      :wmode => 'window',
+      :allowHtml => true
+    }
+%>
+<div id='timeline' style='width: <%= @timeline_width %>px; height: <%= @timeline_height %>px'></div>

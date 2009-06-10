@@ -16,7 +16,7 @@ URLs Analyzed:
 <%- @urls_by_type.each_pair do |type, urls| -%>
 :: <%= type.to_s %> ::
 <%- urls.each do |url| -%>
-[<%= Time.at(url["time_at"]).to_s %>] <%= url["url"].to_s %>
+[<%= Time.at(url["time_at"]).to_s %>] [<%= url["ip"].nil? ? '-' : url["ip"].to_s %>] <%= url["url"].to_s %>
   <%- end -%>
 
 <%- end -%>

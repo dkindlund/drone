@@ -9,6 +9,13 @@
                                       !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(@record.url.group_id).nil?)) -%>
     <dt class="<%= "#{column.name}_name" %>"><%= column.label.upcase -%></dt>
     <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%><%= clippy(h(URI.escape(@record.url.url, Regexp.union(URI::REGEXP::UNSAFE, /&/))),'#EDEDED') -%></dd>
+  <% elsif ((column.name == :pcap) && (@record.url.group_id.nil? ||
+                                      current_user.has_role?(:admin) ||
+                                      !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(@record.url.group_id).nil?)) -%>
+    <dt class="<%= "#{column.name}_name" %>"><%= column.label -%></dt>
+    <% value = show_column_value(@record, column) %>
+    <% pcap_directory = Configuration.find_retry(:name => "pcap.directory", :namespace => "Fingerprint").to_s %>
+    <dd class="<%= "#{column.name}_value" %>"><%= @record.pcap.nil? ? value : "<a href='/" + value + "'>" + value.sub!(pcap_directory + '/','') + "</a>" -%></dd>
   <% end -%>
 <% end -%>
   <dt></dt>

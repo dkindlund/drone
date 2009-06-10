@@ -11,11 +11,11 @@
     <dd class="<%= "os_process_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
   <% end -%>
 <% end -%>
-<% if @record.process_file_count > 0 -%>
+<% if @record.process_files.size > 0 -%>
   <dt></dt>
   <dd><%= render :active_scaffold => 'process_files', :constraints => { :os_process_id => @record.id } %></dd>
 <% end -%>
-<% if @record.process_registry_count > 0 -%>
+<% if @record.process_registries.size > 0 -%>
   <dt></dt>
   <dd><%= render :active_scaffold => 'process_registries', :constraints => { :os_process_id => @record.id } %></dd>
 <% end -%>

@@ -1,20 +1,26 @@
 test:
-  ttl: 60480
-  namespace: drone-test
+  default_ttl: 60480
+  prefix_key: drone-test
   sessions: false
   debug: false
+  no_block: false
+  buffer_requests: false
   servers: 127.0.0.1:11211
 
 development:
-  ttl: 60480
-  namespace: drone-production
+  default_ttl: 60480
+  prefix_key: drone-production
   sessions: false
   debug: false
+  no_block: false
+  buffer_requests: false
   servers: 172.16.164.2:11211
 
 production:
-  ttl: 60480
-  namespace: drone-production
+  default_ttl: 60480
+  prefix_key: drone-production
   sessions: false
   debug: false
+  no_block: false
+  buffer_requests: false
   servers: 172.16.164.2:11211

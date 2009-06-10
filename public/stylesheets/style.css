@@ -194,3 +194,84 @@ a:hover {
   text-align: center;
   margin-bottom: 12px;
 }
+
+/* User bar. */
+.user-bar {
+  padding: 0 0 20px 0
+}
+
+.user-bar table tr {
+  font-size:12px;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin:0;
+  text-align:right;
+  width: 100%;
+}
+
+.user-bar table td {
+  border-right:1px solid #D7D7D7;
+  display:inline;
+  padding:0 0.75em;
+  white-space:nowrap;
+  width: 100%;
+}
+
+.user-bar table td.last {
+  border-right:medium none;
+}
+
+/* Progress Bars */
+div.url-queue-status-bar {
+  border: 1px solid #ccc; 
+  width: 100px; 
+  margin: 2px 5px 2px 0; 
+  padding: 1px; 
+  display: inline-table;
+  background: white;
+  position: relative;
+}
+
+div.url-queue-status-bar > div {
+  height: 12px;
+  float: left;
+}
+
+div.url-queue-status-bar > div.url-queue-status-bar_color_0 { background-color: #11B305; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_1 { background-color: #1BCE0D; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_2 { background-color: #16EA06; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_3 { background-color: #ADEA06; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_4 { background-color: #EAE906; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_5 { background-color: #F3F20A; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_6 { background-color: #F3B30A; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_7 { background-color: #F38F0A; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_8 { background-color: #F35E0A; }
+div.url-queue-status-bar > div.url-queue-status-bar_color_9 { background-color: #FF4804; }
+
+div.running-vms-status-bar {
+  border: 1px solid #ccc; 
+  width: 100px; 
+  margin: 2px 5px 2px 0; 
+  padding: 1px; 
+  display: inline-table;
+  background: white;
+  position: relative;
+}
+
+div.running-vms-status-bar > div {
+  height: 12px;
+  float: left;
+}
+
+div.running-vms-status-bar > div.running-vms-status-bar_color_9 { background-color: #11B305; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_8 { background-color: #1BCE0D; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_7 { background-color: #16EA06; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_6 { background-color: #ADEA06; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_5 { background-color: #EAE906; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_4 { background-color: #F3F20A; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_3 { background-color: #F3B30A; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_2 { background-color: #F38F0A; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_1 { background-color: #F35E0A; }
+div.running-vms-status-bar > div.running-vms-status-bar_color_0 { background-color: #FF4804; }
+

@@ -9,6 +9,8 @@ class Group < ActiveRecord::Base
   validates_length_of  :name, :within => 2..100
   validates_associated :job_sources, :jobs, :urls
 
-  version 5
-  index :name, :limit => 500, :buffer => 0
+  version 6
+  # TODO: Disabled, since new group registration was causing
+  # problems with Group.find_or_create_by_name()
+  #index :name, :limit => 500, :buffer => 0
 end

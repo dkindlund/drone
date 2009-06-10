@@ -20,6 +20,9 @@ class JobSourcesController < ApplicationController
     # Rename the following actions.
     config.show.link.label = "Details"
     config.show.label = "Source Details"
+
+    # Use field searching.
+    config.actions.swap :search, :field_search
   end
 
   # Restrict who can see what records in list view.
@@ -27,6 +30,7 @@ class JobSourcesController < ApplicationController
   # - Users in groups can see only those corresponding records along with records not in any group.
   # - Users not in a group can see only those corresponding records.
   def conditions_for_collection
+    return [ 'job_sources.group_id IS NULL' ] if current_user.nil?
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)

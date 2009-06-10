@@ -15,6 +15,7 @@ class FingerprintsController < ApplicationController
 
     # Rename the following columns.
     config.columns[:os_process_count].label = "# Processes Found"
+    config.columns[:pcap].label = "Packet Capture"
 
     # Rename the following actions.
     config.show.link.label = "Details"

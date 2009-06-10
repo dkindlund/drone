@@ -3,7 +3,7 @@
 ui_title:
   id: 1
   name: ui.title
-  value: Drone Interface
+  value: Drone Interface (v2.2)
   namespace: 
   description: The default title for any UI web page.
   default_value: Drone Interface
@@ -343,3 +343,131 @@ groups_ui_tab_name:
   namespace: Group
   description: The tab name to assign to the Groups controller.
   default_value: Groups
+
+sample_interval:
+  id: 44
+  name: sample.interval
+  value: 1.hour
+  namespace: UrlStatistic
+  description: A Ruby Time value, indicating the period of time each UrlStatistic entry should represent.
+  default_value: 1.hour
+
+ui_url_stats_display_age:
+  id: 45
+  name: ui.display.age
+  value: 2.weeks
+  namespace: UrlStatistic
+  description: A Ruby Time value, indicating the oldest UrlStatistic entry to display in the dashboard.
+  default_value: 2.weeks
+
+ui_url_queue_gauge_min:
+  id: 46
+  name: ui.url_queue_gauge.min
+  value: 0
+  namespace: UrlStatistic
+  description: The minimum number of queued URLs the gauge should show.
+  default_value: 0
+
+ui_url_queue_gauge_max:
+  id: 47
+  name: ui.url_queue_gauge.max
+  value: 100000
+  namespace: UrlStatistic
+  description: The maximum number of queued URLs the gauge should show.
+  default_value: 100000
+
+ui_url_queue_gauge_green_to:
+  id: 48
+  name: ui.url_queue_gauge.green_to
+  value: 40000
+  namespace: UrlStatistic
+  description: The end value for displaying the green marker on the gauge.
+  default_value: 40000
+
+ui_url_queue_gauge_yellow_to:
+  id: 49
+  name: ui.url_queue_gauge.yellow_to
+  value: 60000
+  namespace: UrlStatistic
+  description: The end value for displaying the yellow marker on the gauge.
+  default_value: 60000
+
+ui_url_queue_update_frequency:
+  id: 50
+  name: ui.url_queue.update_frequency
+  value: 120
+  namespace: UrlStatistic
+  description: The number of seconds to wait between consecutive updates to the URL Queue UI components.
+  default_value: 120
+
+ui_running_vms_gauge_min:
+  id: 51
+  name: ui.running_vms_gauge.min
+  value: 0
+  namespace: UrlStatistic
+  description: The minimum number of running VMs the gauge should show.
+  default_value: 0
+
+ui_running_vms_gauge_max:
+  id: 52
+  name: ui.running_vms_gauge.max
+  value: 35
+  namespace: UrlStatistic
+  description: The maximum number of running VMs the gauge should show.
+  default_value: 35
+
+ui_running_vms_gauge_red_to:
+  id: 53
+  name: ui.running_vms_gauge.red_to
+  value: 11
+  namespace: UrlStatistic
+  description: The end value for displaying the red marker on the gauge.
+  default_value: 11
+
+ui_running_vms_gauge_yellow_to:
+  id: 54
+  name: ui.running_vms_gauge.yellow_to
+  value: 23
+  namespace: UrlStatistic
+  description: The end value for displaying the yellow marker on the gauge.
+  default_value: 23
+
+ui_running_vms_update_frequency:
+  id: 55
+  name: ui.running_vms.update_frequency
+  value: 120
+  namespace: UrlStatistic
+  description: The number of seconds to wait between consecutive updates to the Running VMs UI components.
+  default_value: 120
+
+ui_url_stats_timeline_width:
+  id: 56
+  name: ui.url_stats_timeline.width
+  value: 1024
+  namespace: UrlStatistic
+  description: The width (in pixels) used to display the URL statistical timeline.
+  default_value: 1024
+
+ui_url_stats_timeline_height:
+  id: 57
+  name: ui.url_stats_timeline.height
+  value: 768
+  namespace: UrlStatistic
+  description: The height (in pixels) used to display the URL statistical timeline.
+  default_value: 768
+
+ui_gauge_size:
+  id: 58
+  name: ui.gauge.size
+  value: 150
+  namespace: UrlStatistic
+  description: The height and width (in pixels) used to display all circular gauges.
+  default_value: 150
+
+pcap_directory:
+  id: 59
+  name: pcap.directory
+  value: pcaps
+  namespace: Fingerprint
+  description: The directory where PCAP data is stored (relative to the RAILS_ROOT/public directory).
+  default_value: pcaps

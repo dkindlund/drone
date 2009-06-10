@@ -20,6 +20,9 @@ class JobAlertsController < ApplicationController
 
     # Include the following show actions.
     config.columns[:job].set_link :show, :controller => 'jobs', :parameters => {:parent_controller => 'job_alerts'}
+
+    # Use field searching.
+    config.actions.swap :search, :field_search
   end
 
   protected

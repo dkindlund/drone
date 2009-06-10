@@ -17,5 +17,8 @@ class ClientStatusesController < ApplicationController
 
     # Exclude the following actions.
     config.actions.exclude :show
+
+    # When showing this data on a subform, only show the status field.
+    config.subform.columns = [:status]
   end
 end

@@ -96,4 +96,11 @@ module ApplicationHelper
       </object>
     EOF
   end
+
+  # When editing Clients, make sure the client status field is properly refreshed.
+  def client_status_form_column(record, input_name)
+    record.expire_caches
+    record.reload
+    collection_select(:record, :client_status, ClientStatus.find(:all, :order => "status ASC"), :id, :status, {:selected => record.client_status_id}, {:status => input_name}) 
+  end
 end

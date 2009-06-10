@@ -13,7 +13,7 @@ class Url < ActiveRecord::Base
   #validates_length_of :url, :maximum => 8192
   validates_numericality_of :priority, :greater_than_or_equal_to => 1
 
-  version 15
+  version 16
   index :priority,              :limit => 500, :buffer => 0
   index :url_status_id,         :limit => 500, :buffer => 0
   index [:url_status_id, :id],  :limit => 500, :buffer => 0
@@ -26,6 +26,7 @@ class Url < ActiveRecord::Base
   index :time_at,               :limit => 500, :buffer => 0
   index :group_id,              :limit => 500, :buffer => 0
   index [:group_id, :id],       :limit => 500, :buffer => 0
+  index :ip,                    :limit => 500, :buffer => 0
 
   def to_label
     "#{url}"

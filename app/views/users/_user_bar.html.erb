@@ -1,6 +1,8 @@
 <div class="user-bar">
-  <ul>
-    <li class="first">Logged in as <%= link_to_current_user :content_method => :login %></li>
-    <li class="last"><%= link_to "Logout", logout_path, { :title => "Logout" } %></li>
-  </ul>
+  <table align="right">
+    <tr>
+      <td class="first">Logged in as <%= link_to_current_user :content_method => :login %></td>
+      <td class="last"><%= link_to "Logout", logout_path, { :title => "Logout" } %></td>
+    </tr>
+  </table>
 </div>
