@@ -1,4 +1,6 @@
 class HostsController < ApplicationController
+  # TODO: May need to remove the show_export reference.
+  #ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export if (Rails.env.production? || Rails.env.development?)
   ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
 
@@ -24,5 +26,11 @@ class HostsController < ApplicationController
     # Rename the following actions.
     config.show.link.label = "Details"
     config.show.label = "Host Details"
+
+    # Add export options.
+    # TODO: May need to remove this.
+    #config.actions.add :export
+    #config.export.columns = [:hostname, :ip, :created_at, :updated_at]
+    #config.export.force_quotes = true
   end
 end
