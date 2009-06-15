@@ -15,24 +15,21 @@ namespace :collector do
     daemon.start
   end
   
-  # Call as 'rake collector:start_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
-  desc "Start Daemon mode: An example of how to add true daemon mode (detached from terminal)"
-  task :start_as_daemon, :configkey, :needs => [:environment] do |t,args|
-    abort "Missing config key. Run as 'rake:start_as_daemon['CONFIGKEY']'" unless args.configkey
+  desc "Starts the collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
+  task :start_detached, :configkey, :needs => [:environment] do |t,args|
+    abort "Missing config key. Run as 'rake collector:start_detached['CONFIGKEY']'" unless args.configkey
     daemon = EventCollector.new
     daemon.configkey = args.configkey
     daemon.start('',true)
   end
   
-  # Call as 'rake collector:stop_as_daemon['sample']' where sample is the configuration key to use in 'theman.yml'
-  desc "Stop Daemon mode: An example of how to stop the daemon"
-  task :stop_as_daemon, :configkey, :needs => [:environment] do |t,args|
-    abort "Missing config key. Run as 'rake:start_as_daemon['CONFIGKEY']'" unless args.configkey
+  desc "Stops the collector daemon (detached)"
+  task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+    abort "Missing config key. Run as 'rake collector:stop_detached['CONFIGKEY']'" unless args.configkey
     daemon = EventCollector.new
     daemon.configkey = args.configkey
-    daemon.stop
+    daemon.stop('',true)
   end
-  
   
   desc "Stops the collector daemon"
   task :stop => [:environment] do
@@ -398,6 +395,30 @@ namespace :collector do
       daemon = EventCollector.new
       daemon.stop('high')
     end
+
+    desc "Starts the high-priority collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
+    task :start_detached, :configkey, :needs => [:environment] do |t,args|
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #abort "Missing config key. Run as 'rake collector:high:start_detached['CONFIGKEY']'" unless args.configkey
+      # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+      daemon = EventCollector.new
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #daemon.configkey = args.configkey
+      daemon.configkey = 'collector_high'
+      daemon.start('high',true)
+    end
+  
+    desc "Stops the high-priority collector daemon (detached)"
+    task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #abort "Missing config key. Run as 'rake collector:high:stop_detached['CONFIGKEY']'" unless args.configkey
+      # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+      daemon = EventCollector.new
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #daemon.configkey = args.configkey
+      daemon.configkey = 'collector_high'
+      daemon.stop('high',true)
+    end
   end
 
   namespace :low do
@@ -413,6 +434,30 @@ namespace :collector do
       RAILS_DEFAULT_LOGGER.auto_flushing = true
       daemon = EventCollector.new
       daemon.stop('low')
+    end
+
+    desc "Starts the low-priority collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
+    task :start_detached, :configkey, :needs => [:environment] do |t,args|
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #abort "Missing config key. Run as 'rake collector:low:start_detached['CONFIGKEY']'" unless args.configkey
+      # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+      daemon = EventCollector.new
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #daemon.configkey = args.configkey
+      daemon.configkey = 'collector_low'
+      daemon.start('low',true)
+    end
+  
+    desc "Stops the low-priority collector daemon (detached)"
+    task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #abort "Missing config key. Run as 'rake collector:low:stop_detached['CONFIGKEY']'" unless args.configkey
+      # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+      daemon = EventCollector.new
+      # XXX: This will need to be configurable, if we want to run multiple instances.
+      #daemon.configkey = args.configkey
+      daemon.configkey = 'collector_low'
+      daemon.stop('low',true)
     end
   end
 end

@@ -12,16 +12,16 @@ module DaemonizeHelper
     def initialize(configkey)
       @pid_dir = File.expand_path(RAILS_ROOT)
       options = YAML.load_file(File.join(RAILS_ROOT,"config","theman.yml"))
-      abort "Cannot find pidfile name. Check 'theman.yml' configuration file" unless options[configkey]["pidfile"]
+      abort "Cannot find 'pidfile' reference. Check 'theman.yml' configuration file." unless options[configkey]["pidfile"]
       @pid_file = File.join(@pid_dir, options[configkey]["pidfile"])
     end
     
     def check
       if pid = read_pid
         if process_running? pid
-          raise "#{@pid_file} already exists (pid: #{pid})"
+          raise "#{@pid_file} already exists (PID: #{pid})"
         else
-          Log.info "removing stale pid file: #{@pid_file}"
+          Log.info "Removing stale PID file: #{@pid_file}"
           remove
         end
       end
@@ -81,11 +81,11 @@ module DaemonizeHelper
       puts "#{pid_file} not found"
       exit
     end
-    puts "Stopping daemon with pid #{pid}"
+    puts "Stopping daemon (PID: #{pid})."
     begin
       Process.kill('TERM', pid)
     rescue Errno::ESRCH
-      puts "Process does not exist (pid #x{pid})"
+      puts "Process does not exist (PID: #x{pid})."
       exit
     end
     puts 'Done.'

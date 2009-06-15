@@ -6,12 +6,18 @@
 # You must also set the phonehome to the shortname address of the node running
 # the worker console.
 
-sample:
-  pidfile: "collector_1.pid"
-  command: "collector:start_as_daemon"
-  phonehome: "theman_console@hostname"
+collector_high:
+  pidfile: "tmp/pids/collector_high.pid"
+  command: "collector:high:start_detached"
+  phonehome: "theman_console@drone"
 
-another:
-  pidfile: "collector_2.pid"
-  command: "collector:start_as_daemon"
-  phonehome: "theman_console@hostname"
+collector_low:
+  pidfile: "tmp/pids/collector_low.pid"
+  command: "collector:low:start_detached"
+  phonehome: "theman_console@drone"
+
+notifier:
+  pidfile: "tmp/pids/notifier.pid"
+  command: "notifier:start_detached"
+  phonehome: "theman_console@drone"
+

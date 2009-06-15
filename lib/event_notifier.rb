@@ -7,8 +7,10 @@ require 'action_mailer'
 require 'eventmachine'
 require 'mq'
 require 'pp'
+require 'daemonize'
 
 class EventNotifier
+  include DaemonizeHelper
 
   # Class variables.
   @@allowed_actions    = [ "find_and_update",
@@ -167,8 +169,12 @@ class EventNotifier
   private :_process_command
 
   # Starts the daemon.
-  def start
+  def start(detach=false)
     EM.run do
+
+      # Daemonize the process if flag is set.
+      daemonize if detach
+
       _setup()
 
       RAILS_DEFAULT_LOGGER.info "Starting Event Notifier Daemon [PID: " + Process.pid.to_s + "]"
@@ -231,16 +237,21 @@ class EventNotifier
   end
 
   # Stops the daemon.
-  def stop
-    EM.run do
-      _setup()
+  def stop(detach=false)
+    if detach
+      # Kill PID, if daemonized.
+      stop_daemon
+    else
+      EM.run do
+        _setup()
 
-      # Publish the message to the exchange.
-      message = "shutdown".to_json
-      @commands_exchange.publish(message, {:routing_key => @namespace.to_s, :persistent => true})
+        # Publish the message to the exchange.
+        message = "shutdown".to_json
+        @commands_exchange.publish(message, {:routing_key => @namespace.to_s, :persistent => true})
 
-      # Close the connection.
-      @connection.close{ EM.stop }
+        # Close the connection.
+        @connection.close{ EM.stop }
+      end
     end
   end
 

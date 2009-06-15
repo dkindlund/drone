@@ -18,5 +18,29 @@ namespace :notifier do
     daemon = EventNotifier.new
     daemon.stop
   end
+
+  desc "Starts the notifier daemon (detached), in order to notify users when jobs are complete by the Honeyclient Manager"
+  task :start_detached, :configkey, :needs => [:environment] do |t,args|
+    # XXX: This will need to be configurable, if we want to run multiple instances.
+    #abort "Missing config key. Run as 'rake notifier:start_detached['CONFIGKEY']'" unless args.configkey
+    # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+    daemon = EventNotifier.new
+    # XXX: This will need to be configurable, if we want to run multiple instances.
+    #daemon.configkey = args.configkey
+    daemon.configkey = 'notifier'
+    daemon.start(true)
+  end
+  
+  desc "Stops the notifier daemon (detached)"
+  task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+    # XXX: This will need to be configurable, if we want to run multiple instances.
+    #abort "Missing config key. Run as 'rake notifier:stop_detached['CONFIGKEY']'" unless args.configkey
+    # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
+    daemon = EventNotifier.new
+    # XXX: This will need to be configurable, if we want to run multiple instances.
+    #daemon.configkey = args.configkey
+    daemon.configkey = 'notifier'
+    daemon.stop(true)
+  end
 end
 

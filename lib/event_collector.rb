@@ -390,7 +390,7 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
   def start(priority = '',detach=false)
     EM.run do
       
-      # Daemonize the process if flag is set
+      # Daemonize the process if flag is set.
       daemonize if detach
       
       _setup()
@@ -454,19 +454,21 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
   end
 
   # Stops the daemon.
-  def stop(priority = '')
-    EM.run do
-      _setup()
-
-      # Publish the message to the exchange.
-      message = "shutdown".to_json
-      @commands_exchange.publish(message, {:routing_key => @namespace.to_s + '.' + priority.to_s, :persistent => true})
-
-      # Close the connection.
-      @connection.close{ EM.stop }
-      
-      # kill pid if daemonized
+  def stop(priority = '',detach=false)
+    if detach
+      # Kill PID, if daemonized.
       stop_daemon
+    else
+      EM.run do
+        _setup()
+
+        # Publish the message to the exchange.
+        message = "shutdown".to_json
+        @commands_exchange.publish(message, {:routing_key => @namespace.to_s + '.' + priority.to_s, :persistent => true})
+
+        # Close the connection.
+        @connection.close{ EM.stop }
+      end
     end
   end
 
