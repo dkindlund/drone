@@ -39,6 +39,8 @@ module ActiveSupport
               end
             when ":",","
               marks << scanner.pos - 1 unless quoting
+            when "\\"
+              scanner.skip(/\\/)
             end
           end
 

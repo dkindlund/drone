@@ -104,9 +104,9 @@ class JobsController < ApplicationController
     end
 
     # Collect the URLs.
-    @record.urls = params[:input][:urls].split(' ').map!{|u| Url.new(:url        => u,
-                                                                     :priority   => params[:input][:priority].to_i,
-                                                                     :url_status => UrlStatus.find_by_status("queued"))}
+    @record.urls = params[:input][:urls].split(' ').uniq.map!{|u| Url.new(:url        => u,
+                                                                          :priority   => params[:input][:priority].to_i,
+                                                                          :url_status => UrlStatus.find_by_status("queued"))}
 
     # Manually update the URL count.
     @record.url_count = @record.urls.size

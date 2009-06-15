@@ -10,12 +10,10 @@ class FileContent < ActiveRecord::Base
   validates_numericality_of :size, :greater_than_or_equal_to => 0
   validates_uniqueness_of :md5, :scope => [:sha1, :size]
 
-  version 6
+  version 8
   index :md5,                 :limit => 500, :buffer => 0
   index :sha1,                :limit => 500, :buffer => 0
   index :mime_type,           :limit => 500, :buffer => 0
-  index [:md5, :sha1],        :limit => 500, :buffer => 0
-  index [:md5, :sha1, :size], :limit => 500, :buffer => 0
   index :data,                :limit => 500, :buffer => 0
 
   def to_label

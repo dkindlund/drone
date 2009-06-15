@@ -46,9 +46,8 @@ class DashboardController < ApplicationController
     # Collect all relevant suspicious and compromised URLs.
     conditions = conditions_for_url_collection
     conditions << "urls.time_at >= " + eval(timeline_display_age + ".ago").to_f.to_s
-    # TODO: Need to programmatically refer to status_id
-    @suspicious_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = 3']).join(' AND '))
-    @compromised_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = 4']).join(' AND '))
+    @suspicious_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('suspicious').id.to_s]).join(' AND '))
+    @compromised_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('compromised').id.to_s]).join(' AND '))
 
     # Gauge Constants
     @gauge_size = Configuration.find_retry(:name => "ui.gauge.size", :namespace => "UrlStatistic")
