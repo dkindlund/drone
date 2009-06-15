@@ -4,8 +4,8 @@
     <dt class="<%= "os_process_name" %>"><%= column.label -%></dt>
     <dd class="<%= "os_process_name_value" %>"><%= h(@record.os_process.name) -%></dd>
   <% elsif column.name == :name -%>
-    <dt class="<%= "process_file_name" %>"><%= column.label -%></dt>
-    <dd class="<%= "process_file_name_value" %>"><%= h(@record.name) -%></dd>
+    <dt class="<%= "process_file_name" %>"><%= column.label -%></dt><br/>
+    <dd class="<%= "process_file_name_value" %>"><%= h(@record.name) -%></dd><br/>
   <% elsif ((column.name == :file_content) && (not @record.file_content.nil?)) -%>
     <dt class="<%= "process_file_content_size_name" %>">Size</dt>
     <dd class="<%= "process_file_content_size_name_value" %>"><%= h(@record.file_content.size) -%></dd>

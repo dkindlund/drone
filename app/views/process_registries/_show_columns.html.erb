@@ -4,11 +4,11 @@
     <dt class="<%= "os_process_name" %>"><%= column.label -%></dt>
     <dd class="<%= "os_process_name_value" %>"><%= h(@record.os_process.name) -%></dd>
   <% elsif column.name == :name -%>
-    <dt class="<%= "process_registry_name" %>"><%= column.label -%></dt>
-    <dd class="<%= "process_registry_name_value" %>"><%= h(@record.name) -%></dd>
+    <dt class="<%= "process_registry_name" %>"><%= column.label -%></dt><br/>
+    <dd class="<%= "process_registry_name_value" %>"><%= h(@record.name) -%></dd><br/>
   <% elsif column.name == :value -%>
-    <dt class="<%= "process_registry_value" %>"><%= column.label -%></dt>
-    <dd class="<%= "process_registry_value_value" %>"><%= h(@record.value) -%></dd>
+    <dt class="<%= "process_registry_value" %>"><%= column.label -%></dt><br/>
+    <dd class="<%= "process_registry_value_value" %>"><%= h(@record.value) -%></dd><br/>
   <% else -%>
     <dt class="<%= "process_registry_#{column.name}_name" %>"><%= column.label -%></dt>
     <dd class="<%= "process_registry_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>

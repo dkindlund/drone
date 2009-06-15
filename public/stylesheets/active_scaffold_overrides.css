@@ -225,7 +225,6 @@ font-weight: bold;
 /* Displaying URL details. */
 .active-scaffold .show-view dd.url_value {
 -x-system-font: none;
-float: left;
 font-family: courier, sans-serif;
 font-size: 9px;
 font-size-adjust: none;
@@ -248,7 +247,6 @@ border-right: solid 1px #000000;
 /* Displaying os process name and parent name details. */
 .active-scaffold .show-view dd.os_process_name_value {
 -x-system-font: none;
-float: left;
 font-family: courier, sans-serif;
 font-size: 9px;
 font-size-adjust: none;
@@ -271,7 +269,6 @@ border-right: solid 1px #000000;
 /* Displaying process file name details. */
 .active-scaffold .show-view dd.process_file_name_value {
 -x-system-font: none;
-float: left;
 font-family: courier, sans-serif;
 font-size: 9px;
 font-size-adjust: none;
@@ -294,7 +291,6 @@ border-right: solid 1px #000000;
 /* Displaying process registry name details. */
 .active-scaffold .show-view dd.process_registry_name_value {
 -x-system-font: none;
-float: left;
 font-family: courier, sans-serif;
 font-size: 9px;
 font-size-adjust: none;
@@ -317,7 +313,6 @@ border-right: solid 1px #000000;
 /* Displaying process registry value details. */
 .active-scaffold .show-view dd.process_registry_value_value {
 -x-system-font: none;
-float: left;
 font-family: courier, sans-serif;
 font-size: 9px;
 font-size-adjust: none;
