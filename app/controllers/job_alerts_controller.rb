@@ -1,5 +1,5 @@
 class JobAlertsController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
   before_filter :admin_required, :only => [:index, :list]
 
@@ -23,9 +23,25 @@ class JobAlertsController < ApplicationController
 
     # Use field searching.
     config.actions.swap :search, :field_search
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:job, :address, :protocol]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
+
+    # Support ATOM Format
+    config.formats << :atom
   end
 
   protected
+  def list_respond_to_atom
+    @job_alerts = JobAlert.find(:all, :order => 'job_alerts.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "JobAlert").to_i)
+
+    respond_to do |format|
+        format.atom
+    end
+  end
 
   def admin_required
     if (current_user.nil? || !current_user.has_role?(:admin))

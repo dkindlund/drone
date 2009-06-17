@@ -1,5 +1,5 @@
 class UrlsController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
 
   active_scaffold :url do |config|
@@ -55,6 +55,12 @@ class UrlsController < ApplicationController
     config.columns[:client].includes = nil
     # TODO: Check if this is needed for performance reasons; if we enable it, be sure to remove the fingerprint column searchability.
     #config.columns[:fingerprint].includes = nil
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
   end
 
   # Restrict who can see what records in list view.

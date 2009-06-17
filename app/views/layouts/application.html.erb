@@ -4,7 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title><%= Configuration.find_retry(:name => "ui.title", :namespace => controller.controller_name.camelize.singularize).to_s %></title>
+  <% title = Configuration.find_retry(:name => "ui.title", :namespace => controller.controller_name.camelize.singularize).to_s %>
+  <title><%= title %></title>
+  <%= auto_discovery_link_tag(:atom, {:controller => controller.controller_name, :action => "index", :format => "atom"}, {:title => title + " Feed"}) %>
   <%= javascript_include_tag :defaults, 'lowpro' %>
   <%= active_scaffold_includes %>
   <%= stylesheet_link_tag 'active_scaffold_overrides' %>

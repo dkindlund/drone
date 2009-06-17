@@ -1,5 +1,5 @@
 class ProcessFilesController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
 
   active_scaffold :process_file do |config|
@@ -26,5 +26,11 @@ class ProcessFilesController < ApplicationController
     # Include the following show actions.
     config.columns[:os_process].set_link :show, :controller => 'os_processes', :parameters => {:parent_controller => 'process_files'}
     config.columns[:file_content].set_link :show, :controller => 'file_contents', :parameters => {:parent_controller => 'process_files'}
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:time_at, :os_process, :event, :name, :file_content]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
   end
 end

@@ -18,6 +18,30 @@ namespace :drone do
     end
   end
 
+  desc "Removes PCAP data corresponding to URLs that are neither suspicious nor compromised"
+  task :cleanup_pcaps => [:environment] do
+    RAILS_DEFAULT_LOGGER.auto_flushing = true
+
+    compromised_status = UrlStatus.find_by_status("compromised")
+    suspicious_status = UrlStatus.find_by_status("suspicious")
+    fingerprints = Fingerprint.find(:all, :conditions => ['fingerprints.pcap IS NOT NULL'])
+
+    fingerprints.each do |fingerprint|
+      if (!fingerprint.url.nil? &&
+          (fingerprint.url.url_status != compromised_status) &&
+          (fingerprint.url.url_status != suspicious_status))
+
+        # Delete the PCAP file.
+        File.unlink("public/" + fingerprint.pcap.to_s)
+
+        # Remove the PCAP reference.
+        fingerprint.pcap = nil
+        fingerprint.save!
+        fingerprint.expire_caches
+      end
+    end
+  end
+
   desc "Marks all suspended VMs as error, so that they can be cleaned up by the Manager"
   task :cleanup_clients => [:environment] do
     RAILS_DEFAULT_LOGGER.auto_flushing = true

@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
 
   active_scaffold :client do |config|
@@ -45,6 +45,12 @@ class ClientsController < ApplicationController
     config.columns[:application].set_link :show, :controller => 'applications', :parameters => {:parent_controller => 'clients'}
     # TODO: Should provide this next one as a tooltip.
     # TODO: ? config.columns[:client_status].set_link :show, :controller => 'client_statuses', :parameters => {:parent_controller => 'clients'}
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:id, :quick_clone_name, :snapshot_name, :client_status, :job_count, :created_at, :suspended_at, :updated_at, :host, :os, :application, :ip, :mac]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
   end
 
   protected

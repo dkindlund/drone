@@ -1,5 +1,5 @@
 class OsProcessesController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
   before_filter :check_for_nested_fingerprints
 
@@ -31,6 +31,12 @@ class OsProcessesController < ApplicationController
 
     # Include the following show actions.
     config.columns[:fingerprint].set_link :show, :controller => 'fingerprints', :parameters => {:parent_controller => 'os_processes'}
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:fingerprint, :name, :pid, :parent_name, :parent_pid, :process_file_count, :process_registry_count]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
   end
 
   # Helper function to determine if the os_processes view should show

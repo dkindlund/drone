@@ -43,7 +43,6 @@ namespace :collector do
   task :test => [:environment] do
     RAILS_DEFAULT_LOGGER.auto_flushing = true
     daemon = EventCollector.new
-    # TODO: Need better validation, eventually.
 
     # Simulate host creation.
     host = {"host"       =>

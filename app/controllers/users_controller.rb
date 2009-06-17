@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
+  ssl_required :new, :create, :activate, :suspend, :unsuspend, :destroy, :purge, :render_field, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
   
   before_filter :login_required, :except => [:new, :create, :activate]
   before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge]
@@ -30,6 +30,15 @@ class UsersController < ApplicationController
 
     # Use field searching.
     config.actions.swap :search, :field_search
+
+    # Add export options.
+    config.actions.add :export
+    config.export.columns = [:name, :login, :email, :organization, :state, :roles, :groups, :created_at, :updated_at, :activated_at, :deleted_at]
+    config.export.force_quotes = true
+    config.export.allow_full_download = true
+
+    # Support ATOM Format
+    config.formats << :atom
   end
 
   # Restrict who can see what records in list view.
@@ -121,5 +130,13 @@ class UsersController < ApplicationController
   # Enable signup functionality.
   def create_authorized?
     return true
+  end
+
+  def list_respond_to_atom
+    @users = User.find(:all, :conditions => conditions_for_collection, :order => 'users.updated_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "User").to_i)
+
+    respond_to do |format|
+        format.atom
+    end
   end
 end

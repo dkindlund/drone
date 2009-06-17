@@ -84,7 +84,7 @@ class User < ActiveRecord::Base
       if current_user.has_role?(:admin)
         return true
       else
-        return (current_user.has_role?(:member) && (self.id == current_user.id))
+        return (current_user.has_role?(:member) && ((self.id == current_user.id) || (self.organization == current_user.organization)))
       end
     else 
       return false

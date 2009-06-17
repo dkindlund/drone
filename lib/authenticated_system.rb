@@ -71,7 +71,7 @@ module AuthenticatedSystem
         # Add any other API formats here.  (Some browsers, notably IE6, send Accept: */* and trigger 
         # the 'format.any' block incorrectly. See http://bit.ly/ie6_borken or http://bit.ly/ie6_borken2
         # for a workaround.)
-        format.any(:json, :xml) do
+        format.any(:json, :xml, :atom) do
           request_http_basic_authentication 'Web Password'
         end
       end
