@@ -469,7 +469,7 @@ pcap_directory:
   name: pcap.directory
   value: pcaps
   namespace: Fingerprint
-  description: The directory where PCAP data is stored (relative to the RAILS_ROOT/public directory).
+  description: The directory where PCAP data is stored (relative to the RAILS_ROOT directory).
   default_value: pcaps
 
 atom_feed_max_entries:
