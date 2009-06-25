@@ -41,6 +41,25 @@ class FingerprintsController < ApplicationController
     end
   end
 
+  # Helper function to allow users to download any corresponding PCAP.
+  def download_pcap
+    fingerprint = nil
+    begin    
+      fingerprint = Fingerprint.find(params[:id])
+    rescue
+      fingerprint = nil
+    end
+    if (!fingerprint.nil? &&
+        !fingerprint.pcap.nil? &&
+        (fingerprint.url.group_id.nil? ||
+         current_user.has_role?(:admin) ||
+         !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(fingerprint.url.group_id).nil?))
+      send_file(RAILS_ROOT + '/' + fingerprint.pcap.to_s, :x_sendfile => true)
+    else
+      redirect_back_or_default('/')
+    end
+  end
+
   # XXX: This should mimic UrlsController.conditions_for_collection.
   # Restrict who can see what records in list view.
   # - Admins can see everything.

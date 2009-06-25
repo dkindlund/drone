@@ -37,7 +37,7 @@ class Fingerprint < ActiveRecord::Base
       # Attempt to write the PCAP out to the directory.
       self.pcap = nil
       begin
-        open("public/" + filename, 'wb') do |file|
+        open(filename, 'wb') do |file|
           file.print Zlib::Inflate.inflate(Base64.decode64(data))
         end
         # Only update the filename reference if the save was successful.

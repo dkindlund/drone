@@ -32,7 +32,7 @@ namespace :drone do
           (fingerprint.url.url_status != suspicious_status))
 
         # Delete the PCAP file.
-        File.unlink("public/" + fingerprint.pcap.to_s)
+        File.unlink(fingerprint.pcap.to_s)
 
         # Remove the PCAP reference.
         fingerprint.pcap = nil

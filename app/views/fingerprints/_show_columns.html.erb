@@ -10,13 +10,15 @@
                                       !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(@record.url.group_id).nil?)) -%>
     <dt class="<%= "#{column.name}_name" %>"><%= column.label.upcase -%></dt>
     <dd class="<%= "#{column.name}_value" %>"><%= show_column_value(@record, column) -%><%= clippy(h(URI.escape(@record.url.url, Regexp.union(URI::REGEXP::UNSAFE, /&/))),'#EDEDED') -%></dd>
-  <% elsif ((column.name == :pcap) && (@record.url.group_id.nil? ||
-                                      current_user.has_role?(:admin) ||
-                                      !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(@record.url.group_id).nil?)) -%>
+  <% elsif ((column.name == :pcap) &&
+            !@record.pcap.nil? &&
+            (@record.url.group_id.nil? ||
+             current_user.has_role?(:admin) ||
+             !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(@record.url.group_id).nil?)) -%>
     <dt class="<%= "#{column.name}_name" %>"><%= column.label -%></dt>
     <% value = show_column_value(@record, column) %>
     <% pcap_directory = Configuration.find_retry(:name => "pcap.directory", :namespace => "Fingerprint").to_s %>
-    <dd class="<%= "#{column.name}_value" %>"><%= @record.pcap.nil? ? value : "<a href='/" + value + "'>" + h(value.sub!(pcap_directory + '/','')) + "</a>" -%></dd>
+    <dd class="<%= "#{column.name}_value" %>"><%= link_to(h(value.sub!(pcap_directory + '/','')), { :action => "download_pcap", :id => @record.id }) -%></dd>
   <% end -%>
 <% end -%>
   <dt></dt>
@@ -24,5 +26,16 @@
 <% if @show_nested_urls -%>
   <dt></dt>
   <dd><%= render :active_scaffold => 'urls', :constraints => { :fingerprint_id => @record.id } %></dd>
+<% end -%>
+<% if !@record.url.nil? -%>
+<%
+     related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ?', @record.url.ip, "%" + URI.parse(@record.url.url).host().to_s + "%" ]
+     joins = ''
+     if (!@record.checksum.nil?)
+       joins = 'LEFT JOIN fingerprints ON urls.fingerprint_id = fingerprints.id'
+       related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ? OR fingerprints.checksum = ?', @record.url.ip, "%" + URI.parse(@record.url.url).host().to_s + "%", @record.checksum.to_s ]
+     end
+%>
+    <dd><%= render :active_scaffold => 'urls', :joins => joins, :conditions => Url.merge_conditions(related_urls_pivot_fields, [ 'urls.id != ? AND urls.url_status_id IN (?,?,?)', @record.url.id, UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised"), UrlStatus.find_by_status("timed_out") ]), :label => "Possible Related URLs" %></dd>
 <% end -%>
 </dl>
