@@ -16,7 +16,7 @@
     <dt class="<%= "#{column.name}_name" %>"><%= column.label -%></dt>
     <% value = show_column_value(@record, column) %>
     <% pcap_directory = Configuration.find_retry(:name => "pcap.directory", :namespace => "Fingerprint").to_s %>
-    <dd class="<%= "#{column.name}_value" %>"><%= @record.pcap.nil? ? value : "<a href='/" + value + "'>" + value.sub!(pcap_directory + '/','') + "</a>" -%></dd>
+    <dd class="<%= "#{column.name}_value" %>"><%= @record.pcap.nil? ? value : "<a href='/" + value + "'>" + h(value.sub!(pcap_directory + '/','')) + "</a>" -%></dd>
   <% end -%>
 <% end -%>
   <dt></dt>

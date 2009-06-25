@@ -42,7 +42,7 @@ class JobSourcesController < ApplicationController
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)
-      return [ '(job_sources.group_id IN (?) OR job_sources.group_id IS NULL)', groups.map!{|g| g.id} ]
+      return [ '(job_sources.group_id IN (?) OR job_sources.group_id IS NULL)', groups.map!{|g| g.is_a?(Group) ? g.id : g} ]
     else
       return [ 'job_sources.group_id IS NULL' ]
     end

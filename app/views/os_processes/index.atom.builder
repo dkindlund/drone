@@ -6,10 +6,10 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
   feed.subtitle(h(Configuration.find_retry(:name => "atom.description", :namespace => controller.controller_name.camelize.singularize).to_s))
 
   for element in @data
-    file_content = element[0]
-    url          = element[1]
-    feed.entry(file_content) do |entry|
-      entry.title("MD5: " + h(file_content.md5.to_s))
+    os_process = element[0]
+    url        = element[1]
+    feed.entry(os_process) do |entry|
+      entry.title(h(os_process.name.to_s))
       entry.updated(Time.at(url.time_at.to_f).strftime("%Y-%m-%dT%H:%M:%SZ"))
       entry.content :type => 'xhtml' do |xhtml|
         xhtml.p {
@@ -19,26 +19,11 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
           if (!url.url_status.nil? && !url.url_status.status.nil?)
             xhtml.text! "Status: "; xhtml.b(h(url.url_status.status)); xhtml.br
           end
-          xhtml.text! "MD5: #{h(file_content.md5)}"; xhtml.br
-          xhtml.text! "SHA1: #{h(file_content.sha1)}"; xhtml.br
-          xhtml.text! "Size: #{h(file_content.size)}"; xhtml.br
-          xhtml.text! "Type: #{h(file_content.mime_type)}"; xhtml.br
-          if (file_content.process_files.size > 0)
-            names = []
-            file_content.process_files.each do |process_file|
-              if (!process_file.name.nil?)
-                names << process_file.name
-              end
-            end
-            names.uniq!
-
-            xhtml.text! "Names:"; xhtml.br
-            xhtml.ul {
-              names.each do |name|
-                xhtml.li h(name)
-              end
-            }
-          end
+          xhtml.text! "PID: #{h(os_process.pid)}"; xhtml.br
+          xhtml.text! "Parent Name: #{h(os_process.parent_name)}"; xhtml.br
+          xhtml.text! "Parent PID: #{h(os_process.parent_pid)}"; xhtml.br
+          xhtml.text! "# Files: #{h(os_process.process_file_count)}"; xhtml.br
+          xhtml.text! "# Registries: #{h(os_process.process_registry_count)}"; xhtml.br
         }
       end
     end

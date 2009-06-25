@@ -61,6 +61,9 @@ class UrlsController < ApplicationController
     config.export.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
     config.export.force_quotes = true
     config.export.allow_full_download = true
+
+    # Support ATOM Format
+    config.formats << :atom
   end
 
   # Restrict who can see what records in list view.
@@ -72,9 +75,21 @@ class UrlsController < ApplicationController
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)
-      return [ '(urls.group_id IN (?) OR urls.group_id IS NULL)', groups.map!{|g| g.id} ]
+      return [ '(urls.group_id IN (?) OR urls.group_id IS NULL)', groups.map!{|g| g.is_a?(Group) ? g.id : g} ]
     else
       return [ 'urls.group_id IS NULL' ]
+    end
+  end
+
+  protected
+  def list_respond_to_atom
+    url_conditions = conditions_for_collection
+    urls = Url.find(:all, :select => 'DISTINCT urls.*, fingerprints.id AS fingerprint_id', :from => 'urls', :joins => 'LEFT JOIN fingerprints ON fingerprints.id = urls.fingerprint_id', :conditions => Url.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Url").to_i)
+    fingerprints = Fingerprint.find(:all, :select => 'DISTINCT fingerprints.*, urls.id AS url_id', :from => 'urls', :joins => 'LEFT JOIN fingerprints ON fingerprints.id = urls.fingerprint_id', :conditions => Fingerprint.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Url").to_i)
+    @data = urls.zip(fingerprints)
+
+    respond_to do |format|
+        format.atom
     end
   end
 end

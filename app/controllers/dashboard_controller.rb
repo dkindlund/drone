@@ -97,7 +97,7 @@ class DashboardController < ApplicationController
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)
-      return [ '(urls.group_id IN (' + groups.map!{|g| g.id}.join(',') +  ') OR urls.group_id IS NULL)' ]
+      return [ '(urls.group_id IN (' + groups.map!{|g| g.is_a?(Group) ? g.id : g}.join(',') +  ') OR urls.group_id IS NULL)' ]
     else
       return [ 'urls.group_id IS NULL' ]
     end

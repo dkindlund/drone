@@ -52,6 +52,9 @@ class JobsController < ApplicationController
     config.create.multipart = false
     config.create.persistent = false
     config.create.edit_after_create = false
+
+    # Support ATOM Format
+    config.formats << :atom
   end
 
   # Restrict who can see what records in list view.
@@ -63,7 +66,7 @@ class JobsController < ApplicationController
     return [] if current_user.has_role?(:admin)
     groups = current_user.groups
     if (groups.size > 0)
-      return [ '(jobs.group_id IN (?) OR jobs.group_id IS NULL)', groups.map!{|g| g.id} ]
+      return [ '(jobs.group_id IN (?) OR jobs.group_id IS NULL)', groups.map!{|g| g.is_a?(Group) ? g.id : g} ]
     else
       return [ 'jobs.group_id IS NULL' ]
     end
@@ -169,5 +172,32 @@ class JobsController < ApplicationController
 
     flash.now[:info] = "Job submitted. Please refresh before viewing job details.  If the job does not appear shortly after refresh, then resubmit with a higher priority (e.g., >= " + Configuration.find_retry(:name => "high_priority", :namespace => "collector").to_s + ")."
     return @record
+  end
+
+  # Restrict who can see what records in list view.
+  # - Admins can see everything.
+  # - Users in groups can see only those corresponding records along with records not in any group.
+  # - Users not in a group can see only those corresponding records.
+  def conditions_for_url_collection
+    return [ 'urls.group_id IS NULL' ] if current_user.nil?
+    return [] if current_user.has_role?(:admin)
+    groups = current_user.groups
+    if (groups.size > 0)
+      return [ '(urls.group_id IN (?) OR urls.group_id IS NULL)', groups.map!{|g| g.is_a?(Group) ? g.id : g} ]
+    else
+      return [ 'urls.group_id IS NULL' ]
+    end
+  end
+
+  protected
+  def list_respond_to_atom
+    url_conditions = conditions_for_url_collection
+    jobs = Job.find(:all, :select => 'DISTINCT jobs.*, urls.id AS url_id', :from => 'jobs', :joins => 'LEFT JOIN urls ON urls.job_id = jobs.id', :conditions => Job.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Job").to_i)
+    urls = Url.find(:all, :select => 'DISTINCT urls.*', :from => 'urls', :conditions => Url.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Job").to_i)
+    @data = jobs.zip(urls)
+
+    respond_to do |format|
+        format.atom
+    end
   end
 end
