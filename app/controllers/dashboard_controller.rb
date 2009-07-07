@@ -81,7 +81,7 @@ class DashboardController < ApplicationController
       latest_entry = latest_client
     end
 
-    if stale?(:last_modified => (latest_entry.nil? ? Time.now.utc : Time.at(latest_entry.time_at.to_f).utc), :etag => latest_entry)
+    if stale?(:last_modified => (latest_entry.nil? ? Time.now.utc : Time.at(latest_entry.updated_at.to_f).utc), :etag => latest_entry)
       respond_to do |format|
         format.html
         format.atom
