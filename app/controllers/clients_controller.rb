@@ -51,9 +51,40 @@ class ClientsController < ApplicationController
     config.export.columns = [:id, :quick_clone_name, :snapshot_name, :client_status, :job_count, :created_at, :suspended_at, :updated_at, :host, :os, :application, :ip, :mac]
     config.export.force_quotes = true
     config.export.allow_full_download = true
+
+    # Support ATOM Format
+    config.formats << :atom
+  end
+
+  # XXX: This should mimic UrlsController.conditions_for_collection.
+  # Restrict who can see what records in list view.
+  # - Admins can see everything.
+  # - Users in groups can see only those corresponding records along with records not in any group.
+  # - Users not in a group can see only those corresponding records.
+  def conditions_for_url_collection
+    return [ 'urls.group_id IS NULL' ] if current_user.nil?
+    return [] if current_user.has_role?(:admin)
+    groups = current_user.groups
+    if (groups.size > 0)
+      return [ '(urls.group_id IN (?) OR urls.group_id IS NULL)', groups.map!{|g| g.is_a?(Group) ? g.id : g} ]
+    else
+      return [ 'urls.group_id IS NULL' ]
+    end
   end
 
   protected
+  def list_respond_to_atom
+    url_conditions = conditions_for_url_collection
+    clients = Client.find(:all, :select => 'DISTINCT clients.*, urls.id AS url_id', :from => 'clients', :joins => 'LEFT JOIN urls ON urls.client_id = clients.id', :conditions => Client.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Client").to_i)
+    urls = Url.find(:all, :select => 'DISTINCT urls.*', :from => 'urls', :conditions => Url.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Client").to_i)
+    @data = clients.zip(urls)
+
+    if stale?(:last_modified => (@data.first.nil? ? Time.now.utc : Time.at(@data.first[1].time_at.to_f).utc), :etag => @data.first[1])
+      respond_to do |format|
+        format.atom
+      end
+    end
+  end
 
   # Calculate the new last URL status, based upon the client status.
   def after_update_save(record)

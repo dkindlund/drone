@@ -218,6 +218,13 @@ a:hover {
   width: 100%;
 }
 
+.user-bar table td a img,
+.user-bar table td a:visited img {
+  /*color: #06c;*/
+  color: #ffffff;
+  text-decoration: none;
+}
+
 .user-bar table td.last {
   border-right:medium none;
 }

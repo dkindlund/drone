@@ -36,7 +36,7 @@ class ClientStatusesController < ApplicationController
     @client_statuses = ClientStatus.find(:all, :order => 'client_statuses.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "ClientStatus").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 end

@@ -39,7 +39,7 @@ class JobAlertsController < ApplicationController
     @job_alerts = JobAlert.find(:all, :order => 'job_alerts.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "JobAlert").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 

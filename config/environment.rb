@@ -47,8 +47,7 @@ Rails::Initializer.run do |config|
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
-  # TODO: Change this back to :info, eventually.
-  # config.log_level = :debug
+  # config.log_level = :info
 
   # Configure the default logger.
   # config.logger = Logger.new
@@ -58,14 +57,14 @@ Rails::Initializer.run do |config|
   # config.i18n.default_locale = :de
 end
 
+# XXX: Update this, accordingly.
+SITE_DOMAIN = "drone.honeyclient.org"
+SITE_URL = "https://#{SITE_DOMAIN}"
+ADMIN_EMAIL = "noreply@#{SITE_DOMAIN}"
+
 # Specify what address the notifications will be sent from.
-ExceptionNotifier.sender_address = %("Exception Notifier" <noreply@drone.honeyclient.org>)
-ExceptionNotifier.email_prefix = "[drone] "
+ExceptionNotifier.sender_address = %("Exception Notifier" <#{ADMIN_EMAIL}>)
+ExceptionNotifier.email_prefix = "[#{SITE_DOMAIN}] "
 
 # Specify who will receive email notifications when exceptions occur.
 ExceptionNotifier.exception_recipients = %w(darien@kindlund.com)
-
-# TODO: Update this, eventually.
-SITE_DOMAIN = "drone.honeyclient.org"
-SITE_URL = "https://#{SITE_DOMAIN}"
-ADMIN_EMAIL = "noreply@drone.honeyclient.org"

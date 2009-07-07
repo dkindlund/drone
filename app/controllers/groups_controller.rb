@@ -31,7 +31,7 @@ class GroupsController < ApplicationController
     @groups = Group.find(:all, :order => 'groups.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Group").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 

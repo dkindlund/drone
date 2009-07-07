@@ -135,8 +135,10 @@ class UsersController < ApplicationController
   def list_respond_to_atom
     @users = User.find(:all, :conditions => conditions_for_collection, :order => 'users.updated_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "User").to_i)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@users.first.nil? ? Time.now.utc : @users.first.updated_at.utc), :etag => @users.first)
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

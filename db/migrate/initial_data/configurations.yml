@@ -3,7 +3,7 @@
 ui_title:
   id: 1
   name: ui.title
-  value: Drone Interface (v2.2)
+  value: Drone Interface (v2.3)
   namespace: ""
   description: The default title for any UI web page.
   default_value: Drone Interface
@@ -411,10 +411,10 @@ ui_running_vms_gauge_min:
 ui_running_vms_gauge_max:
   id: 52
   name: ui.running_vms_gauge.max
-  value: 35
+  value: 32
   namespace: UrlStatistic
   description: The maximum number of running VMs the gauge should show.
-  default_value: 35
+  default_value: 32
 
 ui_running_vms_gauge_red_to:
   id: 53
@@ -483,311 +483,351 @@ atom_feed_max_entries:
 atom_feed_title_prefix:
   id: 61
   name: atom.title_prefix
-  value: "Drone Interface - "
+  value: "drone.honeyclient.org - "
   namespace: ""
   description: The default title prefix used on all Atom feeds.
-  default_value: "Drone Interface - "
+  default_value: "drone.honeyclient.org - "
 
 hosts_feed_title:
   id: 62
   name: atom.title
-  value: Latest VMware ESX Hosts
+  value: VMware ESX Hosts
   namespace: Host
   description: The Hosts feed title.
-  default_value: Latest VMware ESX Hosts
+  default_value: VMware ESX Hosts
 
 hosts_feed_description:
   id: 63
   name: atom.description
-  value: The list of updated VMware ESX hosts in use by the Honeyclient system.
+  value: "The list of updated VMware ESX hosts in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Host
   description: The Hosts feed description.
-  default_value: The list of updated VMware ESX hosts in use by the Honeyclient system.
+  default_value: "The list of updated VMware ESX hosts in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 roles_feed_title:
   id: 64
   name: atom.title
-  value: Latest Roles
+  value: Roles
   namespace: Role
   description: The Role feed title.
-  default_value: Latest Roles
+  default_value: Roles
 
 roles_feed_description:
   id: 65
   name: atom.description
-  value: The list of updated roles in use by the Honeyclient system.
+  value: "The list of updated roles in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Role
   description: The Role feed description.
-  default_value: The list of updated roles in use by the Honeyclient system.
+  default_value: "The list of updated roles in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 groups_feed_title:
   id: 66
   name: atom.title
-  value: Latest Groups
+  value: Groups
   namespace: Group
   description: The Group feed title.
-  default_value: Latest Groups
+  default_value: Groups
 
 groups_feed_description:
   id: 67
   name: atom.description
-  value: The list of updated groups in use by the Honeyclient system.
+  value: "The list of updated groups in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Group
   description: The Group feed description.
-  default_value: The list of updated groups in use by the Honeyclient system.
+  default_value: "The list of updated groups in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 configurations_feed_title:
   id: 68
   name: atom.title
-  value: Latest Configurations
+  value: Configurations
   namespace: Configuration
   description: The Configuration feed title.
-  default_value: Latest Configurations
+  default_value: Configurations
 
 configurations_feed_description:
   id: 69
   name: atom.description
-  value: The list of updated configurations in use by the Honeyclient system.
+  value: "The list of updated configurations in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Configuration
   description: The Configuration feed description.
-  default_value: The list of updated configurations in use by the Honeyclient system.
+  default_value: "The list of updated configurations in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 url_statuses_feed_title:
   id: 70
   name: atom.title
-  value: Latest URL Statuses
+  value: URL Statuses
   namespace: UrlStatus
   description: The UrlStatus feed title.
-  default_value: Latest URL Statuses
+  default_value: URL Statuses
 
 url_statuses_feed_description:
   id: 71
   name: atom.description
-  value: The list of updated URL statuses in use by the Honeyclient system.
+  value: "The list of updated URL statuses in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: UrlStatus
   description: The UrlStatus feed description.
-  default_value: The list of updated URL statuses in use by the Honeyclient system.
+  default_value: "The list of updated URL statuses in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 url_statistics_feed_title:
   id: 72
   name: atom.title
-  value: Latest URL Statistics
+  value: URL Statistics
   namespace: UrlStatistic
   description: The UrlStatistic feed title.
-  default_value: Latest URL Statistics
+  default_value: URL Statistics
 
 url_statistics_feed_description:
   id: 73
   name: atom.description
-  value: The list of updated URL statistics generated by the Honeyclient system.
+  value: "The list of updated URL statistics generated by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: UrlStatistic
   description: The UrlStatistic feed description.
-  default_value: The list of updated URL statistics generated by the Honeyclient system.
+  default_value: "The list of updated URL statistics generated by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 client_statuses_feed_title:
   id: 74
   name: atom.title
-  value: Latest Client Statuses
+  value: Client Statuses
   namespace: ClientStatus
   description: The ClientStatus feed title.
-  default_value: Latest Client Statuses
+  default_value: Client Statuses
 
 client_statuses_feed_description:
   id: 75
   name: atom.description
-  value: The list of updated client statuses in use by the Honeyclient system.
+  value: "The list of updated client statuses in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: ClientStatus
   description: The ClientStatus feed description.
-  default_value: The list of updated client statuses in use by the Honeyclient system.
+  default_value: "The list of updated client statuses in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 applications_feed_title:
   id: 76
   name: atom.title
-  value: Latest Applications
+  value: Applications
   namespace: Application
   description: The Application feed title.
-  default_value: Latest Applications
+  default_value: Applications
 
 applications_feed_description:
   id: 77
   name: atom.description
-  value: The list of updated applications in use by the Honeyclient system.
+  value: "The list of updated applications in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Application
   description: The Application feed description.
-  default_value: The list of updated applications in use by the Honeyclient system.
+  default_value: "The list of updated applications in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 os_feed_title:
   id: 78
   name: atom.title
-  value: Latest Operating Systems
+  value: Operating Systems
   namespace: Os
   description: The Os feed title.
-  default_value: Latest Operating Systems
+  default_value: Operating Systems
 
 os_feed_description:
   id: 79
   name: atom.description
-  value: The list of updated operating systems in use by the Honeyclient system.
+  value: "The list of updated operating systems in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: Os
   description: The OS feed description.
-  default_value: The list of updated operating systems in use by the Honeyclient system.
+  default_value: "The list of updated operating systems in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 job_alerts_feed_title:
   id: 80
   name: atom.title
-  value: Latest Notifications
+  value: Notifications
   namespace: JobAlert
   description: The JobAlert feed title.
-  default_value: Latest Notifications
+  default_value: Notifications
 
 job_alerts_feed_description:
   id: 81
   name: atom.description
-  value: The list of updated notifications in use by the Honeyclient system.
+  value: "The list of updated notifications in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: JobAlert
   description: The JobAlert feed description.
-  default_value: The list of updated notifications in use by the Honeyclient system.
+  default_value: "The list of updated notifications in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 job_sources_feed_title:
   id: 82
   name: atom.title
-  value: Latest Job Sources
+  value: Job Sources
   namespace: JobSource
   description: The JobSource feed title.
-  default_value: Latest Job Sources
+  default_value: Job Sources
 
 job_sources_feed_description:
   id: 83
   name: atom.description
-  value: The list of updated job sources in use by the Honeyclient system.
+  value: "The list of updated job sources in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: JobSource
   description: The JobSource feed description.
-  default_value: The list of updated job sources in use by the Honeyclient system.
+  default_value: "The list of updated job sources in use by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
 
 file_contents_feed_title:
   id: 84
   name: atom.title
-  value: Latest Files
+  value: Files
   namespace: FileContent
   description: The FileContent feed title.
-  default_value: Latest Files
+  default_value: Files
 
 file_contents_feed_description:
   id: 85
   name: atom.description
-  value: The list of updated files discovered by the Honeyclient system, associated with suspicious or compromised activity.
+  value: "The list of updated files discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...')."
   namespace: FileContent
   description: The FileContent feed description.
-  default_value: The list of updated files discovered by the Honeyclient system, associated with suspicious or compromised activity.
+  default_value: "The list of updated files discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...')."
 
 process_files_feed_title:
   id: 86
   name: atom.title
-  value: Latest Filesystem Changes
+  value: Filesystem Changes
   namespace: ProcessFile
   description: The ProcessFile feed title.
-  default_value: Latest Filesystem Changes
+  default_value: Filesystem Changes
 
 process_files_feed_description:
   id: 87
   name: atom.description
-  value: The list of updated filesystem changes discovered by the Honeyclient system.
+  value: "The list of updated filesystem changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: ProcessFile
   description: The ProcessFile feed description.
-  default_value: The list of updated filesystem changes discovered by the Honeyclient system.
+  default_value: "The list of updated filesystem changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 process_registries_feed_title:
   id: 88
   name: atom.title
-  value: Latest Registry Changes
+  value: Registry Changes
   namespace: ProcessRegistry
   description: The ProcessRegistry feed title.
-  default_value: Latest Registry Changes
+  default_value: Registry Changes
 
 process_registries_feed_description:
   id: 89
   name: atom.description
-  value: The list of updated registry changes discovered by the Honeyclient system.
+  value: "The list of updated registry changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: ProcessRegistry
   description: The ProcessRegistry feed description.
-  default_value: The list of updated registry changes discovered by the Honeyclient system.
+  default_value: "The list of updated registry changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 os_processes_feed_title:
   id: 90
   name: atom.title
-  value: Latest Process Changes
+  value: Process Changes
   namespace: OsProcess
   description: The OsProcess feed title.
-  default_value: Latest Process Changes
+  default_value: Process Changes
 
 os_processes_feed_description:
   id: 91
   name: atom.description
-  value: The list of updated process changes discovered by the Honeyclient system.
+  value: "The list of updated process changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: OsProcess
   description: The OsProcess feed description.
-  default_value: The list of updated process changes discovered by the Honeyclient system.
+  default_value: "The list of updated process changes discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 fingerprints_feed_title:
   id: 92
   name: atom.title
-  value: Latest Fingerprints 
+  value: Fingerprints 
   namespace: Fingerprint
   description: The Fingerprint feed title.
-  default_value: Latest Fingerprints
+  default_value: Fingerprints
 
 fingerprints_feed_description:
   id: 93
   name: atom.description
-  value: The list of updated fingerprints discovered by the Honeyclient system.
+  value: "The list of updated fingerprints discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: Fingerprint
   description: The Fingerprint feed description.
-  default_value: The list of updated fingerprints discovered by the Honeyclient system.
+  default_value: "The list of updated fingerprints discovered by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 urls_feed_title:
   id: 94
   name: atom.title
-  value: Latest URLs
+  value: URLs
   namespace: Url
   description: The Url feed title.
-  default_value: Latest URLs
+  default_value: URLs
 
 urls_feed_description:
   id: 95
   name: atom.description
-  value: The list of updated URLs processed by the Honeyclient system.
+  value: "The list of updated URLs processed by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: Url
   description: The Url feed description.
-  default_value: The list of updated URLs processed by the Honeyclient system.
+  default_value: "The list of updated URLs processed by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 jobs_feed_title:
   id: 96
   name: atom.title
-  value: Latest Jobs
+  value: Jobs
   namespace: Job
   description: The Job feed title.
-  default_value: Latest Jobs
+  default_value: Jobs
 
 jobs_feed_description:
   id: 97
   name: atom.description
-  value: The list of updated Jobs processed by the Honeyclient system.
+  value: "The list of updated Jobs processed by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
   namespace: Job
   description: The Job feed description.
-  default_value: The list of updated Jobs processed by the Honeyclient system.
+  default_value: "The list of updated Jobs processed by the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
 
 users_feed_title:
   id: 98
   name: atom.title
-  value: Latest Users
+  value: Users
   namespace: User
   description: The User feed title.
-  default_value: Latest Users
+  default_value: Users
 
 users_feed_description:
   id: 99
   name: atom.description
-  value: The list of updated Users registered on the Drone Interface.
+  value: "The list of updated Users registered on the Drone Interface. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
   namespace: User
   description: The User feed description.
-  default_value: The list of updated Users registered on the Drone Interface.
+  default_value: "The list of updated Users registered on the Drone Interface. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
+
+clients_feed_title:
+  id: 100
+  name: atom.title
+  value: Clients
+  namespace: Client
+  description: The Client feed title.
+  default_value: Clients
+
+clients_feed_description:
+  id: 101
+  name: atom.description
+  value: "The list of updated Clients on the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
+  namespace: Client
+  description: The Client feed description.
+  default_value: "The list of updated Clients on the Honeyclient system, associated with suspicious or compromised activity. NOTE: When setting up an automated feed, be sure to prefix the feed URL like ('https://username:password@...')."
+
+dashboard_feed_title:
+  id: 102
+  name: atom.title
+  value: Threats
+  namespace: Dashboard
+  description: The Dashboard feed title.
+  default_value: Threats
+
+dashboard_feed_description:
+  id: 103
+  name: atom.description
+  value: "The list of updated threats discovered by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
+  namespace: Dashboard
+  description: The Dashboard feed description.
+  default_value: "The list of updated threats discovered by the Honeyclient system. NOTE: When setting up an automated feed, be sure to include your credentials in the feed URL (e.g., 'https://username:password@...') - otherwise access will fail upon session timeout."
+
+display_feeds:
+  id: 104
+  name: atom.display_feeds
+  value: dashboard,fingerprints,urls,os_processes,process_registries,process_files,file_contents
+  namespace: ""
+  description: Order of feeds to display on the navigation bar.
+  default_value: dashboard,fingerprints,urls,os_processes,process_registries,process_files,file_contents

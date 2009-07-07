@@ -1,15 +1,28 @@
+require 'uri'
+
 atom_feed(:schema_date => "2009-06-16") do |feed|
   feed.title(h(Configuration.find_retry(:name => "atom.title_prefix", :namespace => controller.controller_name.camelize.singularize).to_s) + h(Configuration.find_retry(:name => "atom.title", :namespace => controller.controller_name.camelize.singularize).to_s))
-  if (!@data.first.nil? && !@data.first[0].nil?)
-    feed.updated(Time.at(@data.first[0].time_at.to_f))
-  end
+
   feed.subtitle(h(Configuration.find_retry(:name => "atom.description", :namespace => controller.controller_name.camelize.singularize).to_s))
   pcap_directory = Configuration.find_retry(:name => "pcap.directory", :namespace => "Fingerprint").to_s
 
-  for element in @data
-    url         = element[0]
-    fingerprint = element[1]
-    feed.entry(fingerprint) do |entry|
+  first_entry = true
+  while ((@suspicious_urls.size > 0) || (@compromised_urls.size > 0))
+    # Figure out which URL entry is more recent.
+    url = @suspicious_urls.shift 
+    if (url.nil? ||
+        (!@compromised_urls.first.nil? &&
+         (@compromised_urls.first.time_at > url.time_at)))
+      if !url.nil?
+        @suspicious_urls.unshift(url)
+      end
+      url = @compromised_urls.shift
+    end
+    if first_entry
+      feed.updated(Time.at(url.time_at.to_f))
+    end
+
+    feed.entry(url) do |entry|
       entry.title(h(url.url.to_s))
       entry.updated(Time.at(url.time_at.to_f).strftime("%Y-%m-%dT%H:%M:%SZ"))
       entry.content :type => 'xhtml' do |xhtml|
@@ -20,15 +33,18 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
           if (!url.job_source.nil?)
             xhtml.text! "Source: #{h(url.job_source)}"; xhtml.br
           end
-          if (!fingerprint.pcap.nil?)
-            pcap_url = url_for({:controller => "fingerprints", :action => "download_pcap", :id => fingerprint.id})
-            xhtml.text! "PCAP: "; xhtml.a(SITE_URL + h(pcap_url), "href" => SITE_URL + pcap_url); xhtml.br
+          if !url.fingerprint.nil?
+            fingerprint_url = url_for({:controller => "fingerprints", :action => "show", :id => url.fingerprint.id})
+            xhtml.text! "Checksum: "; xhtml.a(h(url.fingerprint.checksum), "href" => SITE_URL + fingerprint_url); xhtml.br
+            if (!url.fingerprint.pcap.nil?)
+              pcap_url = url_for({:controller => "fingerprints", :action => "download_pcap", :id => url.fingerprint.id})
+              xhtml.text! "PCAP: "; xhtml.a(SITE_URL + h(pcap_url), "href" => SITE_URL + pcap_url); xhtml.br
+            end
+            xhtml.text! "# Processes: #{h(url.fingerprint.os_process_count)}"; xhtml.br
           end
-          xhtml.text! "Checksum: #{h(fingerprint.checksum)}"; xhtml.br
-          xhtml.text! "# Processes: #{h(fingerprint.os_process_count)}"; xhtml.br
         }
-        if (fingerprint.os_processes.size > 0)
-          fingerprint.os_processes.each do |os_process|
+        if (!url.fingerprint.nil? && (url.fingerprint.os_processes.size > 0))
+          url.fingerprint.os_processes.each do |os_process|
             xhtml.p {
               xhtml.text! "Process Name: #{h(os_process.name)}"; xhtml.br
               xhtml.text! "PID: #{h(os_process.pid)}"; xhtml.br
@@ -73,6 +89,26 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
                   end
                 }
               end
+            }
+          end
+          related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ?', url.ip, "%" + URI.parse(url.url).host().to_s + "%" ]
+          joins = ''
+          if !url.fingerprint.checksum.nil?
+            joins = 'LEFT JOIN fingerprints ON urls.fingerprint_id = fingerprints.id'
+            related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ? OR fingerprints.checksum = ?', url.ip, "%" + URI.parse(url.url).host().to_s + "%", url.fingerprint.checksum.to_s ]
+          end
+          related_urls = Url.find(:all, :from => 'urls', :joins => joins, :conditions => Url.merge_conditions(related_urls_pivot_fields, [ 'urls.id != ? AND urls.url_status_id IN (?,?,?)', url.id, UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised"), UrlStatus.find_by_status("timed_out") ]), :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Dashboard").to_i)
+          if related_urls.size > 0
+            xhtml.p {
+              xhtml.text! "Possible Related Threats:"; xhtml.br
+              xhtml.ul {
+                related_urls.each do |related_url|
+                  xhtml.li {
+                    related_fingerprint_url = url_for({:controller => "fingerprints", :action => "show", :id => related_url.fingerprint.id})
+                    xhtml.a(h(related_url.url), "href" => SITE_URL + related_fingerprint_url); xhtml.br
+                  }
+                end
+              }
             }
           end
         end

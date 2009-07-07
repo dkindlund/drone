@@ -64,8 +64,10 @@ class ProcessRegistriesController < ApplicationController
     urls = Url.find(:all, :select => 'DISTINCT urls.*, process_registries.id AS process_registry_id', :from => 'process_registries', :joins => 'LEFT JOIN os_processes ON os_processes.id = process_registries.os_process_id LEFT JOIN urls ON urls.fingerprint_id = os_processes.fingerprint_id', :conditions => Url.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'process_registries.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "ProcessRegistry").to_i)
     @data = process_registries.zip(urls)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@data.first.nil? ? Time.now.utc : Time.at(@data.first[1].time_at.to_f).utc), :etag => @data.first[1])
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

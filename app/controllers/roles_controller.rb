@@ -31,7 +31,7 @@ class RolesController < ApplicationController
     @roles = Role.find(:all, :order => 'roles.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Role").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 

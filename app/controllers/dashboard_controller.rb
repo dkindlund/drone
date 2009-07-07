@@ -46,8 +46,8 @@ class DashboardController < ApplicationController
     # Collect all relevant suspicious and compromised URLs.
     conditions = conditions_for_url_collection
     conditions << "urls.time_at >= " + eval(timeline_display_age + ".ago").to_f.to_s
-    @suspicious_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('suspicious').id.to_s]).join(' AND '))
-    @compromised_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('compromised').id.to_s]).join(' AND '))
+    @suspicious_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('suspicious').id.to_s]).join(' AND '), :order => 'urls.time_at DESC')
+    @compromised_urls = Url.find(:all, :conditions => (conditions + ['urls.url_status_id = ' + UrlStatus.find_by_status('compromised').id.to_s]).join(' AND '), :order => 'urls.time_at DESC')
 
     # Gauge Constants
     @gauge_size = Configuration.find_retry(:name => "ui.gauge.size", :namespace => "UrlStatistic")
@@ -71,6 +71,22 @@ class DashboardController < ApplicationController
     @running_vms_gauge_red_to = Configuration.find_retry(:name => "ui.running_vms_gauge.red_to", :namespace => "UrlStatistic")
     @running_vms_gauge_yellow_to = Configuration.find_retry(:name => "ui.running_vms_gauge.yellow_to", :namespace => "UrlStatistic")
     @running_vms_update_frequency = Configuration.find_retry(:name => "ui.running_vms.update_frequency", :namespace => "UrlStatistic")
+
+    latest_url = Url.find(:first, :order => 'urls.updated_at DESC')
+    latest_client = Client.find(:first, :order => 'clients.updated_at DESC')
+    latest_entry = latest_url
+    if (latest_entry.nil? ||
+        (!latest_client.nil? &&
+        (latest_client.updated_at > latest_entry.updated_at)))
+      latest_entry = latest_client
+    end
+
+    if stale?(:last_modified => (latest_entry.nil? ? Time.now.utc : Time.at(latest_entry.time_at.to_f).utc), :etag => latest_entry)
+      respond_to do |format|
+        format.html
+        format.atom
+      end
+    end
   end
 
   def url_queue_size

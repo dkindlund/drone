@@ -39,8 +39,10 @@ class HostsController < ApplicationController
   def list_respond_to_atom
     @hosts = Host.find(:all, :order => 'hosts.updated_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Host").to_i)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@hosts.first.nil? ? Time.now.utc : @hosts.first.updated_at.utc), :etag => @hosts.first)
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

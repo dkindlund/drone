@@ -433,6 +433,7 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
           rescue
             # Otherwise, log the error and discard the event.
             RAILS_DEFAULT_LOGGER.warn $!.to_s
+            RAILS_DEFAULT_LOGGER.warn "Original Message: " + msg.to_s
             pp $!
           end
  

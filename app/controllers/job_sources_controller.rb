@@ -53,7 +53,7 @@ class JobSourcesController < ApplicationController
     @job_sources = JobSource.find(:all, :conditions => conditions_for_collection, :order => 'job_sources.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "JobSource").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 

@@ -88,8 +88,10 @@ class UrlsController < ApplicationController
     fingerprints = Fingerprint.find(:all, :select => 'DISTINCT fingerprints.*, urls.id AS url_id', :from => 'urls', :joins => 'LEFT JOIN fingerprints ON fingerprints.id = urls.fingerprint_id', :conditions => Fingerprint.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'urls.time_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Url").to_i)
     @data = urls.zip(fingerprints)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@data.first.nil? ? Time.now.utc : Time.at(@data.first[0].time_at.to_f).utc), :etag => @data.first[0])
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

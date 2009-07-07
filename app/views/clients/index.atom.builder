@@ -6,10 +6,10 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
   feed.subtitle(h(Configuration.find_retry(:name => "atom.description", :namespace => controller.controller_name.camelize.singularize).to_s))
 
   for element in @data
-    job         = element[0]
+    client      = element[0]
     url         = element[1]
-    feed.entry(job) do |entry|
-      entry.title(h(job.uuid.to_s))
+    feed.entry(client) do |entry|
+      entry.title(h(client.quick_clone_name.to_s) + ' - ' + h(client.snapshot_name.to_s))
       entry.updated(Time.at(url.time_at.to_f).strftime("%Y-%m-%dT%H:%M:%SZ"))
       entry.content :type => 'xhtml' do |xhtml|
         xhtml.p {
@@ -19,10 +19,8 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
           if (!url.url_status.nil? && !url.url_status.status.nil?)
             xhtml.text! "Status: "; xhtml.b(h(url.url_status.status)); xhtml.br
           end
-          if (!job.job_source.nil?)
-            xhtml.text! "Source Name: #{h(job.job_source.name)}"; xhtml.br
-            xhtml.text! "Source Protocol: #{h(job.job_source.protocol)}"; xhtml.br
-          end
+          xhtml.text! "OS: #{h(client.os.to_label)}"; xhtml.br
+          xhtml.text! "Application: #{h(client.application.to_label)}"; xhtml.br
         }
       end
     end

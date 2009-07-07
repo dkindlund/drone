@@ -75,8 +75,10 @@ class OsProcessesController < ApplicationController
     urls = Url.find(:all, :select => 'DISTINCT urls.*, os_processes.id AS os_process_id', :from => 'os_processes', :joins => 'LEFT JOIN urls ON urls.fingerprint_id = os_processes.fingerprint_id', :conditions => Url.merge_conditions(url_conditions, ['urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'os_processes.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "OsProcess").to_i)
     @data = os_processes.zip(urls)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@data.first.nil? ? Time.now.utc : Time.at(@data.first[1].time_at.to_f).utc), :etag => @data.first[1])
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

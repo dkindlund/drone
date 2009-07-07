@@ -1,7 +1,17 @@
 <div class="user-bar">
   <table align="right">
     <tr>
-      <td class="first">Logged in as <%= link_to_current_user :content_method => :login %></td>
+      <% td_class = "first" %>
+      <% Configuration.find_retry(:name => "atom.display_feeds").split(',').each do |namespace| %>
+        <% feed_title = h(Configuration.find_retry(:name => "atom.title", :namespace => namespace.camelize.singularize)) %>
+        <% if td_class == "first" %>
+          <td class="<%= td_class %>"><%= image_tag("feed-icon-14x14.png", :size => "14x14", :alt => feed_title) %>&nbsp;<%= link_to(feed_title, {:controller => namespace, :action => "index", :format => "atom"}) %></td>
+        <% else %>
+          <td><%= link_to(feed_title, {:controller => namespace, :action => "index", :format => "atom"}) %></td>
+        <% end %>
+        <% td_class = "" %>
+      <% end %>
+      <td>Logged in as <%= link_to_current_user :content_method => :login %></td>
       <td class="last"><%= link_to "Logout", logout_path, { :title => "Logout" } %></td>
     </tr>
   </table>

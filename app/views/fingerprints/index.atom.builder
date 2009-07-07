@@ -21,7 +21,8 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
             xhtml.text! "Status: "; xhtml.b(h(url.url_status.status)); xhtml.br
           end
           if (!fingerprint.pcap.nil?)
-            xhtml.text! "PCAP: "; xhtml.a(SITE_URL + '/' + h(fingerprint.pcap), "href" => fingerprint.pcap.to_s); xhtml.br
+            pcap_url = url_for({:controller => "fingerprints", :action => "download_pcap", :id => fingerprint.id})
+            xhtml.text! "PCAP: "; xhtml.a(SITE_URL + h(pcap_url), "href" => SITE_URL + pcap_url); xhtml.br
           end
           xhtml.text! "# Processes: #{h(fingerprint.os_process_count)}"; xhtml.br
         }

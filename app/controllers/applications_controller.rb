@@ -35,7 +35,7 @@ class ApplicationsController < ApplicationController
     @applications = Application.find(:all, :order => 'applications.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Application").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 end

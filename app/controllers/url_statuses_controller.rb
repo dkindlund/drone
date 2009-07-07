@@ -34,7 +34,7 @@ class UrlStatusesController < ApplicationController
     @url_statuses = UrlStatus.find(:all, :order => 'url_statuses.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "UrlStatus").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 end

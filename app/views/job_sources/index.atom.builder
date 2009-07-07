@@ -7,7 +7,9 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
       entry.title(h(job_source.name))
       entry.content :type => 'xhtml' do |xhtml|
         xhtml.p {
-          xhtml.text! "Group: #{h(job_source.group.name)}"; xhtml.br
+          if !job_source.group.nil?
+            xhtml.text! "Group: #{h(job_source.group.name)}"; xhtml.br
+          end
           xhtml.text! "Protocol: #{h(job_source.protocol)}"; xhtml.br
         }
       end

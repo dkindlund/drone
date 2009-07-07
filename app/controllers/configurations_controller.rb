@@ -40,7 +40,7 @@ class ConfigurationsController < ApplicationController
     @configurations = Configuration.find(:all, :order => 'configurations.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Configuration").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 

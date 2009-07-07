@@ -38,7 +38,7 @@ class OsController < ApplicationController
     @oses = Os.find(:all, :order => 'os.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Os").to_i)
 
     respond_to do |format|
-        format.atom
+      format.atom
     end
   end
 end

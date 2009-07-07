@@ -71,8 +71,10 @@ class FileContentsController < ApplicationController
     urls = Url.find(:all, :select => 'DISTINCT urls.*, file_contents.id AS file_content_id', :from => 'file_contents', :joins => 'LEFT JOIN process_files ON process_files.file_content_id = file_contents.id LEFT JOIN os_processes ON os_processes.id = process_files.os_process_id LEFT JOIN urls ON urls.fingerprint_id = os_processes.fingerprint_id', :conditions => Url.merge_conditions(url_conditions, ['file_contents.size > 0 AND file_contents.mime_type != \'UNKNOWN\' AND urls.url_status_id IN (?,?)', UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised").id]), :order => 'file_contents.id DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "FileContent").to_i)
     @data = file_contents.zip(urls)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@data.first.nil? ? Time.now.utc : Time.at(@data.first[1].time_at.to_f).utc), :etag => @data.first[1])
+      respond_to do |format|
         format.atom
+      end
     end
   end
 end

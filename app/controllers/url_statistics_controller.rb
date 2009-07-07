@@ -30,8 +30,10 @@ class UrlStatisticsController < ApplicationController
   def list_respond_to_atom
     @url_statistics = UrlStatistic.find(:all, :order => 'url_statistics.updated_at DESC', :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "UrlStatistic").to_i)
 
-    respond_to do |format|
+    if stale?(:last_modified => (@url_statistics.first.nil? ? Time.now.utc : @url_statistics.first.updated_at.utc), :etag => @url_statistics.first)
+      respond_to do |format|
         format.atom
+      end
     end
   end
 
