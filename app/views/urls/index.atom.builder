@@ -17,6 +17,9 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
           if (!url.url_status.nil? && !url.url_status.status.nil?)
             xhtml.text! "Status: "; xhtml.b(h(url.url_status.status)); xhtml.br
           end
+          if (!url.ip.nil?)
+            xhtml.text! "IP: #{h(url.ip)}"; xhtml.br
+          end
           if (!url.job_source.nil?)
             xhtml.text! "Source: #{h(url.job_source)}"; xhtml.br
           end
