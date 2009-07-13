@@ -100,7 +100,7 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
             joins = 'LEFT JOIN fingerprints ON urls.fingerprint_id = fingerprints.id'
             related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ? OR fingerprints.checksum = ?', url.ip, "%" + URI.parse(url.url).host().to_s + "%", url.fingerprint.checksum.to_s ]
           end
-          related_urls = Url.find(:all, :from => 'urls', :joins => joins, :conditions => Url.merge_conditions(related_urls_pivot_fields, [ 'urls.id != ? AND urls.url_status_id IN (?,?,?)', url.id, UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised"), UrlStatus.find_by_status("timed_out") ]), :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Dashboard").to_i)
+          related_urls = Url.find(:all, :from => 'urls', :joins => joins, :conditions => Url.merge_conditions(related_urls_pivot_fields, [ 'urls.id != ? AND fingerprint_id IS NOT NULL AND urls.url_status_id IN (?,?,?)', url.id, UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised"), UrlStatus.find_by_status("timed_out") ]), :limit => Configuration.find_retry(:name => "atom.max_entries", :namespace => "Dashboard").to_i)
           if related_urls.size > 0
             xhtml.p {
               xhtml.text! "Possible Related Threats:"; xhtml.br
