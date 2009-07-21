@@ -11,8 +11,8 @@ module DaemonizeHelper
   class PidFile
     def initialize(configkey)
       @pid_dir = File.expand_path(RAILS_ROOT)
-      options = YAML.load_file(File.join(RAILS_ROOT,"config","theman.yml"))
-      abort "Cannot find 'pidfile' reference. Check 'theman.yml' configuration file." unless options[configkey]["pidfile"]
+      options = YAML.load_file(File.join(RAILS_ROOT,"config","director.yml"))
+      abort "Cannot find 'pidfile' reference. Check the 'director.yml' configuration file." unless options[configkey]["pidfile"]
       @pid_file = File.join(@pid_dir, options[configkey]["pidfile"])
     end
     
