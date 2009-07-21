@@ -9,15 +9,14 @@
 collector_high:
   pidfile: "tmp/pids/collector_high.pid"
   command: "collector:high:start_detached"
-  phonehome: "theman_console@drone"
+  phonehome: "director_console@drone"
 
 collector_low:
   pidfile: "tmp/pids/collector_low.pid"
   command: "collector:low:start_detached"
-  phonehome: "theman_console@drone"
+  phonehome: "director_console@drone"
 
 notifier:
   pidfile: "tmp/pids/notifier.pid"
   command: "notifier:start_detached"
-  phonehome: "theman_console@drone"
-
+  phonehome: "director_console@drone"
