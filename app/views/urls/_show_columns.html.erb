@@ -7,6 +7,9 @@
   <% elsif column.name == :ip -%>
     <dt class="<%= "url_#{column.name}_name" %>"><%= column.label -%></dt><br/>
     <dd class="<%= "url_value" %>"><%= show_column_value(@record, column) -%><%= clippy(show_column_value(@record, column), '#EDEDED') -%></dd><br/>
+  <% elsif ((column.name == :screenshot) && !@record.screenshot.nil?) -%>
+    <dt class="<%= "url_#{column.name}_name" %>"><%= column.label -%></dt><br/>
+    <dd class="<%= "url_#{column.name}_value" %>"><%= link_to(image_tag(url_for({ :action => "screenshot_small", :id => @record.id }), :alt => "Screenshot (Small)"), { :action => "screenshot_large", :id => @record.id }, :popup => true) -%></dd><br/>
   <% else -%>
     <dt class="<%= "url_#{column.name}_name" %>"><%= column.label -%></dt>
     <dd class="<%= "url_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>

@@ -6,7 +6,7 @@
   <% elsif column.name == :name -%>
     <dt class="<%= "process_file_name" %>"><%= column.label -%></dt><br/>
     <dd class="<%= "process_file_name_value" %>"><%= h(@record.name) -%></dd><br/>
-  <% elsif ((column.name == :file_content) && (not @record.file_content.nil?)) -%>
+  <% elsif ((column.name == :file_content) && (!@record.file_content.nil?)) -%>
     <dt class="<%= "process_file_content_size_name" %>">Size</dt>
     <dd class="<%= "process_file_content_size_name_value" %>"><%= h(@record.file_content.size) -%></dd>
     <dt class="<%= "process_file_content_sha1_name" %>">SHA1</dt>
@@ -18,6 +18,32 @@
   <% else -%>
     <dt class="<%= "process_file_#{column.name}_name" %>"><%= column.label -%></dt>
     <dd class="<%= "process_file_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
+  <% if ((column.name == :file_content) && (!@record.file_content.data.nil?))
+
+       # We need to figure out which groups are allowed to download this file content.
+       # Unfortunately, this requires iterating through any referenced URLs and collecting
+       # all applicable group_ids.
+       group_ids = []
+       if (!@record.os_process.nil? &&
+           !@record.os_process.fingerprint.nil? &&
+           !@record.os_process.fingerprint.url.nil?)
+         # Clear the cache, if need be.
+         @record.os_process.fingerprint.url.expire_caches
+         group_ids << @record.os_process.fingerprint.url.group_id
+       end
+       group_ids.uniq!
+
+       if (!group_ids.index(nil).nil? ||
+           current_user.has_role?(:admin) ||
+           ((current_user.groups.map{|g| g.is_a?(Group) ? g.id : g} & group_ids).size > 0))
+
+         file_content_directory = Configuration.find_retry(:name => "file_content.directory", :namespace => "FileContent").to_s
+         value = @record.file_content.data
+  -%>
+      <dt class="<%= "process_file_content_data_name" %>">Data</dt>
+      <dd class="<%= "process_file_content_data_name_value" %>"><%= link_to(h(value.sub!(file_content_directory + '/','')), { :controller => "file_contents", :action => "download_data", :id => @record.file_content.id }, :confirm => "WARNING: This file potentially contains malware.\nNOTE: When extracting, use the password: '" + Configuration.find_retry(:name => "file_content.zip.password", :namespace => "FileContent").to_s + "'\nProceed with download?")-%></dd>
+    <% end -%>
   <% end -%>
 <% end -%>
   <dt></dt>

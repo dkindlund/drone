@@ -46,9 +46,18 @@ module ApplicationHelper
   # Truncate the value column if greater than the specified length.
   def value_column(record)
     if (record.value.to_s.length > 47)
-      record.value.to_s[0,47] + "..."
+      h(record.value.to_s[0,47]) + "..."
     else
-      record.value.to_s
+      h(record.value.to_s)
+    end
+  end
+  
+  # Truncate the default_value column if greater than the specified length.
+  def default_value_column(record)
+    if (record.value.to_s.length > 47)
+      h(record.value.to_s[0,47]) + "..."
+    else
+      h(record.value.to_s)
     end
   end
 
@@ -56,6 +65,35 @@ module ApplicationHelper
   def description_column(record)
     if not record.description.nil?
       h(record.description)
+    end
+  end
+
+  # Provide a downloadable link to the file data, if available
+  # for the file_content column.
+  def file_content_column(record)
+    value = "-"
+    if record.file_content.mime_type != "UNKNOWN"
+      value = "sha1: " + record.file_content.sha1.to_s
+      if !record.file_content.data.nil?
+        value = link_to(h("sha1: " + record.file_content.sha1.to_s), { :controller => "file_contents", :action => "download_data", :id => record.file_content.id }, :confirm => "WARNING: This file potentially contains malware.\nNOTE: When extracting, use the password: '" + Configuration.find_retry(:name => "file_content.zip.password", :namespace => "FileContent").to_s + "'\nProceed with download?")
+      end
+    end
+    return value
+  end
+
+  # Render a small thumbnail of the screenshot in the column.
+  def screenshot_column(record)
+    if (!record.screenshot.nil?)
+      return link_to(image_tag(url_for({ :controller => "urls",
+                                         :action     => "screenshot_small",
+                                         :id         => record.id }),
+                                       :alt => "Screenshot (Small)"),
+                     { :controller => "urls",
+                       :action     => "screenshot_large",
+                       :id         => record.id },
+                     :popup        => true)
+    else
+      return "-"
     end
   end
 

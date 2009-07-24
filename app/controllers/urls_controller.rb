@@ -1,5 +1,5 @@
 class UrlsController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export, :screenshot_small, :screenshot_large if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
 
   active_scaffold :url do |config|
@@ -10,8 +10,8 @@ class UrlsController < ApplicationController
     config.columns << :job_source
 
     # Show the following columns in the specified order.
-    config.list.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :updated_at]
-    config.show.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at]
+    config.list.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :screenshot]
+    config.show.columns = [:job, :job_source, :url, :ip, :priority, :url_status, :time_at, :client, :fingerprint, :created_at, :updated_at, :screenshot]
 
     # Sort columns in the following order.
     config.list.sorting = {:time_at => :desc}
@@ -25,6 +25,9 @@ class UrlsController < ApplicationController
     config.columns[:time_at].label = "Visited"
     config.columns[:created_at].label = "Created"
     config.columns[:updated_at].label = "Updated"
+
+    # Disable sorting on the screenshot column.
+    config.columns[:screenshot].sort = false
 
     # Make sure the url_status column is searchable.
     config.columns[:url_status].search_sql = 'url_statuses.status'
@@ -81,6 +84,16 @@ class UrlsController < ApplicationController
     end
   end
 
+  # Helper function to allow users to view small screenshots.
+  def screenshot_small
+    screenshot(:small)
+  end
+
+  # Helper function to allow users to view large screenshots.
+  def screenshot_large
+    screenshot()
+  end
+
   protected
   def list_respond_to_atom
     url_conditions = conditions_for_collection
@@ -92,6 +105,30 @@ class UrlsController < ApplicationController
       respond_to do |format|
         format.atom
       end
+    end
+  end
+
+  private
+  # Helper function to allow users to view any corresponding screenshot.
+  def screenshot(thumbnail = nil)
+    url = nil
+    begin    
+      url = Url.find(params[:id])
+    rescue
+      url = nil
+    end
+    if (!url.nil? &&
+        !url.screenshot.nil? &&
+        (url.group_id.nil? ||
+         current_user.has_role?(:admin) ||
+         !current_user.groups.map{|g| g.is_a?(Group) ? g.id : g}.index(url.group_id).nil?))
+      send_file(url.screenshot.public_filename(thumbnail).to_s,
+                                               :disposition => 'inline',
+                                               :type        => url.screenshot.content_type,
+                                               :size        => url.screenshot.size, 
+                                               :x_sendfile  => true)
+    else
+      redirect_back_or_default('/')
     end
   end
 end

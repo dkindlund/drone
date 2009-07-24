@@ -1,5 +1,5 @@
 class FileContentsController < ApplicationController
-  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export if (Rails.env.production? || Rails.env.development?)
+  ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column, :show_export, :export, :download_data if (Rails.env.production? || Rails.env.development?)
   before_filter :login_required
   before_filter :check_for_nested_process_files
 
@@ -9,7 +9,7 @@ class FileContentsController < ApplicationController
 
     # Show the following columns in the specified order.
     config.list.columns = [:mime_type, :size, :md5, :sha1]
-    config.show.columns = [:mime_type, :size, :md5, :sha1]
+    config.show.columns = [:mime_type, :size, :md5, :sha1, :data]
 
     # Sort columns in the following order.
     config.list.sorting = {:sha1 => :asc}
@@ -45,6 +45,44 @@ class FileContentsController < ApplicationController
       @show_nested_process_files = false
     else
       @show_nested_process_files = true
+    end
+  end
+
+  # Helper function to allow users to download data for any corresponding FileContent.
+  def download_data
+    file_content = nil
+    begin
+      file_content = FileContent.find(params[:id])
+    rescue
+      file_content = nil
+    end
+
+    # We need to figure out which groups are allowed to download this file content.
+    # Unfortunately, this requires iterating through any referenced URLs and collecting
+    # all applicable group_ids.
+    group_ids = []
+    if (!file_content.nil? &&
+        !file_content.data.nil?)
+      file_content.process_files.each do |process_file|
+        if (!process_file.os_process.nil? &&
+            !process_file.os_process.fingerprint.nil? &&
+            !process_file.os_process.fingerprint.url.nil?)
+          # Clear the cache, if need be.
+          process_file.os_process.fingerprint.url.expire_caches
+          group_ids << process_file.os_process.fingerprint.url.group_id
+        end
+      end
+      group_ids.uniq!
+    end
+
+    if (!file_content.nil? &&
+        !file_content.data.nil? &&
+        (!group_ids.index(nil).nil? ||
+         current_user.has_role?(:admin) ||
+         ((current_user.groups.map{|g| g.is_a?(Group) ? g.id : g} & group_ids).size > 0)))
+      send_file(RAILS_ROOT + '/' + file_content.data.to_s, :x_sendfile => true)
+    else
+      redirect_back_or_default('/')
     end
   end
 

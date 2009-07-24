@@ -1,6 +1,7 @@
 require 'guid'
 require 'eventmachine'
 require 'mq'
+require 'ostruct'
 
 class JobsController < ApplicationController
   ssl_required :render_field, :new, :create, :delete, :destroy, :search, :show_search, :index, :table, :update_table, :row, :list, :nested, :show, :edit_associated, :edit, :update, :update_column if (Rails.env.production? || Rails.env.development?)
@@ -83,17 +84,56 @@ class JobsController < ApplicationController
     end
 
     # Sanity Check.
-    if (!params.key?(:input) || !params[:input].key?(:urls))
+    if (!params.key?(:input) || !params[:input].key?(:urls) || (params[:input][:urls].size <= 0))
       @record.valid?
       @record.errors.add("urls", "can't be blank")
       raise ActiveRecord::RecordInvalid.new(@record)
     end
 
     # Sanity Check.
-    if !params[:input].key?(:priority)
+    if (!params[:input].key?(:priority) || (params[:input][:priority].size <= 0))
       @record.valid?
       @record.errors.add("priority", "can't be blank")
       raise ActiveRecord::RecordInvalid.new(@record)
+    end
+
+    # Sanity Check.
+    if (params[:input].key?(:wait))
+      if (params[:input][:wait].size <= 0)
+        @record.valid?
+        @record.errors.add("wait", "can't be blank")
+        raise ActiveRecord::RecordInvalid.new(@record)
+      elsif (params[:input][:wait].to_i < Configuration.find_retry(:name => "url.wait.min", :namespace => "Job").to_i)
+        @record.valid?
+        @record.errors.add("wait", "can't be less than " + Configuration.find_retry(:name => "url.wait.min", :namespace => "Job").to_s)
+        raise ActiveRecord::RecordInvalid.new(@record)
+      elsif (params[:input][:wait].to_i > Configuration.find_retry(:name => "url.wait.max", :namespace => "Job").to_i)
+        @record.valid?
+        @record.errors.add("wait", "can't be greater than " + Configuration.find_retry(:name => "url.wait.max", :namespace => "Job").to_s)
+        raise ActiveRecord::RecordInvalid.new(@record)
+      end
+    else
+      params[:input][:wait] = Configuration.find_retry(:name => "url.wait", :namespace => "Job").to_s
+    end
+
+    # Sanity check.
+    if (!params[:input].key?(:screenshot))
+      params[:input][:screenshot] = Configuration.find_retry(:name => "url.screenshot", :namespace => "Job").to_s
+      if params[:input][:screenshot] == "true"
+        params[:input][:screenshot] = 1
+      else
+        params[:input][:screenshot] = 0
+      end
+    end
+
+    # Sanity check.
+    if (!params[:input].key?(:end_early))
+      params[:input][:end_early] = Configuration.find_retry(:name => "url.end_early_if_load_complete", :namespace => "Job").to_s
+      if params[:input][:end_early] == "true"
+        params[:input][:end_early] = 1
+      else
+        params[:input][:end_early] = 0
+      end
     end
 
     # Figure out if job_source was specified.
@@ -107,12 +147,16 @@ class JobsController < ApplicationController
     end
 
     # Collect the URLs.
-    @record.urls = params[:input][:urls].split(' ').uniq.map!{|u| Url.new(:url        => u,
-                                                                          :priority   => params[:input][:priority].to_i,
-                                                                          :url_status => UrlStatus.find_by_status("queued"))}
+    @record.urls = params[:input][:urls].split(' ').uniq.map!{|u| Url.new(:url                           => u,
+                                                                          :priority                      => params[:input][:priority].to_i,
+                                                                          :url_status                    => UrlStatus.find_by_status("queued"),
+                                                                          :screenshot_id                 => params[:input][:screenshot].to_i,
+                                                                          :wait_id                       => params[:input][:wait].to_i,
+                                                                          :end_early_if_load_complete_id => params[:input][:end_early].to_i)}
 
     # Manually update the URL count.
     @record.url_count = @record.urls.size
+
 
     # If the record is not valid, return an exception.
     if (!@record.valid?)
@@ -144,12 +188,12 @@ class JobsController < ApplicationController
 
       # Encode the message.
       if (params[:input][:priority].to_i >= Configuration.find_retry(:name => "high_priority", :namespace => namespace).to_i)
-        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id}}), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :end_early_if_load_complete_id]}}), 
                                 {:routing_key => Configuration.find_retry(:name => "high.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})
       else
-        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id}}), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :end_early_if_load_complete_id]}}), 
                                 {:routing_key => Configuration.find_retry(:name => "low.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})

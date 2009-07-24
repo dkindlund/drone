@@ -3,7 +3,7 @@
 ui_title:
   id: 1
   name: ui.title
-  value: Drone Interface (v2.3)
+  value: Drone Interface (v2.4)
   namespace: ""
   description: The default title for any UI web page.
   default_value: Drone Interface
@@ -411,10 +411,10 @@ ui_running_vms_gauge_min:
 ui_running_vms_gauge_max:
   id: 52
   name: ui.running_vms_gauge.max
-  value: 32
+  value: 40
   namespace: UrlStatistic
   description: The maximum number of running VMs the gauge should show.
-  default_value: 32
+  default_value: 40
 
 ui_running_vms_gauge_red_to:
   id: 53
@@ -831,3 +831,75 @@ display_feeds:
   namespace: ""
   description: Order of feeds to display on the navigation bar.
   default_value: dashboard,fingerprints,urls,os_processes,process_registries,process_files,file_contents
+
+default_url_screenshot:
+  id: 105
+  name: url.screenshot
+  value: "true"
+  namespace: Job
+  description: A boolean, indicating whether to enable screenshots on all new Jobs submitted.
+  default_value: "true"
+
+default_url_wait:
+  id: 106
+  name: url.wait
+  value: 20
+  namespace: Job
+  description: Indicates how long (in seconds) the honeyclient should let the application attempt to process any input.
+  default_value: 20
+
+screenshot_directory:
+  id: 107
+  name: screenshot.directory
+  value: screenshots
+  namespace: Screenshot
+  description: The directory where screenshot data is stored (relative to the RAILS_ROOT directory).
+  default_value: screenshots
+
+screenshot_thumb_size:
+  id: 108
+  name: screenshot.thumb.size
+  value: "100x100>"
+  namespace: Screenshot
+  description: The thumbnail width and height dimentions (in pixels) for all screenshots.
+  default_value: "100x100>"
+
+url_wait_min:
+  id: 109
+  name: url.wait.min
+  value: 2
+  namespace: Job
+  description: Indicates the minimum number of seconds required to let the application process any input.
+  default_value: 2 
+
+url_wait_max:
+  id: 110
+  name: url.wait.max
+  value: 240
+  namespace: Job
+  description: Indicates the maximum number of seconds required to let the application process any input.
+  default_value: 240
+
+default_url_end_early:
+  id: 111
+  name: url.end_early_if_load_complete
+  value: "true"
+  namespace: Job
+  description: A boolean, indicating whether to attempt to detect when an application has finished loading all content and end the drive operation before the timeout limit.
+  default_value: "true"
+
+file_content_directory:
+  id: 112
+  name: file_content.directory
+  value: files
+  namespace: FileContent
+  description: The directory where FileContent data is stored (relative to the RAILS_ROOT directory).
+  default_value: files
+
+file_content_zip_password:
+  id: 113
+  name: file_content.zip.password
+  value: infected
+  namespace: FileContent
+  description: The default password used when archiving FileContent data as a ZIP archive.
+  default_value: infected

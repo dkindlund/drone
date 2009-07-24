@@ -58,6 +58,25 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
                         xhtml.text! "SHA1: #{h(process_file.file_content.sha1)}"; xhtml.br
                         xhtml.text! "Size: #{h(process_file.file_content.size)}"; xhtml.br
                         xhtml.text! "Type: #{h(process_file.file_content.mime_type)}"; xhtml.br
+
+                        if (!process_file.file_content.data.nil?)
+                          # We need to figure out which groups are allowed to download this file content.
+                          # Unfortunately, this requires iterating through any referenced URLs and collecting
+                          # all applicable group_ids.
+                          group_ids = []
+                          # Clear the cache, if need be.
+                          url.expire_caches
+                          group_ids << url.group_id
+                          group_ids.uniq!
+
+                          if (!group_ids.index(nil).nil? ||
+                              current_user.has_role?(:admin) ||
+                              ((current_user.groups.map{|g| g.is_a?(Group) ? g.id : g} & group_ids).size > 0))
+                            data_url = url_for({:controller => "file_contents", :action => "download_data", :id => process_file.file_content.id})
+                            xhtml.text! "Data: "; xhtml.a(SITE_URL + h(data_url), "href" => SITE_URL + data_url); xhtml.br
+                            xhtml.text! "Password: #{h(Configuration.find_retry(:name => "file_content.zip.password", :namespace => "FileContent").to_s)}"; xhtml.br
+                          end
+                        end
                       }
                     end
                   end

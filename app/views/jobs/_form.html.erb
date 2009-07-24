@@ -9,6 +9,18 @@
         <dt>URLs</dt>
         <dd><%= text_area(:input, :urls, :rows => 1, :cols => 100, :onfocus => "new ResizingTextArea(this);") %></dd>
       </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>Screenshots</dt>
+        <dd><%= check_box(:input, :screenshot, {:checked => (Configuration.find_retry(:name => "url.screenshot", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %></dd>
+      </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>Wait Time (secs)</dt>
+        <dd><%= text_field(:input, :wait, :size => 3, :value => Configuration.find_retry(:name => "url.wait", :namespace => controller.controller_name.camelize.singularize).to_s) %> (Valid Range: <%= Configuration.find_retry(:name => "url.wait.min", :namespace => controller.controller_name.camelize.singularize).to_s %> - <%= Configuration.find_retry(:name => "url.wait.max", :namespace => controller.controller_name.camelize.singularize).to_s %> seconds)</dd>
+      </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>End Early</dt>
+        <dd><%= check_box(:input, :end_early, {:checked => (Configuration.find_retry(:name => "url.end_early_if_load_complete", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %> (If application appears to have loaded all content.)</dd>
+      </li>
     <% end %>
   <% end -%>
 </ol>

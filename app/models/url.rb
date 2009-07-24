@@ -1,3 +1,5 @@
+require 'stringio'
+
 class Url < ActiveRecord::Base
   include AuthorizationHelper
 
@@ -6,14 +8,15 @@ class Url < ActiveRecord::Base
   belongs_to :job, :counter_cache => :url_count
   belongs_to :client
   belongs_to :group
+  belongs_to :screenshot
 
   validates_presence_of :url, :priority, :url_status
-  validates_associated :url_status, :fingerprint
+  validates_associated :url_status, :fingerprint, :screenshot
   # TODO: Is this the cause for the slowdown?
   #validates_length_of :url, :maximum => 8192
   validates_numericality_of :priority, :greater_than_or_equal_to => 1
 
-  version 16
+  version 17
   index :priority,              :limit => 500, :buffer => 0
   index :url_status_id,         :limit => 500, :buffer => 0
   index [:url_status_id, :id],  :limit => 500, :buffer => 0
@@ -27,6 +30,13 @@ class Url < ActiveRecord::Base
   index :group_id,              :limit => 500, :buffer => 0
   index [:group_id, :id],       :limit => 500, :buffer => 0
   index :ip,                    :limit => 500, :buffer => 0
+  index :screenshot_id,         :limit => 500, :buffer => 0
+  index [:screenshot_id, :id],  :limit => 500, :buffer => 0
+
+  attr_accessor :screenshot_data
+  attr_accessor :wait_id
+  attr_accessor :end_early_if_load_complete_id
+  before_validation_on_update :extract_screenshot
 
   def to_label
     "#{url}"
@@ -52,6 +62,16 @@ class Url < ActiveRecord::Base
       end
     else
       return false
+    end
+  end
+
+  private
+
+  def extract_screenshot()
+    if (!self.screenshot_data.nil?)
+      # Attempt to save the screenshot.
+      self.screenshot = Screenshot.new(:uploaded_data => StringIO.new(self.screenshot_data))
+      self.screenshot_data = nil
     end
   end
 end

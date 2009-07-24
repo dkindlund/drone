@@ -19,13 +19,16 @@ class ProcessFilesController < ApplicationController
     config.columns[:name].label = "File Name"
     config.columns[:file_content].label = "File Content"
 
+    # Make sure the file_content column is searchable.
+    config.columns[:file_content].search_sql = 'file_contents.sha1'
+    config.search.columns << :file_content
+
     # Rename the following actions.
     config.show.link.label = "Details"
     config.show.label = "Filesystem Activity Details"
 
     # Include the following show actions.
     config.columns[:os_process].set_link :show, :controller => 'os_processes', :parameters => {:parent_controller => 'process_files'}
-    config.columns[:file_content].set_link :show, :controller => 'file_contents', :parameters => {:parent_controller => 'process_files'}
 
     # Add export options.
     config.actions.add :export

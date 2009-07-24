@@ -1,7 +1,37 @@
 <dl>
 <% columns.each :for => @record do |column| %>
-  <dt class="<%= "file_content_#{column.name}_name" %>"><%= column.label -%></dt>
-  <dd class="<%= "file_content_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% if ((column.name == :data) &&
+         !@record.data.nil?)
+
+       # We need to figure out which groups are allowed to download this file content.
+       # Unfortunately, this requires iterating through any referenced URLs and collecting
+       # all applicable group_ids.
+       group_ids = []
+       @record.process_files.each do |process_file|
+         if (!process_file.os_process.nil? &&
+             !process_file.os_process.fingerprint.nil? &&
+             !process_file.os_process.fingerprint.url.nil?)
+           # Clear the cache, if need be.
+           process_file.os_process.fingerprint.url.expire_caches
+           group_ids << process_file.os_process.fingerprint.url.group_id
+         end
+       end
+       group_ids.uniq!
+
+       if (!group_ids.index(nil).nil? ||
+           current_user.has_role?(:admin) ||
+           ((current_user.groups.map{|g| g.is_a?(Group) ? g.id : g} & group_ids).size > 0))
+
+         file_content_directory = Configuration.find_retry(:name => "file_content.directory", :namespace => "FileContent").to_s
+         value = show_column_value(@record, column)
+  -%>
+      <dt class="<%= "file_content_#{column.name}_name" %>"><%= column.label -%></dt>
+      <dd class="<%= "file_content_#{column.name}_value" %>"><%= link_to(h(value.sub!(file_content_directory + '/','')), { :action => "download_data", :id => @record.id }, :confirm => "WARNING: This file potentially contains malware.\nNOTE: When extracting, use the password: '" + Configuration.find_retry(:name => "file_content.zip.password", :namespace => "FileContent").to_s + "'\nProceed with download?")-%></dd>
+    <% end -%>
+  <% else -%>
+    <dt class="<%= "file_content_#{column.name}_name" %>"><%= column.label -%></dt>
+    <dd class="<%= "file_content_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
+  <% end -%>
 <% end -%>
 <% if @show_nested_process_files -%>
   <dt></dt>

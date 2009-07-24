@@ -41,7 +41,7 @@ module AnnotatedTimeline
     data_args = google_options.any? ? "data, {#{google_options.join(", ")}}" : "data"
     
     html = "<script type=\"text/javascript\">
-    google.load(\"visualization\", \"1\", {packages:[\"annotatedtimeline\"]});
+    google.load(\"visualization\", \"1.1\", {packages:[\"annotatedtimeline\"]});
     google.setOnLoadCallback(drawChart);
     function drawChart(){
       var data = new google.visualization.DataTable();
