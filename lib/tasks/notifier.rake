@@ -21,6 +21,7 @@ namespace :notifier do
 
   desc "Starts the notifier daemon (detached), in order to notify users when jobs are complete by the Honeyclient Manager"
   task :start_detached, :configkey, :needs => [:environment] do |t,args|
+    RAILS_DEFAULT_LOGGER.auto_flushing = true
     # XXX: This will need to be configurable, if we want to run multiple instances.
     #abort "Missing config key. Run as 'rake notifier:start_detached['CONFIGKEY']'" unless args.configkey
     # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
@@ -33,6 +34,7 @@ namespace :notifier do
   
   desc "Stops the notifier daemon (detached)"
   task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+    RAILS_DEFAULT_LOGGER.auto_flushing = true
     # XXX: This will need to be configurable, if we want to run multiple instances.
     #abort "Missing config key. Run as 'rake notifier:stop_detached['CONFIGKEY']'" unless args.configkey
     # XXX: CONFIGKEY entry must be in 'config/theman.yml'.

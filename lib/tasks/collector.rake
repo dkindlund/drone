@@ -17,6 +17,7 @@ namespace :collector do
   
   desc "Starts the collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
   task :start_detached, :configkey, :needs => [:environment] do |t,args|
+    RAILS_DEFAULT_LOGGER.auto_flushing = true
     abort "Missing config key. Run as 'rake collector:start_detached['CONFIGKEY']'" unless args.configkey
     daemon = EventCollector.new
     daemon.configkey = args.configkey
@@ -25,6 +26,7 @@ namespace :collector do
   
   desc "Stops the collector daemon (detached)"
   task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+    RAILS_DEFAULT_LOGGER.auto_flushing = true
     abort "Missing config key. Run as 'rake collector:stop_detached['CONFIGKEY']'" unless args.configkey
     daemon = EventCollector.new
     daemon.configkey = args.configkey
@@ -397,6 +399,7 @@ namespace :collector do
 
     desc "Starts the high-priority collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
     task :start_detached, :configkey, :needs => [:environment] do |t,args|
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
       # XXX: This will need to be configurable, if we want to run multiple instances.
       #abort "Missing config key. Run as 'rake collector:high:start_detached['CONFIGKEY']'" unless args.configkey
       # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
@@ -409,6 +412,7 @@ namespace :collector do
   
     desc "Stops the high-priority collector daemon (detached)"
     task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
       # XXX: This will need to be configurable, if we want to run multiple instances.
       #abort "Missing config key. Run as 'rake collector:high:stop_detached['CONFIGKEY']'" unless args.configkey
       # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
@@ -437,6 +441,7 @@ namespace :collector do
 
     desc "Starts the low-priority collector daemon (detached), in order to obtain updated data from the Honeyclient Manager"
     task :start_detached, :configkey, :needs => [:environment] do |t,args|
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
       # XXX: This will need to be configurable, if we want to run multiple instances.
       #abort "Missing config key. Run as 'rake collector:low:start_detached['CONFIGKEY']'" unless args.configkey
       # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
@@ -449,6 +454,7 @@ namespace :collector do
   
     desc "Stops the low-priority collector daemon (detached)"
     task :stop_detached, :configkey, :needs => [:environment] do |t,args|
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
       # XXX: This will need to be configurable, if we want to run multiple instances.
       #abort "Missing config key. Run as 'rake collector:low:stop_detached['CONFIGKEY']'" unless args.configkey
       # XXX: CONFIGKEY entry must be in 'config/theman.yml'.
