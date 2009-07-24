@@ -120,8 +120,8 @@ class EventCollector
         # Search for valid attributes in params.
         attrs = {}
         klass.column_names.each do |attrib|
-          # Skip unknown columns, and the id field.
-          next if params[attrib].nil? || attrib == "id" 
+          # Skip unknown columns, the id field, and any data field.
+          next if params[attrib].nil? || attrib == "id" || attrib == "data"
           attrs[attrib] = params[attrib]
         end
 
@@ -296,8 +296,8 @@ puts "save! Completed in " + (Time.now - start_time).seconds.to_s + " seconds"
           # Search for valid attributes in params.
           attrs = {}
           klass.column_names.each do |attrib|
-            # Skip unknown columns, and the id field.
-            next if params[attrib].nil? || attrib == "id" 
+            # Skip unknown columns, the id field, and any data field.
+            next if params[attrib].nil? || attrib == "id" || attrib == "data"
             attrs[attrib] = params[attrib]
           end
 
@@ -430,11 +430,13 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             puts "Retrying Event - " + $!.to_s
             retry
-          rescue
+          rescue Exception => e
             # Otherwise, log the error and discard the event.
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             RAILS_DEFAULT_LOGGER.warn "Original Message: " + msg.to_s
+            RAILS_DEFAULT_LOGGER.warn e.backtrace
             pp $!
+            pp e.backtrace
           end
  
           # ACK receipt of message.

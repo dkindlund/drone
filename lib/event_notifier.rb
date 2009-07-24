@@ -211,11 +211,13 @@ class EventNotifier
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             puts "Retrying Event - " + $!.to_s
             retry
-          rescue
+          rescue Exception => e
             # Otherwise, log the error and discard the event.
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             RAILS_DEFAULT_LOGGER.warn "Original Message: " + msg.to_s
+            RAILS_DEFAULT_LOGGER.warn e.backtrace
             pp $!
+            pp e.backtrace
           end
  
           # ACK receipt of message.
