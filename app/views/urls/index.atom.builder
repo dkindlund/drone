@@ -88,6 +88,7 @@ atom_feed(:schema_date => "2009-06-16") do |feed|
                     xhtml.li {
                       xhtml.text! "At: #{Time.at(process_registry.time_at.to_f).strftime("%Y-%m-%dT%H:%M:%SZ")}"; xhtml.br
                       xhtml.text! "Event: #{h(process_registry.event)}"; xhtml.br
+                      xhtml.text! "Registry Name: #{h(process_registry.name)}"; xhtml.br
                       xhtml.text! "Value Name: #{h(process_registry.value_name)}"; xhtml.br
                       xhtml.text! "Value Type: #{h(process_registry.value_type)}"; xhtml.br
                       xhtml.text! "Value: #{h(process_registry.value)}"; xhtml.br
