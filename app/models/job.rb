@@ -24,6 +24,7 @@ class Job < ActiveRecord::Base
   index :group_id,             :limit => 500, :buffer => 0
   index [:group_id, :id],      :limit => 500, :buffer => 0
 
+  attr_accessor :urls_per_hour
   before_create :set_group
   after_create [:update_url_counter_cache, :set_urls_group]
 
