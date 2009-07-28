@@ -3,7 +3,7 @@
 ui_title:
   id: 1
   name: ui.title
-  value: Drone Interface (v2.4)
+  value: Drone Interface (v2.5)
   namespace: ""
   description: The default title for any UI web page.
   default_value: Drone Interface
@@ -903,3 +903,11 @@ file_content_zip_password:
   namespace: FileContent
   description: The default password used when archiving FileContent data as a ZIP archive.
   default_value: infected
+
+default_url_reuse_browser:
+  id: 114
+  name: url.reuse_browser
+  value: "true"
+  namespace: Job
+  description: A boolean, indicating whether the honeyclient should reuse the same browser for all URLs visited (instead of starting/stopping the browser application).
+  default_value: "true"

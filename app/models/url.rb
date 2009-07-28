@@ -36,6 +36,7 @@ class Url < ActiveRecord::Base
   attr_accessor :screenshot_data
   attr_accessor :wait_id
   attr_accessor :end_early_if_load_complete_id
+  attr_accessor :reuse_browser_id
   before_validation_on_update :extract_screenshot
 
   def to_label
