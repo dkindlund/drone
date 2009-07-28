@@ -21,6 +21,10 @@
         <dt>End Early</dt>
         <dd><%= check_box(:input, :end_early, {:checked => (Configuration.find_retry(:name => "url.end_early_if_load_complete", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %> (If application appears to have loaded all content.)</dd>
       </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>Reuse Browser</dt>
+        <dd><%= check_box(:input, :reuse_browser, {:checked => (Configuration.find_retry(:name => "url.reuse_browser", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %> (If checked, don't start/stop the browser between URL visits.)</dd>
+      </li>
     <% end %>
   <% end -%>
 </ol>
