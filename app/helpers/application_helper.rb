@@ -72,7 +72,7 @@ module ApplicationHelper
   # for the file_content column.
   def file_content_column(record)
     value = "-"
-    if record.file_content.mime_type != "UNKNOWN"
+    if !record.file_content.nil? && record.file_content.mime_type != "UNKNOWN"
       value = "sha1: " + record.file_content.sha1.to_s
       if !record.file_content.data.nil?
         value = link_to(h("sha1: " + record.file_content.sha1.to_s), { :controller => "file_contents", :action => "download_data", :id => record.file_content.id }, :confirm => "WARNING: This file potentially contains malware.\nNOTE: When extracting, use the password: '" + Configuration.find_retry(:name => "file_content.zip.password", :namespace => "FileContent").to_s + "'\nProceed with download?")

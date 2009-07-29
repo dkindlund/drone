@@ -19,7 +19,7 @@
     <dt class="<%= "process_file_#{column.name}_name" %>"><%= column.label -%></dt>
     <dd class="<%= "process_file_#{column.name}_value" %>"><%= show_column_value(@record, column) -%></dd>
   <% end -%>
-  <% if ((column.name == :file_content) && (!@record.file_content.data.nil?))
+  <% if ((column.name == :file_content) && (!@record.file_content.nil?) && (!@record.file_content.data.nil?))
 
        # We need to figure out which groups are allowed to download this file content.
        # Unfortunately, this requires iterating through any referenced URLs and collecting
