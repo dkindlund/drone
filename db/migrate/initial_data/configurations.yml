@@ -907,7 +907,7 @@ file_content_zip_password:
 default_url_reuse_browser:
   id: 114
   name: url.reuse_browser
-  value: "true"
+  value: "false"
   namespace: Job
-  description: A boolean, indicating whether the honeyclient should reuse the same browser for all URLs visited (instead of starting/stopping the browser application).
-  default_value: "true"
+  description: "A boolean, indicating whether the honeyclient should reuse the same browser for all URLs visited (instead of starting/stopping the browser application).  Note: Setting this value to true will probably cause your packet captures to overlap, since the browser may still be loading content from a prior URL on the next visit."
+  default_value: "false"

@@ -425,16 +425,16 @@ puts "find_or_create_by Completed in " + (Time.now - start_time).seconds.to_s + 
 
           begin
             msg = eval("_process_" + header.properties[:exchange].to_s.downcase.singularize + "(header, msg)")
-          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure, Memcached::ATimeoutOccurred
-            # If our memcached server goes away, then retry.
-            RAILS_DEFAULT_LOGGER.warn $!.to_s
-            puts "Retrying Event - " + $!.to_s
-            retry
+#          rescue Memcached::SystemError, Memcached::ServerIsMarkedDead, Memcached::UnknownReadFailure, Memcached::ATimeoutOccurred
+#            # If our memcached server goes away, then retry.
+#            RAILS_DEFAULT_LOGGER.warn $!.to_s
+#            puts "Retrying Event - " + $!.to_s
+#            retry
           rescue Exception => e
             # Otherwise, log the error and discard the event.
             RAILS_DEFAULT_LOGGER.warn $!.to_s
             RAILS_DEFAULT_LOGGER.warn "Original Message: " + msg.to_s
-            RAILS_DEFAULT_LOGGER.warn e.backtrace
+            RAILS_DEFAULT_LOGGER.warn e.backtrace.to_s
             pp $!
             pp e.backtrace
           end
