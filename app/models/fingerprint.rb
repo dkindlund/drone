@@ -93,7 +93,12 @@ class Fingerprint < ActiveRecord::Base
     end
 
     # Calculate the corresponding checksum.
-    self.checksum = Digest::MD5.hexdigest(process_strings.sort.join(""))
+    if process_strings.size == 0
+      # If the fingerprint is empty, then generate a random checksum.
+      self.checksum = Digest::MD5.hexdigest(rand.to_s)
+    else
+      self.checksum = Digest::MD5.hexdigest(process_strings.sort.join(""))
+    end
   end
 
   # XXX: These methods are probably inefficient, but its not clear how the

@@ -16,10 +16,11 @@ class Url < ActiveRecord::Base
   #validates_length_of :url, :maximum => 8192
   validates_numericality_of :priority, :greater_than_or_equal_to => 1
 
-  version 17
+  version 18
   index :priority,              :limit => 500, :buffer => 0
   index :url_status_id,         :limit => 500, :buffer => 0
-  index [:url_status_id, :id],  :limit => 500, :buffer => 0
+  # TODO: Check if this stops the memcached problems
+  #index [:url_status_id, :id],  :limit => 500, :buffer => 0
   index :fingerprint_id,        :limit => 500, :buffer => 0
   index [:fingerprint_id, :id], :limit => 500, :buffer => 0
   index :job_id,                :limit => 500, :buffer => 0
@@ -37,6 +38,7 @@ class Url < ActiveRecord::Base
   attr_accessor :wait_id
   attr_accessor :end_early_if_load_complete_id
   attr_accessor :reuse_browser_id
+  attr_accessor :always_fingerprint_id
   before_validation_on_update :extract_screenshot
 
   def to_label

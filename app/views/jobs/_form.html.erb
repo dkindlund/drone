@@ -25,6 +25,10 @@
         <dt>Reuse Browser</dt>
         <dd><%= check_box(:input, :reuse_browser, {:checked => (Configuration.find_retry(:name => "url.reuse_browser", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %> (If checked, don't start/stop the browser between URL visits.)<br/><b>Note:</b> Reusing the browser speeds up processing; however, PCAP extraction and IP resolution become <b>inaccurate</b> for suspicious URLs.</dd>
       </li>
+      <li class="form-element <%= 'required' if column.required? %>">
+        <dt>Always Generate PCAPs</dt>
+        <dd><%= check_box(:input, :always_fingerprint, {:checked => (Configuration.find_retry(:name => "url.always_fingerprint", :namespace => controller.controller_name.camelize.singularize).to_s == "true")}) %> (If checked, PCAPs will always be generated for all URLs submitted.)<br/><b>Note:</b> Enabling this will <b>slow</b> performance.</dd>
+      </li>
     <% end %>
   <% end -%>
 </ol>

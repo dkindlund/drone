@@ -146,6 +146,16 @@ class JobsController < ApplicationController
       end
     end
 
+    # Sanity check.
+    if (!params[:input].key?(:always_fingerprint))
+      params[:input][:always_fingerprint] = Configuration.find_retry(:name => "url.always_fingerprint", :namespace => "Job").to_s
+      if params[:input][:always_fingerprint] == "true"
+        params[:input][:always_fingerprint] = 1
+      else
+        params[:input][:always_fingerprint] = 0
+      end
+    end
+
     # Figure out if job_source was specified.
     if (params.key?(:input) &&
         params[:input].key?(:job_source) &&
@@ -163,6 +173,7 @@ class JobsController < ApplicationController
                                                                           :screenshot_id                 => params[:input][:screenshot].to_i,
                                                                           :wait_id                       => params[:input][:wait].to_i,
                                                                           :reuse_browser_id              => params[:input][:reuse_browser].to_i,
+                                                                          :always_fingerprint_id         => params[:input][:always_fingerprint].to_i,
                                                                           :end_early_if_load_complete_id => params[:input][:end_early].to_i)}
 
     # Manually update the URL count.
@@ -199,12 +210,12 @@ class JobsController < ApplicationController
 
       # Encode the message.
       if (params[:input][:priority].to_i >= Configuration.find_retry(:name => "high_priority", :namespace => namespace).to_i)
-        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :reuse_browser_id, :end_early_if_load_complete_id]}}), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :reuse_browser_id, :always_fingerprint_id, :end_early_if_load_complete_id]}}), 
                                 {:routing_key => Configuration.find_retry(:name => "high.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})
       else
-        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :reuse_browser_id, :end_early_if_load_complete_id]}}), 
+        events_exchange.publish(@record.to_json(:include => {:job_alerts => {:except => :id}, :job_source => {:include => :group}, :urls => {:except => :id, :methods => [:wait_id, :reuse_browser_id, :always_fingerprint_id, :end_early_if_load_complete_id]}}), 
                                 {:routing_key => Configuration.find_retry(:name => "low.routing_key",
                                  :namespace => "Job"),
                                 :persistent => true})

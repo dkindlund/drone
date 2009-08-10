@@ -3,7 +3,7 @@
 ui_title:
   id: 1
   name: ui.title
-  value: Drone Interface (v2.5)
+  value: Drone Interface (v2.6)
   namespace: ""
   description: The default title for any UI web page.
   default_value: Drone Interface
@@ -910,4 +910,12 @@ default_url_reuse_browser:
   value: "false"
   namespace: Job
   description: "A boolean, indicating whether the honeyclient should reuse the same browser for all URLs visited (instead of starting/stopping the browser application).  Note: Setting this value to true will probably cause your packet captures to overlap, since the browser may still be loading content from a prior URL on the next visit."
+  default_value: "false"
+
+default_url_always_fingerprint:
+  id: 115
+  name: url.always_fingerprint
+  value: "false"
+  namespace: Job
+  description: "A boolean, indicating whether the honeyclient should always generate a fingerprint (and PCAP) for the URLs visited (regardless of whether or not the URL is suspicious).  Note: Setting this value to true will probably slow down overall job throughput."
   default_value: "false"
