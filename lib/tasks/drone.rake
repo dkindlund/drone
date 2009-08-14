@@ -236,3 +236,22 @@ namespace :drone do
   end
 end
 
+namespace :tmp do
+  namespace :attachment_fu do
+    desc "Clears all files in tmp/attachment_fu that are older than 5 minutes"
+    task :clear => [:environment] do
+      RAILS_DEFAULT_LOGGER.auto_flushing = true
+      tempfile_path = File.join(RAILS_ROOT, 'tmp', 'attachment_fu', '*')
+      Dir.glob(tempfile_path) do |file|
+        if (File.atime(file) < 5.minutes.ago)
+          RAILS_DEFAULT_LOGGER.info "Deleting file " + file.to_s
+          puts "Deleting file " + file.to_s
+          begin
+            File.delete(file)
+          rescue
+          end
+        end
+      end
+    end
+  end
+end
