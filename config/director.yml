@@ -6,17 +6,40 @@
 # You must also set the phonehome to the shortname address of the node running
 # the worker console.
 
+# Perl scripts should be configured like this:
+#
+# perl_test:
+#   command: "NAME OF SCRIPT"
+#   basedir: "FULLPATH TO THE SCRIPT"
+#   phonehome: "director_console@drone"
+#   restart:
+#     try: 3
+#     seconds: 600
+#   type: "perl" 
+
 collector_high:
   pidfile: "tmp/pids/collector_high.pid"
   command: "collector:high:start_detached"
   phonehome: "director_console@drone"
+  restart:
+    try: 3
+    seconds: 600  # in milliseconds
+  type: "ruby"
 
 collector_low:
   pidfile: "tmp/pids/collector_low.pid"
   command: "collector:low:start_detached"
   phonehome: "director_console@drone"
+  restart:
+    try: 3
+    seconds: 600
+  type: "ruby"
 
 notifier:
   pidfile: "tmp/pids/notifier.pid"
   command: "notifier:start_detached"
   phonehome: "director_console@drone"
+  restart:
+    try: 3
+    seconds: 600
+  type: "ruby"
