@@ -18,11 +18,11 @@
 </dl>
 <dt></dt>
 <%
-  related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ?', @record.ip, "%" + URI.parse(@record.url).host().to_s + "%" ]
+  related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ?', @record.ip, "%" + URI.parse(@record.url.strip).host().to_s + "%" ]
   joins = ''
   if (!@record.fingerprint.nil? && !@record.fingerprint.checksum.nil?)
     joins = 'LEFT JOIN fingerprints ON urls.fingerprint_id = fingerprints.id'
-    related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ? OR fingerprints.checksum = ?', @record.ip, "%" + URI.parse(@record.url).host().to_s + "%", @record.fingerprint.checksum.to_s ]
+    related_urls_pivot_fields = [ 'urls.ip = ? OR urls.url LIKE ? OR fingerprints.checksum = ?', @record.ip, "%" + URI.parse(@record.url.strip).host().to_s + "%", @record.fingerprint.checksum.to_s ]
   end
 %>
 <dd><%= render :active_scaffold => 'urls', :joins => joins, :conditions => Url.merge_conditions(related_urls_pivot_fields, [ 'urls.id != ? AND urls.url_status_id IN (?,?,?)', @record.id, UrlStatus.find_by_status("suspicious").id, UrlStatus.find_by_status("compromised"), UrlStatus.find_by_status("timed_out") ]), :label => "Possible Related URLs" %></dd>

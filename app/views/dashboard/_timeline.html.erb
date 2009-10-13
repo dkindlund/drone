@@ -5,9 +5,9 @@
     if (!url.fingerprint.nil?)
       time_at = Time.at(url.time_at.to_f)
       if (@annotations[:suspicious_urls].key?(time_at))
-        @annotations[:suspicious_urls][time_at] << [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) ]
+        @annotations[:suspicious_urls][time_at] << [ ' ' + link_to(URI.parse(url.url.strip).host().to_s,fingerprint_url(url.fingerprint.id)) ]
       else
-        @annotations[:suspicious_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
+        @annotations[:suspicious_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url.strip).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
       end
     end
   end
@@ -16,9 +16,9 @@
     if (!url.fingerprint.nil?)
       time_at = Time.at(url.time_at.to_f)
       if (@annotations[:compromised_urls].key?(time_at))
-        @annotations[:compromised_urls][time_at] << [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) ]
+        @annotations[:compromised_urls][time_at] << [ ' ' + link_to(URI.parse(url.url.strip).host().to_s,fingerprint_url(url.fingerprint.id)) ]
       else
-        @annotations[:compromised_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
+        @annotations[:compromised_urls][time_at] = [ [ ' ' + link_to(URI.parse(url.url.strip).host().to_s,fingerprint_url(url.fingerprint.id)) + " - " + url.url_status.status.to_s ] ]
       end
     end
   end
